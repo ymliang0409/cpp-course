@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第一章 程式語言簡介</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=Fira+Code:wght@400;600&display=swap');
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+        }
+        code, pre {
+            font-family: 'Fira Code', monospace;
+        }
+        .slide {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+        .slide.active {
+            display: block;
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col justify-between selection:bg-indigo-500 selection:text-white">
+
+    <!-- Header Navigation -->
+    <header class="bg-slate-800/80 backdrop-blur border-b border-slate-700 sticky top-0 z-50 px-6 py-4 flex justify-between items-center">
+        <div class="flex items-center space-x-3">
+            <span class="bg-indigo-600 text-white font-bold px-3 py-1 rounded-lg text-sm">C++ 課程</span>
+            <h1 class="text-xl font-bold tracking-wide text-white">第一章：程式語言簡介</h1>
+        </div>
+        <div class="flex items-center space-x-4">
+            <span id="slide-indicator" class="text-sm font-medium text-slate-400">頁次 1 / 6</span>
+            <button onclick="toggleOverview()" class="p-2 hover:bg-slate-700 rounded-lg text-slate-300 hover:text-white transition" title="全頁總覽">
+                <i class="fas fa-th-large"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Slide Content Container -->
+    <main class="flex-1 max-w-5xl w-full mx-auto p-6 md:p-10 flex flex-col justify-center">
+
+        <!-- Slide 1: Cover & Intro -->
+        <section class="slide active" id="slide-1">
+            <div class="text-center py-12 space-y-6">
+                <div class="inline-block p-4 bg-indigo-500/10 rounded-full border border-indigo-500/20 mb-4">
+                    <i class="fas fa-code text-5xl text-indigo-400"></i>
+                </div>
+                <h2 class="text-4xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-cyan-400">
+                    第一章 程式語言簡介
+                </h2>
+                <p class="text-lg text-slate-400 max-w-2xl mx-auto">
+                    程式語言是人類與電腦溝通的橋樑。本章將帶您瞭解程式語言的分類、編譯與直譯的差異，以及寫出您的第一個 C++ 程式。
+                </p>
+                <div class="pt-8 flex justify-center gap-4">
+                    <button onclick="nextSlide()" class="px-6 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-xl shadow-lg shadow-indigo-500/30 transition flex items-center space-x-2">
+                        <span>開始學習</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 2: What is Programming Language & Classification -->
+        <section class="slide" id="slide-2">
+            <h2 class="text-2xl md:text-3xl font-bold text-indigo-400 mb-6 flex items-center gap-3">
+                <i class="fas fa-layer-group"></i> 程式語言的分類
+            </h2>
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- Low-level -->
+                <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 hover:border-indigo-500/50 transition">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div class="p-3 bg-red-500/10 text-red-400 rounded-xl">
+                            <i class="fas fa-microchip text-xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white">低階語言 (Low-Level)</h3>
+                    </div>
+                    <p class="text-slate-300 mb-4 text-sm leading-relaxed">
+                        貼近電腦硬體的語言，執行效率極高，但人類較難直接閱讀與維護。
+                    </p>
+                    <ul class="space-y-2 text-sm text-slate-400">
+                        <li class="flex items-center gap-2"><i class="fas fa-check text-red-400 text-xs"></i> <strong>機器語言：</strong> 由 0 與 1 組成的二進位碼</li>
+                        <li class="flex items-center gap-2"><i class="fas fa-check text-red-400 text-xs"></i> <strong>組合語言：</strong> 使用簡單符號（助記碼）代表指令</li>
+                    </ul>
+                </div>
+
+                <!-- High-level -->
+                <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 hover:border-indigo-500/50 transition">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div class="p-3 bg-emerald-500/10 text-emerald-400 rounded-xl">
+                            <i class="fas fa-user-code text-xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white">高階語言 (High-Level)</h3>
+                    </div>
+                    <p class="text-slate-300 mb-4 text-sm leading-relaxed">
+                        語法接近人類語言（英文）與數學符號，易於學習、撰寫與維護。
+                    </p>
+                    <div class="flex flex-wrap gap-2 pt-2">
+                        <span class="px-3 py-1 bg-slate-700 text-emerald-300 rounded-lg text-xs font-semibold">C / C++</span>
+                        <span class="px-3 py-1 bg-slate-700 text-emerald-300 rounded-lg text-xs font-semibold">Python</span>
+                        <span class="px-3 py-1 bg-slate-700 text-emerald-300 rounded-lg text-xs font-semibold">Java</span>
+                        <span class="px-3 py-1 bg-slate-700 text-emerald-300 rounded-lg text-xs font-semibold">Visual Basic</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 3: Compiler vs Interpreter -->
+        <section class="slide" id="slide-3">
+            <h2 class="text-2xl md:text-3xl font-bold text-indigo-400 mb-6 flex items-center gap-3">
+                <i class="fas fa-cogs"></i> 直譯式 vs 編譯式語言
+            </h2>
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- Interpreter -->
+                <div class="bg-slate-800/90 border border-slate-700 rounded-2xl p-6 relative overflow-hidden">
+                    <span class="absolute top-0 right-0 bg-amber-500/20 text-amber-300 text-xs px-3 py-1 rounded-bl-lg font-bold">Python 等</span>
+                    <h3 class="text-lg font-bold text-amber-400 mb-3"><i class="fas fa-play text-sm mr-2"></i>直譯式語言 (Interpreter)</h3>
+                    <p class="text-slate-300 text-sm mb-4">邊翻譯邊執行，不需預先轉換成可執行檔。</p>
+                    <div class="flex items-center justify-between bg-slate-900 p-3 rounded-xl border border-slate-700/50 text-xs text-slate-300 space-x-2">
+                        <span>原始碼 (.py)</span>
+                        <i class="fas fa-arrow-right text-amber-400"></i>
+                        <span>直譯器</span>
+                        <i class="fas fa-arrow-right text-amber-400"></i>
+                        <span>機器指令並執行</span>
+                    </div>
+                </div>
+
+                <!-- Compiler -->
+                <div class="bg-slate-800/90 border border-slate-700 rounded-2xl p-6 relative overflow-hidden">
+                    <span class="absolute top-0 right-0 bg-cyan-500/20 text-cyan-300 text-xs px-3 py-1 rounded-bl-lg font-bold">C / C++ 等</span>
+                    <h3 class="text-lg font-bold text-cyan-400 mb-3"><i class="fas fa-box-open text-sm mr-2"></i>編譯式語言 (Compiler)</h3>
+                    <p class="text-slate-300 text-sm mb-4">整份程式碼預先編譯成機器碼檔，再連結函式庫產生獨立執行檔。</p>
+                    <div class="flex items-center justify-between bg-slate-900 p-3 rounded-xl border border-slate-700/50 text-xs text-slate-300 space-x-1">
+                        <span>原始碼 (.cpp)</span>
+                        <i class="fas fa-arrow-right text-cyan-400"></i>
+                        <span>編譯 (.o)</span>
+                        <i class="fas fa-arrow-right text-cyan-400"></i>
+                        <span>連結 (函式庫)</span>
+                        <i class="fas fa-arrow-right text-cyan-400"></i>
+                        <span>執行檔 (.exe)</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Workflow Summary -->
+            <div class="mt-6 bg-slate-800 border border-slate-700 rounded-2xl p-6">
+                <h4 class="text-md font-bold text-white mb-3 flex items-center gap-2">
+                    <i class="fas fa-route text-indigo-400"></i> C++ 程式設計開發流程
+                </h4>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-center text-xs">
+                    <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-700">
+                        <span class="text-indigo-400 font-bold block mb-1">1. 分析與撰寫</span>
+                        <span class="text-slate-400">繪製流程圖並撰寫 .cpp 原始碼</span>
+                    </div>
+                    <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-700">
+                        <span class="text-indigo-400 font-bold block mb-1">2. 編譯過程</span>
+                        <span class="text-slate-400">檢查語法，生成 .o 目的碼</span>
+                    </div>
+                    <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-700">
+                        <span class="text-indigo-400 font-bold block mb-1">3. 連結程序</span>
+                        <span class="text-slate-400">結合函式庫生成 .exe 執行檔</span>
+                    </div>
+                    <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-700">
+                        <span class="text-indigo-400 font-bold block mb-1">4. 執行與測試</span>
+                        <span class="text-slate-400">執行程式並進行除錯 (Debug)</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 4: Errors -->
+        <section class="slide" id="slide-4">
+            <h2 class="text-2xl md:text-3xl font-bold text-indigo-400 mb-6 flex items-center gap-3">
+                <i class="fas fa-bug"></i> 程式設計常見錯誤類型
+            </h2>
+            <div class="grid md:grid-cols-3 gap-6">
+                <!-- Syntax Error -->
+                <div class="bg-slate-800 border border-slate-700 rounded-2xl p-5 border-t-4 border-t-rose-500">
+                    <h3 class="text-lg font-bold text-white mb-2">語法錯誤 (Syntax Error)</h3>
+                    <p class="text-slate-400 text-xs mb-3">違反程式語言的文法規定（如漏寫分號、括號不對稱）。</p>
+                    <div class="bg-slate-900 p-2.5 rounded-lg text-xs font-mono text-rose-400">
+                        編譯階段發現 (Compile Error)
+                    </div>
+                </div>
+
+                <!-- Link Error -->
+                <div class="bg-slate-800 border border-slate-700 rounded-2xl p-5 border-t-4 border-t-amber-500">
+                    <h3 class="text-lg font-bold text-white mb-2">連結錯誤 (Link Error)</h3>
+                    <p class="text-slate-400 text-xs mb-3">找不到函式庫或未定義的主函式 main()。</p>
+                    <div class="bg-slate-900 p-2.5 rounded-lg text-xs font-mono text-amber-400">
+                        連結階段發現 (Link Error)
+                    </div>
+                </div>
+
+                <!-- Runtime / Logic Error -->
+                <div class="bg-slate-800 border border-slate-700 rounded-2xl p-5 border-t-4 border-t-indigo-500">
+                    <h3 class="text-lg font-bold text-white mb-2">執行/邏輯錯誤 (Runtime Error)</h3>
+                    <p class="text-slate-400 text-xs mb-3">除以零、陣列越界，或是邏輯不符預期。</p>
+                    <div class="bg-slate-900 p-2.5 rounded-lg text-xs font-mono text-indigo-400">
+                        執行階段發生 (Runtime Error)
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 5: First C++ Program -->
+        <section class="slide" id="slide-5">
+            <h2 class="text-2xl md:text-3xl font-bold text-indigo-400 mb-4 flex items-center gap-3">
+                <i class="fas fa-terminal"></i> 第一個 C++ 程式剖析
+            </h2>
+            <p class="text-slate-300 text-sm mb-4">點選下方程式碼行數，查看該行敘述的作用與說明：</p>
+
+            <div class="grid md:grid-cols-12 gap-6 items-start">
+                <!-- Code Panel -->
+                <div class="md:col-span-7 bg-slate-950 border border-slate-800 rounded-2xl p-4 font-mono text-sm leading-relaxed shadow-inner">
+                    <div class="flex items-center space-x-2 border-b border-slate-800 pb-3 mb-3">
+                        <div class="w-3 h-3 bg-red-500 rounded-full"></div>
+                        <div class="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                        <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+                        <span class="text-xs text-slate-500 ml-2">main.cpp</span>
+                    </div>
+                    <div class="space-y-1">
+                        <div onclick="explainCode(1)" class="code-line cursor-pointer hover:bg-slate-800/80 p-1.5 rounded transition flex items-center">
+                            <span class="text-slate-600 w-8 select-none">1</span>
+                            <span class="text-slate-500">// 我的第一個C++程式</span>
+                        </div>
+                        <div onclick="explainCode(2)" class="code-line cursor-pointer hover:bg-slate-800/80 p-1.5 rounded transition flex items-center">
+                            <span class="text-slate-600 w-8 select-none">2</span>
+                            <span class="text-pink-400">#include</span>&nbsp;<span class="text-amber-300">&lt;iostream&gt;</span>
+                        </div>
+                        <div onclick="explainCode(3)" class="code-line cursor-pointer hover:bg-slate-800/80 p-1.5 rounded transition flex items-center">
+                            <span class="text-slate-600 w-8 select-none">3</span>
+                            <span class="text-indigo-400">using namespace</span>&nbsp;<span class="text-emerald-400">std</span><span class="text-slate-300">;</span>
+                        </div>
+                        <div onclick="explainCode(4)" class="code-line cursor-pointer hover:bg-slate-800/80 p-1.5 rounded transition flex items-center">
+                            <span class="text-slate-600 w-8 select-none">4</span>
+                            <span class="text-blue-400">int</span>&nbsp;<span class="text-yellow-300">main</span><span class="text-slate-300">()</span>
+                        </div>
+                        <div onclick="explainCode(5)" class="code-line cursor-pointer hover:bg-slate-800/80 p-1.5 rounded transition flex items-center">
+                            <span class="text-slate-600 w-8 select-none">5</span>
+                            <span class="text-slate-300">{</span>
+                        </div>
+                        <div onclick="explainCode(6)" class="code-line cursor-pointer hover:bg-slate-800/80 p-1.5 rounded transition flex items-center pl-4">
+                            <span class="text-slate-600 w-8 select-none">6</span>
+                            <span class="text-indigo-300">cout</span>&nbsp;<span class="text-slate-300">&lt;&lt;</span>&nbsp;<span class="text-emerald-300">"Hello, World"</span>&nbsp;<span class="text-slate-300">&lt;&lt;</span>&nbsp;<span class="text-indigo-300">endl</span><span class="text-slate-300">;</span>
+                        </div>
+                        <div onclick="explainCode(7)" class="code-line cursor-pointer hover:bg-slate-800/80 p-1.5 rounded transition flex items-center pl-4">
+                            <span class="text-slate-600 w-8 select-none">7</span>
+                            <span class="text-pink-400">return</span>&nbsp;<span class="text-amber-300">0</span><span class="text-slate-300">;</span>
+                        </div>
+                        <div onclick="explainCode(8)" class="code-line cursor-pointer hover:bg-slate-800/80 p-1.5 rounded transition flex items-center">
+                            <span class="text-slate-600 w-8 select-none">8</span>
+                            <span class="text-slate-300">}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Explanation Box -->
+                <div class="md:col-span-5 bg-slate-800 border border-slate-700 rounded-2xl p-5 min-h-[280px] flex flex-col justify-center">
+                    <div id="code-explanation-title" class="text-lg font-bold text-indigo-400 mb-2">
+                        點擊左側程式碼了解詳情
+                    </div>
+                    <div id="code-explanation-body" class="text-sm text-slate-300 leading-relaxed">
+                        點擊程式碼中的任何一行，這裡將提供詳細的結構與語法說明。
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 6: Quiz / Summary -->
+        <section class="slide" id="slide-6">
+            <h2 class="text-2xl md:text-3xl font-bold text-indigo-400 mb-6 flex items-center gap-3">
+                <i class="fas fa-graduation-cap"></i> 本章隨堂小測驗
+            </h2>
+
+            <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 space-y-6">
+                <div>
+                    <h3 class="text-lg font-semibold text-white mb-3">1. 下列哪一個屬於 C++ 的「輸入輸出標頭檔」？</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3" id="q1-options">
+                        <button onclick="checkAnswer(1, false, this)" class="p-3 bg-slate-700/60 hover:bg-slate-700 rounded-xl text-left text-sm transition">A. stdio.h</button>
+                        <button onclick="checkAnswer(1, true, this)" class="p-3 bg-slate-700/60 hover:bg-slate-700 rounded-xl text-left text-sm transition">B. iostream</button>
+                        <button onclick="checkAnswer(1, false, this)" class="p-3 bg-slate-700/60 hover:bg-slate-700 rounded-xl text-left text-sm transition">C. string</button>
+                        <button onclick="checkAnswer(1, false, this)" class="p-3 bg-slate-700/60 hover:bg-slate-700 rounded-xl text-left text-sm transition">D. algorithm</button>
+                    </div>
+                </div>
+
+                <div class="pt-4 border-t border-slate-700">
+                    <h3 class="text-lg font-semibold text-white mb-3">2. 撰寫程式時若漏寫分號「;」，會引發哪種錯誤？</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3" id="q2-options">
+                        <button onclick="checkAnswer(2, true, this)" class="p-3 bg-slate-700/60 hover:bg-slate-700 rounded-xl text-left text-sm transition">A. 語法錯誤 (Syntax Error)</button>
+                        <button onclick="checkAnswer(2, false, this)" class="p-3 bg-slate-700/60 hover:bg-slate-700 rounded-xl text-left text-sm transition">B. 連結錯誤 (Link Error)</button>
+                        <button onclick="checkAnswer(2, false, this)" class="p-3 bg-slate-700/60 hover:bg-slate-700 rounded-xl text-left text-sm transition">C. 執行階段錯誤 (Runtime Error)</button>
+                        <button onclick="checkAnswer(2, false, this)" class="p-3 bg-slate-700/60 hover:bg-slate-700 rounded-xl text-left text-sm transition">D. 邏輯錯誤 (Logic Error)</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer Controls -->
+    <footer class="bg-slate-800/80 backdrop-blur border-t border-slate-700 px-6 py-4 flex justify-between items-center">
+        <button onclick="prevSlide()" id="btn-prev" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 disabled:opacity-40 disabled:cursor-not-allowed rounded-lg text-sm font-medium transition flex items-center space-x-2">
+            <i class="fas fa-chevron-left"></i>
+            <span>上一頁</span>
+        </button>
+
+        <div class="flex space-x-2" id="dots-container"></div>
+
+        <button onclick="nextSlide()" id="btn-next" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 disabled:cursor-not-allowed rounded-lg text-sm font-medium transition flex items-center space-x-2">
+            <span>下一頁</span>
+            <i class="fas fa-chevron-right"></i>
+        </button>
+    </footer>
+
+    <!-- Interactive Script -->
+    <script>
+        let currentSlide = 1;
+        const totalSlides = 6;
+
+        function updateSlide() {
+            document.querySelectorAll('.slide').forEach((el, idx) => {
+                el.classList.toggle('active', idx + 1 === currentSlide);
+            });
+
+            document.getElementById('slide-indicator').textContent = `頁次 ${currentSlide} / ${totalSlides}`;
+            document.getElementById('btn-prev').disabled = currentSlide === 1;
+            document.getElementById('btn-next').disabled = currentSlide === totalSlides;
+
+            updateDots();
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides) {
+                currentSlide++;
+                updateSlide();
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 1) {
+                currentSlide--;
+                updateSlide();
+            }
+        }
+
+        function goToSlide(n) {
+            currentSlide = n;
+            updateSlide();
+        }
+
+        function updateDots() {
+            const container = document.getElementById('dots-container');
+            container.innerHTML = '';
+            for (let i = 1; i <= totalSlides; i++) {
+                const dot = document.createElement('button');
+                dot.className = `w-2.5 h-2.5 rounded-full transition-all ${i === currentSlide ? 'bg-indigo-400 w-6' : 'bg-slate-600 hover:bg-slate-500'}`;
+                dot.onclick = () => goToSlide(i);
+                container.appendChild(dot);
+            }
+        }
+
+        const codeExplanations = {
+            1: { title: "第 1 行：單行註解", body: "以 // 開頭的文字為註解，編譯器會自動忽略，用於對程式碼進行說明與備註。多行註解可用 /* ... */。" },
+            2: { title: "第 2 行：標頭檔引導敘述", body: "以 # 開頭代表預處理命令。#include <iostream> 引進了輸入與輸出的標準函式庫 (Input/Output Stream)。" },
+            3: { title: "第 3 行：使用名稱空間", body: "using namespace std; 代表使用 C++ 標準命名空間，如此一來我們直接寫 cout 與 endl，而不需要每次都寫 std::cout 與 std::endl。" },
+            4: { title: "第 4 行：主函式入口", body: "int main() 是 C++ 程式執行的起始點，所有程式邏輯都從 main 函式開始執行。" },
+            5: { title: "第 5 行：程式區塊開始", body: "左大括號 { 代表主函式 main() 內容區塊的開始。" },
+            6: { title: "第 6 行：主體輸出敘述", body: "cout 用於輸出資料至螢幕；<< 為串流插入運算子；\"Hello, World\" 為要印出的字串；endl 代表換行 (End Line)。" },
+            7: { title: "第 7 行：傳回值與結束", body: "return 0; 表示程式正常執行結束，將整數 0 傳回給作業系統。" },
+            8: { title: "第 8 行：程式區塊結束", body: "右大括號 } 代表主函式區塊的結束。" }
+        };
+
+        function explainCode(line) {
+            const exp = codeExplanations[line];
+            if (exp) {
+                document.getElementById('code-explanation-title').textContent = exp.title;
+                document.getElementById('code-explanation-body').textContent = exp.body;
+            }
+        }
+
+        function checkAnswer(qNum, isCorrect, btn) {
+            const container = document.getElementById(`q${qNum}-options`);
+            const buttons = container.querySelectorAll('button');
+            buttons.forEach(b => {
+                b.disabled = true;
+                b.classList.remove('bg-slate-700/60', 'hover:bg-slate-700');
+            });
+
+            if (isCorrect) {
+                btn.classList.add('bg-emerald-600', 'text-white');
+            } else {
+                btn.classList.add('bg-rose-600', 'text-white');
+            }
+        }
+
+        // Initialize
+        updateSlide();
+    </script>
+</body>
+</html>
