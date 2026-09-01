@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第二章 變數與常數</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=Fira+Code:wght@400;600&display=swap');
+        body { font-family: 'Noto Sans TC', sans-serif; }
+        code, pre { font-family: 'Fira Code', monospace; }
+        .slide { display: none; opacity: 0; transition: opacity 0.3s ease-in-out; }
+        .slide.active { display: block; opacity: 1; }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col justify-between selection:bg-indigo-500 selection:text-white">
+
+    <!-- Header Navigation -->
+    <header class="bg-slate-800/80 backdrop-blur border-b border-slate-700 sticky top-0 z-50 px-6 py-4 flex justify-between items-center">
+        <div class="flex items-center space-x-3">
+            <span class="bg-indigo-600 text-white font-bold px-3 py-1 rounded-lg text-sm">C++ 課程</span>
+            <h1 class="text-xl font-bold tracking-wide text-white">第二章：變數與常數</h1>
+        </div>
+        <div class="flex items-center space-x-4">
+            <span id="slide-indicator" class="text-sm font-medium text-slate-400">頁次 1 / 12</span>
+        </div>
+    </header>
+
+    <!-- Main Slide Content Container -->
+    <main class="flex-1 max-w-5xl w-full mx-auto p-6 md:p-10 flex flex-col justify-center">
+
+        <!-- Slide 1: Cover -->
+        <section class="slide active" id="slide-1">
+            <div class="text-center py-12 space-y-6">
+                <div class="inline-block p-4 bg-indigo-500/10 rounded-full border border-indigo-500/20 mb-4">
+                    <i class="fas fa-cube text-5xl text-indigo-400"></i>
+                </div>
+                <h2 class="text-4xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-cyan-400">
+                    第二章 變數與常數
+                </h2>
+                <p class="text-lg text-slate-400 max-w-2xl mx-auto">
+                    深入瞭解記憶體概念、資料型態、變數命名規則、常數宣告以及基本輸入輸出（cin / cout）操作。
+                </p>
+                <div class="pt-8 flex justify-center gap-4">
+                    <button onclick="nextSlide()" class="px-6 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-xl shadow-lg shadow-indigo-500/30 transition flex items-center space-x-2">
+                        <span>開始進入章節</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 2: What is Variable -->
+        <section class="slide" id="slide-2">
+            <h2 class="text-2xl md:text-3xl font-bold text-indigo-400 mb-6 flex items-center gap-3">
+                <i class="fas fa-box"></i> 什麼是變數 (Variable)？
+            </h2>
+            <div class="grid md:grid-cols-2 gap-6 items-center">
+                <div class="space-y-4 text-slate-300">
+                    <div class="bg-slate-800 p-5 rounded-2xl border border-slate-700">
+                        <h3 class="text-lg font-bold text-white mb-2"><i class="fas fa-check-circle text-indigo-400 mr-2"></i>基本概念</h3>
+                        <p class="text-sm leading-relaxed">變數是程式語言中最基本的元素之一。</p>
+                    </div>
+                    <div class="bg-slate-800 p-5 rounded-2xl border border-slate-700">
+                        <h3 class="text-lg font-bold text-white mb-2"><i class="fas fa-memory text-cyan-400 mr-2"></i>存放位置</h3>
+                        <p class="text-sm leading-relaxed">變數通常是存放在電腦的<strong>記憶體 (Memory)</strong> 空間內，就像一個用來儲存資料的「盒子」。</p>
+                    </div>
+                </div>
+                <div class="bg-slate-950 p-6 rounded-2xl border border-slate-800 text-center">
+                    <div class="text-slate-400 text-sm mb-4">記憶體與變數對照示意圖</div>
+                    <div class="p-4 bg-slate-900 rounded-xl border border-indigo-500/30 inline-block w-full">
+                        <div class="flex justify-center items-center gap-2 mb-3">
+                            <span class="p-2 bg-indigo-600/30 rounded text-xs">記憶體位址</span>
+                            <i class="fas fa-arrow-down text-indigo-400"></i>
+                        </div>
+                        <div class="bg-indigo-950/80 border-2 border-indigo-500 p-4 rounded-xl text-indigo-200 font-bold">
+                            📦 變數 (Variable Box)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 3: Variable Declaration -->
+        <section class="slide" id="slide-3">
+            <h2 class="text-2xl md:text-3xl font-bold text-indigo-400 mb-6 flex items-center gap-3">
+                <i class="fas fa-code"></i> 變數宣告方式
+            </h2>
+            <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 mb-6">
+                <div class="text-sm text-slate-400 mb-2">宣告語法格式：</div>
+                <div class="bg-slate-950 p-4 rounded-xl font-mono text-xl text-emerald-400 border border-slate-800">
+                    type var-name;
+                </div>
+            </div>
+            <div class="grid md:grid-cols-2 gap-4">
+                <div class="bg-slate-800/80 p-5 rounded-2xl border border-slate-700">
+                    <h3 class="font-bold text-indigo-300 mb-2">1. type（資料型態）</h3>
+                    <ul class="space-y-1 text-sm text-slate-300">
+                        <li>• <code class="text-amber-300">int</code>：整數</li>
+                        <li>• <code class="text-amber-300">float</code>：小數（浮點數）</li>
+                        <li>• <code class="text-amber-300">char</code>：字元</li>
+                        <li>• <code class="text-amber-300">bool</code>：布林值 (true/false)</li>
+                    </ul>
+                </div>
+                <div class="bg-slate-800/80 p-5 rounded-2xl border border-slate-700">
+                    <h3 class="font-bold text-indigo-300 mb-2">2. var-name（變數名稱）</h3>
+                    <p class="text-sm text-slate-300">自行設定的識別字名稱，用於代表該變數以供後續程式存取與修改。</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 4: Naming Rules -->
+        <section class="slide" id="slide-4">
+            <h2 class="text-2xl md:text-3xl font-bold text-indigo-400 mb-6 flex items-center gap-3">
+                <i class="fas fa-list-check"></i> 建立變數名稱規則
+            </h2>
+            <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 space-y-3 text-sm text-slate-300">
+                <div class="flex items-start gap-3">
+                    <i class="fas fa-check text-emerald-400 mt-1"></i>
+                    <div>可以使用<strong>英文字母、阿拉伯數字、底線（_）、$</strong> 等符號作為名稱，無法包含其他特殊符號。</div>
+                </div>
+                <div class="flex items-start gap-3">
+                    <i class="fas fa-check text-emerald-400 mt-1"></i>
+                    <div>視環境而定，名稱最長不得超過 <strong>255 個字元</strong>。</div>
+                </div>
+                <div class="flex items-start gap-3">
+                    <i class="fas fa-times text-rose-400 mt-1"></i>
+                    <div>保留起來的<strong>關鍵字 (keyword)</strong> 不能做為名稱（常見如：<code class="text-rose-300">return</code>, <code class="text-rose-300">int</code>, <code class="text-rose-300">for</code>...）。</div>
+                </div>
+                <div class="flex items-start gap-3">
+                    <i class="fas fa-times text-rose-400 mt-1"></i>
+                    <div>名稱<strong>不能用阿拉伯數字作為開頭</strong>（例如 <code class="text-rose-300">1num</code> 不合法）。</div>
+                </div>
+                <div class="flex items-start gap-3">
+                    <i class="fas fa-exclamation-triangle text-amber-400 mt-1"></i>
+                    <div><strong>英文字母的大小寫有區別</strong>（例如 <code class="text-amber-300">Num</code> 與 <code class="text-amber-300">num</code> 代表不同變數）。</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 5: Data Types Table -->
+        <section class="slide" id="slide-5">
+            <h2 class="text-2xl md:text-3xl font-bold text-indigo-400 mb-4 flex items-center gap-3">
+                <i class="fas fa-table"></i> 資料型態、記憶體與範圍
+            </h2>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-sm border-collapse bg-slate-800 rounded-xl overflow-hidden">
+                    <thead class="bg-slate-700 text-indigo-300">
+                        <tr>
+                            <th class="p-3">類型</th>
+                            <th class="p-3">型態</th>
+                            <th class="p-3">佔用記憶體</th>
+                            <th class="p-3">可儲存數值範圍</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-700 text-slate-300">
+                        <tr><td class="p-2.5">布林</td><td class="p-2.5 font-mono text-amber-300">bool</td><td class="p-2.5">1 位元組</td><td class="p-2.5">0 ~ 255 (true / false)</td></tr>
+                        <tr><td class="p-2.5" rowspan="3">整數</td><td class="p-2.5 font-mono text-amber-300">short</td><td class="p-2.5">2 位元組</td><td class="p-2.5">-2<sup>15</sup> ~ 2<sup>15</sup>-1</td></tr>
+                        <tr><td class="p-2.5 font-mono text-amber-300">int</td><td class="p-2.5">4 位元組</td><td class="p-2.5">-2<sup>31</sup> ~ 2<sup>31</sup>-1</td></tr>
+                        <tr><td class="p-2.5 font-mono text-amber-300">long long</td><td class="p-2.5">8 位元組</td><td class="p-2.5">-2<sup>63</sup> ~ 2<sup>63</sup>-1</td></tr>
+                        <tr><td class="p-2.5" rowspan="2">小數</td><td class="p-2.5 font-mono text-amber-300">float</td><td class="p-2.5">4 位元組</td><td class="p-2.5">精確位數 7~8 位</td></tr>
+                        <tr><td class="p-2.5 font-mono text-amber-300">double</td><td class="p-2.5">8 位元組</td><td class="p-2.5">精確位數 16~17 位</td></tr>
+                        <tr><td class="p-2.5">字元</td><td class="p-2.5 font-mono text-amber-300">char</td><td class="p-2.5">1 位元組</td><td class="p-2.5">0 ~ 255 (ASCII)</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Slide 6: Variable Initialization -->
+        <section class="slide" id="slide-6">
+            <h2 class="text-2xl md:text-3xl font-bold text-indigo-400 mb-4 flex items-center gap-3">
+                <i class="fas fa-play"></i> 變數初始化與賦值
+            </h2>
+            <blockquote class="bg-amber-500/10 border-l-4 border-amber-500 p-3 text-amber-300 text-xs mb-4">
+                注意：等號 (<code>=</code>) 的意思並非數學上的「等於」，而是將右方的數值<strong>「指定給 (Assign)」</strong>左方的變數。
+            </blockquote>
+            <div class="grid md:grid-cols-2 gap-4 text-xs font-mono">
+                <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
+                    <span class="text-slate-500">// 整數型態</span><br>
+                    <span class="text-blue-400">int</span>&nbsp;<span class="text-slate-200">num1 = 3;</span><br><br>
+                    <span class="text-slate-500">// 浮點數型態</span><br>
+                    <span class="text-blue-400">float</span>&nbsp;<span class="text-slate-200">num2 = 3.14;</span><br><br>
+                    <span class="text-slate-500">// 布林變數</span><br>
+                    <span class="text-blue-400">bool</span>&nbsp;<span class="text-slate-200">check = true;</span> <span class="text-slate-500 font-sans">(1亦可, 0表false)</span>
+                </div>
+                <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
+                    <span class="text-slate-500">// 字元型態 (使用單引號)</span><br>
+                    <span class="text-blue-400">char</span>&nbsp;<span class="text-slate-200">ch = 'A';</span><br><br>
+                    <span class="text-slate-500">// 亦可指定 ASCII 碼 (A的ASCII為65)</span><br>
+                    <span class="text-blue-400">char</span>&nbsp;<span class="text-slate-200">ch = 65;</span><br><br>
+                    <span class="text-rose-400">// 錯誤示範: char ch = "A";</span><br>
+                    <span class="text-emerald-400">// 若使用雙引號需改為 string ch = "A";</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 7: Constants & Preprocessor -->
+        <section class="slide" id="slide-7">
+            <h2 class="text-2xl md:text-3xl font-bold text-indigo-400 mb-6 flex items-center gap-3">
+                <i class="fas fa-lock"></i> 常數與前置處理器
+            </h2>
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- const -->
+                <div class="bg-slate-800 border border-slate-700 rounded-2xl p-5">
+                    <h3 class="text-lg font-bold text-white mb-2"><i class="fas fa-shield-alt text-indigo-400 mr-2"></i>常數 (const)</h3>
+                    <p class="text-slate-300 text-xs mb-3">執行期間數值<strong>不可被重新指定或改變</strong>。</p>
+                    <div class="bg-slate-950 p-3 rounded-xl font-mono text-xs text-indigo-300">
+                        <span class="text-pink-400">const</span>&nbsp;<span class="text-blue-400">int</span>&nbsp;<span class="text-slate-200">num = 35;</span>
+                    </div>
+                </div>
+                <!-- #define -->
+                <div class="bg-slate-800 border border-slate-700 rounded-2xl p-5">
+                    <h3 class="text-lg font-bold text-white mb-2"><i class="fas fa-hashtag text-cyan-400 mr-2"></i>前置處理器 (#define)</h3>
+                    <p class="text-slate-300 text-xs mb-3">替換常數或字串為自訂識別名稱，在編譯前直接替換。</p>
+                    <div class="bg-slate-950 p-3 rounded-xl font-mono text-xs text-cyan-300">
+                        <span class="text-pink-400">#define</span>&nbsp;<span class="text-slate-200">PI 3.14159</span><br>
+                        <span class="text-slate-500 font-sans text-[10px]">(注意：末端不需要加分號)</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 8: cout Basic Output -->
+        <section class="slide" id="slide-8">
+            <h2 class="text-2xl md:text-3xl font-bold text-indigo-400 mb-4 flex items-center gap-3">
+                <i class="fas fa-desktop"></i> 輸出基本操作 (cout)
+            </h2>
+            <div class="bg-slate-800 border border-slate-700 rounded-2xl p-4 mb-4 text-xs">
+                <div class="font-mono text-emerald-400 text-sm mb-1">cout &lt;&lt; 運算式1 &lt;&lt; 運算式2 &lt;&lt; ... &lt;&lt; 運算式n;</div>
+                <div class="text-slate-300">使用 <code class="text-indigo-300">&lt;&lt;</code> (串流插入運算子) 可將多個字串、變數或算式串接輸出。</div>
+            </div>
+            <div class="bg-slate-950 p-4 rounded-xl font-mono text-xs text-slate-200 space-y-1">
+                <div><span class="text-indigo-400">cout</span>&nbsp;&lt;&lt;&nbsp;<span class="text-emerald-300">"num1 = "</span>&nbsp;&lt;&lt;&nbsp;num1&nbsp;&lt;&lt;&nbsp;<span class="text-indigo-400">endl</span>;</div>
+                <div><span class="text-indigo-400">cout</span>&nbsp;&lt;&lt;&nbsp;num1 + num2&nbsp;&lt;&lt;&nbsp;<span class="text-indigo-400">endl</span>;&nbsp;<span class="text-slate-500">// 加法</span></div>
+                <div><span class="text-indigo-400">cout</span>&nbsp;&lt;&lt;&nbsp;num1 - num2&nbsp;&lt;&lt;&nbsp;<span class="text-indigo-400">endl</span>;&nbsp;<span class="text-slate-500">// 減法</span></div>
+                <div><span class="text-indigo-400">cout</span>&nbsp;&lt;&lt;&nbsp;num1 * num2&nbsp;&lt;&lt;&nbsp;<span class="text-indigo-400">endl</span>;&nbsp;<span class="text-slate-500">// 乘法</span></div>
+                <div><span class="text-indigo-400">cout</span>&nbsp;&lt;&lt;&nbsp;num1 / num2&nbsp;&lt;&lt;&nbsp;<span class="text-indigo-400">endl</span>;&nbsp;<span class="text-slate-500">// 除法</span></div>
+            </div>
+        </section>
+
+        <!-- Slide 9: Escape Characters -->
+        <section class="slide" id="slide-9">
+            <h2 class="text-2xl md:text-3xl font-bold text-indigo-400 mb-4 flex items-center gap-3">
+                <i class="fas fa-terminal"></i> 跳脫字元 (Escape Characters)
+            </h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs font-mono">
+                <div class="bg-slate-800 p-2.5 rounded-lg border border-slate-700"><span class="text-amber-300 font-bold">\a</span> : 警告音</div>
+                <div class="bg-slate-800 p-2.5 rounded-lg border border-slate-700"><span class="text-amber-300 font-bold">\b</span> : BackSpace</div>
+                <div class="bg-slate-800 p-2.5 rounded-lg border border-slate-700"><span class="text-amber-300 font-bold">\t</span> : 水平 tab</div>
+                <div class="bg-slate-800 p-2.5 rounded-lg border border-slate-700"><span class="text-amber-300 font-bold">\v</span> : 垂直 tab</div>
+                <div class="bg-slate-800 p-2.5 rounded-lg border border-slate-700"><span class="text-amber-300 font-bold">\n</span> : 換行</div>
+                <div class="bg-slate-800 p-2.5 rounded-lg border border-slate-700"><span class="text-amber-300 font-bold">\f</span> : 換頁</div>
+                <div class="bg-slate-800 p-2.5 rounded-lg border border-slate-700"><span class="text-amber-300 font-bold">\r</span> : Return</div>
+                <div class="bg-slate-800 p-2.5 rounded-lg border border-slate-700"><span class="text-amber-300 font-bold">\\</span> : 反斜線 \</div>
+                <div class="bg-slate-800 p-2.5 rounded-lg border border-slate-700"><span class="text-amber-300 font-bold">\'</span> : 單引號 '</div>
+                <div class="bg-slate-800 p-2.5 rounded-lg border border-slate-700"><span class="text-amber-300 font-bold">\"</span> : 雙引號 "</div>
+                <div class="bg-slate-800 p-2.5 rounded-lg border border-slate-700"><span class="text-amber-300 font-bold">\?</span> : 問號 ?</div>
+                <div class="bg-slate-800 p-2.5 rounded-lg border border-slate-700"><span class="text-amber-300 font-bold">\000</span> : 8進制碼</div>
+            </div>
+        </section>
+
+        <!-- Slide 10: setprecision -->
+        <section class="slide" id="slide-10">
+            <h2 class="text-2xl md:text-3xl font-bold text-indigo-400 mb-4 flex items-center gap-3">
+                <i class="fas fa-sliders-h"></i> 浮點數的輸出位數控制
+            </h2>
+            <div class="bg-slate-800 border border-slate-700 rounded-2xl p-5 space-y-3 text-xs">
+                <div>1. 需引入 <code class="text-pink-300 font-mono">#include &lt;iomanip&gt;</code> 標頭檔。</div>
+                <div>2. 使用 <code class="text-amber-300 font-mono">setprecision(int i)</code> 控制輸出位數。</div>
+                <div>3. 若要<strong>只控制小數點以下的位數</strong>，再加上 <code class="text-amber-300 font-mono">fixed</code> 格式控制。</div>
+                <div class="bg-slate-950 p-4 rounded-xl font-mono text-emerald-400 text-sm mt-2">
+                    <span class="text-indigo-400">cout</span>&nbsp;&lt;&lt;&nbsp;<span class="text-pink-400">fixed</span>&nbsp;&lt;&lt;&nbsp;<span class="text-amber-300">setprecision</span>(2)&nbsp;&lt;&lt;&nbsp;3.14159;
+                    <div class="text-slate-500 text-xs mt-1">// 輸出結果：3.14</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 11: Reassign Variable Value -->
+        <section class="slide" id="slide-11">
+            <h2 class="text-2xl md:text-3xl font-bold text-indigo-400 mb-4 flex items-center gap-3">
+                <i class="fas fa-sync-alt"></i> 改變變數的值
+            </h2>
+            <div class="grid md:grid-cols-2 gap-6 items-center">
+                <div class="bg-slate-950 p-4 rounded-xl font-mono text-xs leading-relaxed">
+                    num1 = 3;<br>
+                    <span class="text-indigo-400">cout</span>&nbsp;&lt;&lt;&nbsp;<span class="text-emerald-300">"變數num1的值是"</span>&nbsp;&lt;&lt;&nbsp;num1&nbsp;&lt;&lt;&nbsp;<span class="text-indigo-400">endl</span>;<br><br>
+                    num1 = 5;<br>
+                    <span class="text-indigo-400">cout</span>&nbsp;&lt;&lt;&nbsp;<span class="text-emerald-300">"變數num1更新後的值是"</span>&nbsp;&lt;&lt;&nbsp;num1&nbsp;&lt;&lt;&nbsp;<span class="text-indigo-400">endl</span>;
+                </div>
+                <div class="bg-slate-800 border border-slate-700 p-4 rounded-2xl text-xs space-y-2">
+                    <div class="font-bold text-emerald-400">執行結果：</div>
+                    <div class="bg-black/50 p-3 rounded-lg font-mono text-slate-200">
+                        變數num1的值是3。<br>
+                        變數num1更新後的值是5。
+                    </div>
+                    <p class="text-slate-400 text-[11px] pt-1">當賦予變數新數值時，舊有記憶體中的數值會被直接覆蓋。</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 12: cin Input -->
+        <section class="slide" id="slide-12">
+            <h2 class="text-2xl md:text-3xl font-bold text-indigo-400 mb-4 flex items-center gap-3">
+                <i class="fas fa-keyboard"></i> 輸入基本操作 (cin)
+            </h2>
+            <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 mb-4">
+                <div class="text-sm text-slate-400 mb-2">cin 輸入語法格式：</div>
+                <div class="bg-slate-950 p-4 rounded-xl font-mono text-lg text-emerald-400 border border-slate-800 mb-3">
+                    cin &gt;&gt; 運算式1 &gt;&gt; 運算式2 &gt;&gt; ... &gt;&gt; 運算式n;
+                </div>
+                <p class="text-xs text-slate-300 leading-relaxed">
+                    使用 <code class="text-indigo-300">&gt;&gt;</code> (串流擷取運算子) 可以從鍵盤讀取使用者輸入的值，並依序儲存至指定變數中。
+                </p>
+            </div>
+            <div class="bg-slate-950 p-4 rounded-xl font-mono text-xs text-indigo-300">
+                <span class="text-indigo-400">cin</span>&nbsp;&gt;&gt;&nbsp;num1&nbsp;&gt;&gt;&nbsp;num2;
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer Controls -->
+    <footer class="bg-slate-800/80 backdrop-blur border-t border-slate-700 px-6 py-4 flex justify-between items-center">
+        <button onclick="prevSlide()" id="btn-prev" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 disabled:opacity-40 disabled:cursor-not-allowed rounded-lg text-sm font-medium transition flex items-center space-x-2">
+            <i class="fas fa-chevron-left"></i>
+            <span>上一頁</span>
+        </button>
+
+        <div class="flex space-x-1.5 overflow-x-auto px-2" id="dots-container"></div>
+
+        <button onclick="nextSlide()" id="btn-next" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 disabled:cursor-not-allowed rounded-lg text-sm font-medium transition flex items-center space-x-2">
+            <span>下一頁</span>
+            <i class="fas fa-chevron-right"></i>
+        </button>
+    </footer>
+
+    <!-- Interactive Script -->
+    <script>
+        let currentSlide = 1;
+        const totalSlides = 12;
+
+        function updateSlide() {
+            document.querySelectorAll('.slide').forEach((el, idx) => {
+                el.classList.toggle('active', idx + 1 === currentSlide);
+            });
+
+            document.getElementById('slide-indicator').textContent = `頁次 ${currentSlide} / ${totalSlides}`;
+            document.getElementById('btn-prev').disabled = currentSlide === 1;
+            document.getElementById('btn-next').disabled = currentSlide === totalSlides;
+
+            updateDots();
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides) {
+                currentSlide++;
+                updateSlide();
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 1) {
+                currentSlide--;
+                updateSlide();
+            }
+        }
+
+        function goToSlide(n) {
+            currentSlide = n;
+            updateSlide();
+        }
+
+        function updateDots() {
+            const container = document.getElementById('dots-container');
+            container.innerHTML = '';
+            for (let i = 1; i <= totalSlides; i++) {
+                const dot = document.createElement('button');
+                dot.className = `w-2 h-2 rounded-full transition-all ${i === currentSlide ? 'bg-indigo-400 w-5' : 'bg-slate-600 hover:bg-slate-500'}`;
+                dot.onclick = () => goToSlide(i);
+                container.appendChild(dot);
+            }
+        }
+
+        // Keyboard Navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === 'Space') nextSlide();
+            if (e.key === 'ArrowLeft') prevSlide();
+        });
+
+        // Initialize
+        updateSlide();
+    </script>
+</body>
+</html>
