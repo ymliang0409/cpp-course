@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第三章 運算式和運算子</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&family=Fira+Code:wght@400;600&display=swap');
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+        }
+        code, pre {
+            font-family: 'Fira Code', monospace;
+        }
+        .slide {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+        .slide.active {
+            display: block;
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col justify-between selection:bg-indigo-500 selection:text-white">
+
+    <!-- Header Navigation -->
+    <header class="bg-slate-800/80 backdrop-blur border-b border-slate-700 sticky top-0 z-50 px-6 py-4 flex justify-between items-center">
+        <div class="flex items-center space-x-3">
+            <span class="bg-indigo-600 text-white font-bold px-3 py-1 rounded-lg text-sm">C++ 課程</span>
+            <h1 class="text-xl font-bold tracking-wide text-white">第三章：運算式與運算子</h1>
+        </div>
+        <div class="flex items-center space-x-4">
+            <span id="slide-indicator" class="text-sm font-medium text-slate-400">頁次 1 / 7</span>
+        </div>
+    </header>
+
+    <!-- Main Slide Content Container -->
+    <main class="flex-1 max-w-5xl w-full mx-auto p-6 md:p-10 flex flex-col justify-center">
+
+        <!-- Slide 1: Cover & Intro -->
+        <section class="slide active" id="slide-1">
+            <div class="text-center py-10 space-y-6">
+                <div class="inline-block p-4 bg-indigo-500/10 rounded-full border border-indigo-500/20 mb-2">
+                    <i class="fas fa-calculator text-5xl text-indigo-400"></i>
+                </div>
+                <h2 class="text-4xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-cyan-400 to-teal-300">
+                    第三章 運算式和運算子
+                </h2>
+                <p class="text-lg text-slate-400 max-w-2xl mx-auto leading-relaxed">
+                    運算式是程式處理計算與邏輯判斷的核心。本章將探討算術、關係、邏輯與位元運算子，並深入介紹優先權、結合性以及型態轉換觀念。
+                </p>
+
+                <!-- Expression vs Statement Concept -->
+                <div class="max-w-xl mx-auto bg-slate-800 border border-slate-700 p-5 rounded-2xl text-left shadow-lg">
+                    <div class="text-xs font-bold text-indigo-400 uppercase tracking-wider mb-2">核心觀念解構</div>
+                    <div class="text-center font-mono text-lg bg-slate-950 py-3 rounded-xl border border-slate-800 text-slate-200">
+                        <span class="text-emerald-400">sum</span> = <span class="text-emerald-400">sum</span> <span class="text-pink-400">+</span> <span class="text-emerald-400">i</span><span class="text-amber-400 font-bold font-sans text-xl">;</span>
+                    </div>
+                    <div class="grid grid-cols-3 gap-2 mt-3 text-center text-xs">
+                        <div class="bg-emerald-950/40 border border-emerald-800/50 p-2 rounded-lg text-emerald-300">
+                            <strong>運算元 (Operand)</strong><br>sum, i
+                        </div>
+                        <div class="bg-pink-950/40 border border-pink-800/50 p-2 rounded-lg text-pink-300">
+                            <strong>運算子 (Operator)</strong><br>=, +
+                        </div>
+                        <div class="bg-amber-950/40 border border-amber-800/50 p-2 rounded-lg text-amber-300">
+                            <strong>敘述 (Statement)</strong><br>加上末尾分號 ;
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pt-4 flex justify-center">
+                    <button onclick="nextSlide()" class="px-6 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-xl shadow-lg shadow-indigo-500/30 transition flex items-center space-x-2">
+                        <span>開始學習</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 2: Classification and Associativity -->
+        <section class="slide" id="slide-2">
+            <h2 class="text-2xl md:text-3xl font-bold text-indigo-400 mb-6 flex items-center gap-3">
+                <i class="fas fa-sitemap"></i> 運算子的分類與結合性
+            </h2>
+            
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- By Operands Count -->
+                <div class="bg-slate-800 border border-slate-700 rounded-2xl p-5">
+                    <h3 class="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                        <i class="fas fa-cubes text-indigo-400"></i> 依運算元個數分類
+                    </h3>
+                    <ul class="space-y-3 text-sm text-slate-300">
+                        <li class="bg-slate-900/80 p-3 rounded-xl border border-slate-700">
+                            <span class="text-indigo-300 font-bold">一元運算子 (Unary)：</span> 需要 1 個運算元<br>
+                            <code class="text-emerald-400 text-xs">x = -1;  // 正負號、遞增遞減 ++ / --</code>
+                        </li>
+                        <li class="bg-slate-900/80 p-3 rounded-xl border border-slate-700">
+                            <span class="text-indigo-300 font-bold">二元運算子 (Binary)：</span> 需要 2 個運算元<br>
+                            <code class="text-emerald-400 text-xs">x = y + z;  // 加減乘除、比較、邏輯</code>
+                        </li>
+                        <li class="bg-slate-900/80 p-3 rounded-xl border border-slate-700">
+                            <span class="text-indigo-300 font-bold">三元運算子 (Ternary)：</span> 需要 3 個運算元<br>
+                            <code class="text-emerald-400 text-xs">max = (x > y) ? x : y; // 唯一的三元運算子</code>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Associativity -->
+                <div class="bg-slate-800 border border-slate-700 rounded-2xl p-5 flex flex-col justify-between">
+                    <div>
+                        <h3 class="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                            <i class="fas fa-arrows-left-right text-indigo-400"></i> 運算子的結合性 (Associativity)
+                        </h3>
+                        <p class="text-slate-300 text-xs leading-relaxed mb-4">
+                            當連續多個「同優先權」的運算子出現時，決定計算順序方向。
+                        </p>
+                        
+                        <div class="space-y-3">
+                            <div class="bg-slate-900/80 p-3 rounded-xl border border-slate-700">
+                                <span class="text-cyan-400 font-bold text-xs">左結合性 (Left-to-Right)</span>
+                                <div class="text-xs font-mono text-slate-300 mt-1">
+                                    a + b + c  &nbsp;<i class="fas fa-arrow-right text-indigo-400"></i>&nbsp;  (a + b) + c
+                                </div>
+                            </div>
+                            <div class="bg-slate-900/80 p-3 rounded-xl border border-slate-700">
+                                <span class="text-pink-400 font-bold text-xs">右結合性 (Right-to-Left)</span>
+                                <div class="text-xs font-mono text-slate-300 mt-1">
+                                    a = b = 5  &nbsp;<i class="fas fa-arrow-right text-pink-400"></i>&nbsp;  a = (b = 5)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 bg-indigo-950/40 border border-indigo-800/50 p-3 rounded-xl text-xs text-indigo-200">
+                        <i class="fas fa-lightbulb text-amber-400 mr-1"></i> 指定運算子 <code>=</code> 與單目運算子為典型的<strong>右結合性</strong>。
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 3: Arithmetic, Compound, Increment -->
+        <section class="slide" id="slide-3">
+            <h2 class="text-2xl md:text-3xl font-bold text-indigo-400 mb-6 flex items-center gap-3">
+                <i class="fas fa-square-root-variable"></i> 算術、複合指定與遞增遞減
+            </h2>
+
+            <div class="grid md:grid-cols-3 gap-4">
+                <!-- Arithmetic -->
+                <div class="bg-slate-800 border border-slate-700 rounded-2xl p-5">
+                    <span class="text-xs font-bold bg-blue-500/20 text-blue-300 px-2.5 py-1 rounded-full mb-3 inline-block">算術運算子</span>
+                    <h3 class="text-lg font-bold text-white mb-2">+ - * / %</h3>
+                    <p class="text-slate-400 text-xs mb-3">注意：<code>/</code> 作用於整數時為整數除法（無條件捨去小數）；<code>%</code> 為求餘數。</p>
+                    <div class="text-xs font-mono text-slate-300 bg-slate-900 p-2.5 rounded-lg space-y-1">
+                        <div>7 / 2 = <span class="text-emerald-400">3</span> (整數除法)</div>
+                        <div>7 % 2 = <span class="text-emerald-400">1</span> (取餘數)</div>
+                    </div>
+                </div>
+
+                <!-- Compound Assign -->
+                <div class="bg-slate-800 border border-slate-700 rounded-2xl p-5">
+                    <span class="text-xs font-bold bg-purple-500/20 text-purple-300 px-2.5 py-1 rounded-full mb-3 inline-block">複合指定運算子</span>
+                    <h3 class="text-lg font-bold text-white mb-2">+= -= *= /= %=</h3>
+                    <p class="text-slate-400 text-xs mb-3">將運算與賦值簡寫，精簡程式碼寫法。</p>
+                    <div class="text-xs font-mono text-slate-300 bg-slate-900 p-2.5 rounded-lg space-y-1">
+                        <div>a += b <span class="text-slate-500">&hArr;</span> a = a + b</div>
+                        <div>a *= 3 <span class="text-slate-500">&hArr;</span> a = a * 3</div>
+                    </div>
+                </div>
+
+                <!-- Increment / Decrement -->
+                <div class="bg-slate-800 border border-slate-700 rounded-2xl p-5">
+                    <span class="text-xs font-bold bg-emerald-500/20 text-emerald-300 px-2.5 py-1 rounded-full mb-3 inline-block">遞增 / 遞減</span>
+                    <h3 class="text-lg font-bold text-white mb-2">++a vs a++</h3>
+                    <p class="text-slate-400 text-xs mb-3">前置 (Pre) 與後置 (Post) 在運算時機上有細微差別：</p>
+                    <div class="text-xs font-mono text-slate-300 bg-slate-900 p-2.5 rounded-lg space-y-1">
+                        <div>b = ++a; <span class="text-slate-500">// 先加1再給b</span></div>
+                        <div>b = a++; <span class="text-slate-500">// 先給b再加1</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Two Numbers Swap Technique -->
+            <div class="mt-6 bg-slate-800 border border-slate-700 rounded-2xl p-5">
+                <h4 class="text-md font-bold text-white mb-2 flex items-center gap-2">
+                    <i class="fas fa-right-left text-amber-400"></i> 經典應用：兩變數數值交換 (Swap)
+                </h4>
+                <div class="grid md:grid-cols-2 gap-4 text-xs font-mono bg-slate-950 p-3 rounded-xl border border-slate-800">
+                    <div>
+                        <span class="text-slate-500">// 方法一：使用暫存變數 temp</span><br>
+                        <span class="text-blue-400">int</span> temp = a;<br>
+                        a = b;<br>
+                        b = temp;
+                    </div>
+                    <div>
+                        <span class="text-slate-500">// 方法二：加減演算法 (無須第三變數)</span><br>
+                        a = a + b;<br>
+                        b = a - b;<br>
+                        a = a - b;
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 4: Relational & Logical Operators -->
+        <section class="slide" id="slide-4">
+            <h2 class="text-2xl md:text-3xl font-bold text-indigo-400 mb-6 flex items-center gap-3">
+                <i class="fas fa-code-compare"></i> 關係運算子與邏輯運算子
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- Relational -->
+                <div class="bg-slate-800 border border-slate-700 rounded-2xl p-5">
+                    <h3 class="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                        <i class="fas fa-equals text-cyan-400"></i> 關係運算子 (Relational)
+                    </h3>
+                    <p class="text-slate-300 text-xs mb-3">比較兩數大小，結果為真 (1 / true) 或偽 (0 / false)。</p>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-xs text-left text-slate-300">
+                            <thead class="bg-slate-900 text-slate-400 border-b border-slate-700">
+                                <tr>
+                                    <th class="p-2">運算子</th>
+                                    <th class="p-2">意義</th>
+                                    <th class="p-2">範例</th>
+                                    <th class="p-2">結果</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-700/50 font-mono">
+                                <tr><td class="p-2 text-indigo-300">==</td><td class="p-2">等於</td><td class="p-2">(2 == 1)</td><td class="p-2 text-rose-400">false (0)</td></tr>
+                                <tr><td class="p-2 text-indigo-300">!=</td><td class="p-2">不等於</td><td class="p-2">(2 != 1)</td><td class="p-2 text-emerald-400">true (1)</td></tr>
+                                <tr><td class="p-2 text-indigo-300">&gt; / &lt;</td><td class="p-2">大於 / 小於</td><td class="p-2">(2 &gt; 1)</td><td class="p-2 text-emerald-400">true (1)</td></tr>
+                                <tr><td class="p-2 text-indigo-300">&gt;= / &lt;=</td><td class="p-2">大於等於 / 小於等於</td><td class="p-2">(2 &lt;= 1)</td><td class="p-2 text-rose-400">false (0)</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Logical -->
+                <div class="bg-slate-800 border border-slate-700 rounded-2xl p-5">
+                    <h3 class="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                        <i class="fas fa-diagram-project text-pink-400"></i> 邏輯運算子 (Logical)
+                    </h3>
+                    <p class="text-slate-300 text-xs mb-3">用於組合多個條件判斷式。</p>
+                    <div class="space-y-3">
+                        <div class="bg-slate-900 p-3 rounded-xl border border-slate-700 text-xs font-mono">
+                            <span class="text-pink-400 font-bold">&& (AND 且)：</span> 兩者皆真才為真<br>
+                            <span class="text-slate-400">(5 &gt; 3) && (3 &gt; 2)</span> &rArr; <span class="text-emerald-400">true</span>
+                        </div>
+                        <div class="bg-slate-900 p-3 rounded-xl border border-slate-700 text-xs font-mono">
+                            <span class="text-pink-400 font-bold">|| (OR 或)：</span> 任一為真即為真<br>
+                            <span class="text-slate-400">(5 &gt; 3) || (3 &lt; 2)</span> &rArr; <span class="text-emerald-400">true</span>
+                        </div>
+                        <div class="bg-slate-900 p-3 rounded-xl border border-slate-700 text-xs font-mono">
+                            <span class="text-pink-400 font-bold">! (NOT 反相)：</span> 真偽翻轉<br>
+                            <span class="text-slate-400">!(5 &gt; 3)</span> &rArr; <span class="text-rose-400">false</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 5: sizeof & Type Casting -->
+        <section class="slide" id="slide-5">
+            <h2 class="text-2xl md:text-3xl font-bold text-indigo-400 mb-6 flex items-center gap-3">
+                <i class="fas fa-weight-hanging"></i> sizeof() 與 型態轉換
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- sizeof Operator -->
+                <div class="bg-slate-800 border border-slate-700 rounded-2xl p-5">
+                    <h3 class="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                        <i class="fas fa-microchip text-indigo-400"></i> 資料大小運算子 sizeof()
+                    </h3>
+                    <p class="text-slate-300 text-xs mb-3">回傳資料型態或變數在記憶體中所佔用的位元組 (Bytes)。</p>
+                    <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 font-mono text-xs space-y-1.5 text-slate-300">
+                        <div>sizeof(char) &nbsp;&rArr; <span class="text-emerald-400">1 Byte</span></div>
+                        <div>sizeof(bool) &nbsp;&rArr; <span class="text-emerald-400">1 Byte</span></div>
+                        <div>sizeof(int) &nbsp;&nbsp;&rArr; <span class="text-emerald-400">4 Bytes</span></div>
+                        <div>sizeof(float) &rArr; <span class="text-emerald-400">4 Bytes</span></div>
+                        <div>sizeof(double)&rArr; <span class="text-emerald-400">8 Bytes</span></div>
+                    </div>
+                </div>
+
+                <!-- Type Conversion -->
+                <div class="bg-slate-800 border border-slate-700 rounded-2xl p-5">
+                    <h3 class="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                        <i class="fas fa-right-left text-indigo-400"></i> 型態轉換 (Type Casting)
+                    </h3>
+                    <div class="space-y-3 text-xs">
+                        <div class="bg-slate-900 p-3 rounded-xl border border-slate-700">
+                            <span class="text-cyan-400 font-bold">1. 自動隱式轉換 (Implicit)</span>
+                            <p class="text-slate-400 mt-1">• 提升 (Promotion)：少位元組指定給多位元組（無損）</p>
+                            <code class="text-emerald-300 block mt-1">double m = 2; // m 變為 2.0</code>
+                            <p class="text-slate-400 mt-1">• 截斷 (Truncation)：多位元組指定給少位元組（截去小數）</p>
+                            <code class="text-rose-300 block mt-1">int n = 2.9; // n 截斷為 2</code>
+                        </div>
+                        <div class="bg-slate-900 p-3 rounded-xl border border-slate-700">
+                            <span class="text-pink-400 font-bold">2. 強制顯式轉換 (Explicit)</span>
+                            <code class="text-amber-300 block mt-1">(float)a / b &nbsp; 或 &nbsp; double(a)</code>
+                            <p class="text-slate-400 mt-1">手動強制改變運算時的型態以保留精度。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 6: Code Walkthrough -->
+        <section class="slide" id="slide-6">
+            <h2 class="text-2xl md:text-3xl font-bold text-indigo-400 mb-4 flex items-center gap-3">
+                <i class="fas fa-terminal"></i> 運算子綜合實戰剖析
+            </h2>
+            <p class="text-slate-300 text-sm mb-4">點擊程式碼各行敘述，觀察變數與運算結果變化：</p>
+
+            <div class="grid md:grid-cols-12 gap-6 items-start">
+                <div class="md:col-span-7 bg-slate-950 border border-slate-800 rounded-2xl p-4 font-mono text-sm leading-relaxed shadow-inner">
+                    <div class="flex items-center space-x-2 border-b border-slate-800 pb-3 mb-3">
+                        <div class="w-3 h-3 bg-red-500 rounded-full"></div>
+                        <div class="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                        <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+                        <span class="text-xs text-slate-500 ml-2">operators_demo.cpp</span>
+                    </div>
+                    <div class="space-y-1 text-xs md:text-sm">
+                        <div onclick="explainCode(1)" class="cursor-pointer hover:bg-slate-800/80 p-1.5 rounded transition">
+                            <span class="text-blue-400">int</span> a = <span class="text-amber-300">10</span>, b, c, d, e, f;
+                        </div>
+                        <div onclick="explainCode(2)" class="cursor-pointer hover:bg-slate-800/80 p-1.5 rounded transition">
+                            b = a + <span class="text-amber-300">4</span>; <span class="text-slate-500">// b = 14</span>
+                        </div>
+                        <div onclick="explainCode(3)" class="cursor-pointer hover:bg-slate-800/80 p-1.5 rounded transition">
+                            c = b - <span class="text-amber-300">5</span>; <span class="text-slate-500">// c = 9</span>
+                        </div>
+                        <div onclick="explainCode(4)" class="cursor-pointer hover:bg-slate-800/80 p-1.5 rounded transition">
+                            d = <span class="text-amber-300">20</span> - c * <span class="text-amber-300">2</span>; <span class="text-slate-500">// 先乘除後加減</span>
+                        </div>
+                        <div onclick="explainCode(5)" class="cursor-pointer hover:bg-slate-800/80 p-1.5 rounded transition">
+                            e = a / <span class="text-amber-300">4</span>; <span class="text-slate-500">// 整數除法</span>
+                        </div>
+                        <div onclick="explainCode(6)" class="cursor-pointer hover:bg-slate-800/80 p-1.5 rounded transition">
+                            f = c % <span class="text-amber-300">4</span>; <span class="text-slate-500">// 取餘數</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="md:col-span-5 bg-slate-800 border border-slate-700 rounded-2xl p-5 min-h-[260px] flex flex-col justify-center">
+                    <div id="code-explanation-title" class="text-lg font-bold text-indigo-400 mb-2">
+                        點擊左側程式碼敘述
+                    </div>
+                    <div id="code-explanation-body" class="text-sm text-slate-300 leading-relaxed">
+                        點擊左側任何一行運算程式碼，了解算術優先權與運算子計算歷程。
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 7: APCS Quiz & Practice -->
+        <section class="slide" id="slide-7">
+            <h2 class="text-2xl md:text-3xl font-bold text-indigo-400 mb-6 flex items-center gap-3">
+                <i class="fas fa-graduation-cap"></i> APCS 觀念檢測與隨堂小考
+            </h2>
+
+            <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 space-y-6">
+                <!-- Question 1 -->
+                <div>
+                    <h3 class="text-sm md:text-base font-semibold text-white mb-3">
+                        1. (APCS) 若 a, b, c, d, e 均為整數變數，下列哪個算式計算結果與 <code>a + b * c - e</code> 計算結果相同？
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3" id="q1-options">
+                        <button onclick="checkAnswer(1, false, this)" class="p-3 bg-slate-700/60 hover:bg-slate-700 rounded-xl text-left text-xs md:text-sm transition">(A) (((a + b) * c) - e)</button>
+                        <button onclick="checkAnswer(1, false, this)" class="p-3 bg-slate-700/60 hover:bg-slate-700 rounded-xl text-left text-xs md:text-sm transition">(B) ((a + b) * (c - e))</button>
+                        <button onclick="checkAnswer(1, true, this)" class="p-3 bg-slate-700/60 hover:bg-slate-700 rounded-xl text-left text-xs md:text-sm transition">(C) ((a + (b * c)) - e)</button>
+                        <button onclick="checkAnswer(1, false, this)" class="p-3 bg-slate-700/60 hover:bg-slate-700 rounded-xl text-left text-xs md:text-sm transition">(D) (a + ((b * c) - e))</button>
+                    </div>
+                </div>
+
+                <!-- Question 2 -->
+                <div class="pt-4 border-t border-slate-700">
+                    <h3 class="text-sm md:text-base font-semibold text-white mb-3">
+                        2. (APCS) 執行以下程式碼後 <code>val</code> 的值為何？<br>
+                        <code class="text-xs text-indigo-300">int a=2, b=3, c=4, d=5; val = b/a + c/b + d/b;</code>
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3" id="q2-options">
+                        <button onclick="checkAnswer(2, true, this)" class="p-3 bg-slate-700/60 hover:bg-slate-700 rounded-xl text-left text-xs md:text-sm transition">(A) 3 (因 3/2 + 4/3 + 5/3 = 1+1+1)</button>
+                        <button onclick="checkAnswer(2, false, this)" class="p-3 bg-slate-700/60 hover:bg-slate-700 rounded-xl text-left text-xs md:text-sm transition">(B) 4</button>
+                        <button onclick="checkAnswer(2, false, this)" class="p-3 bg-slate-700/60 hover:bg-slate-700 rounded-xl text-left text-xs md:text-sm transition">(C) 5</button>
+                        <button onclick="checkAnswer(2, false, this)" class="p-3 bg-slate-700/60 hover:bg-slate-700 rounded-xl text-left text-xs md:text-sm transition">(D) 6</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer Controls -->
+    <footer class="bg-slate-800/80 backdrop-blur border-t border-slate-700 px-6 py-4 flex justify-between items-center">
+        <button onclick="prevSlide()" id="btn-prev" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 disabled:opacity-40 disabled:cursor-not-allowed rounded-lg text-sm font-medium transition flex items-center space-x-2">
+            <i class="fas fa-chevron-left"></i>
+            <span>上一頁</span>
+        </button>
+
+        <div class="flex space-x-2" id="dots-container"></div>
+
+        <button onclick="nextSlide()" id="btn-next" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 disabled:cursor-not-allowed rounded-lg text-sm font-medium transition flex items-center space-x-2">
+            <span>下一頁</span>
+            <i class="fas fa-chevron-right"></i>
+        </button>
+    </footer>
+
+    <!-- Interactive Script -->
+    <script>
+        let currentSlide = 1;
+        const totalSlides = 7;
+
+        function updateSlide() {
+            document.querySelectorAll('.slide').forEach((el, idx) => {
+                el.classList.toggle('active', idx + 1 === currentSlide);
+            });
+
+            document.getElementById('slide-indicator').textContent = `頁次 ${currentSlide} / ${totalSlides}`;
+            document.getElementById('btn-prev').disabled = currentSlide === 1;
+            document.getElementById('btn-next').disabled = currentSlide === totalSlides;
+
+            updateDots();
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides) {
+                currentSlide++;
+                updateSlide();
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 1) {
+                currentSlide--;
+                updateSlide();
+            }
+        }
+
+        function goToSlide(n) {
+            currentSlide = n;
+            updateSlide();
+        }
+
+        function updateDots() {
+            const container = document.getElementById('dots-container');
+            container.innerHTML = '';
+            for (let i = 1; i <= totalSlides; i++) {
+                const dot = document.createElement('button');
+                dot.className = `w-2.5 h-2.5 rounded-full transition-all ${i === currentSlide ? 'bg-indigo-400 w-6' : 'bg-slate-600 hover:bg-slate-500'}`;
+                dot.onclick = () => goToSlide(i);
+                container.appendChild(dot);
+            }
+        }
+
+        const codeExplanations = {
+            1: { title: "變數宣告與初始化", body: "宣告多個整數變數，並將 a 賦予初始值 10。" },
+            2: { title: "加法運算 (a + 4)", body: "10 + 4 計算結果為 14，將 14 指定給變數 b。" },
+            3: { title: "減法運算 (b - 5)", body: "14 - 5 計算結果為 9，將 9 指定給變數 c。" },
+            4: { title: "優先權判斷 (20 - c * 2)", body: "乘法 * 優先權高於減法 -。先算 c * 2 (9 * 2 = 18)，再算 20 - 18，最終 d = 2。" },
+            5: { title: "整數除法 (a / 4)", body: "a 為 10，10 / 4 在整數除法中會自動捨去小數點，故 e 的結果為 2。" },
+            6: { title: "取餘數運算 (c % 4)", body: "c 為 9，9 除以 4 的餘數為 1，故 f 的結果為 1。" }
+        };
+
+        function explainCode(line) {
+            const exp = codeExplanations[line];
+            if (exp) {
+                document.getElementById('code-explanation-title').textContent = exp.title;
+                document.getElementById('code-explanation-body').textContent = exp.body;
+            }
+        }
+
+        function checkAnswer(qNum, isCorrect, btn) {
+            const container = document.getElementById(`q${qNum}-options`);
+            const buttons = container.querySelectorAll('button');
+            buttons.forEach(b => {
+                b.disabled = true;
+                b.classList.remove('bg-slate-700/60', 'hover:bg-slate-700');
+            });
+
+            if (isCorrect) {
+                btn.classList.add('bg-emerald-600', 'text-white');
+            } else {
+                btn.classList.add('bg-rose-600', 'text-white');
+            }
+        }
+
+        // Initialize
+        updateSlide();
+    </script>
+</body>
+</html>
