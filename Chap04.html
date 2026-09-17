@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第四章 流程圖與選擇結構 - 互動學習教材</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .code-block {
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+            font-family: 'Consolas', 'Courier New', monospace;
+        }
+        .keyword { color: #569cd6; font-weight: bold; }
+        .string { color: #ce9178; }
+        .comment { color: #6a9955; font-style: italic; }
+        .number { color: #b5cea8; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans leading-relaxed">
+
+    <!-- Header Navigation -->
+    <header class="bg-indigo-700 text-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex flex-col md:flex-row justify-between items-center">
+            <div>
+                <h1 class="text-2xl font-bold">第四章 流程圖與選擇結構</h1>
+                <p class="text-xs text-indigo-200 mt-1">完整數位互動教材（含 APCS 觀念題真題解析）</p>
+            </div>
+            <nav class="mt-4 md:mt-0 flex flex-wrap gap-2 text-sm">
+                <a href="#flowchart" class="px-3 py-1 bg-indigo-600 hover:bg-indigo-500 rounded transition">流程圖與演算法</a>
+                <a href="#structures" class="px-3 py-1 bg-indigo-600 hover:bg-indigo-500 rounded transition">流程控制</a>
+                <a href="#operators" class="px-3 py-1 bg-indigo-600 hover:bg-indigo-500 rounded transition">運算子</a>
+                <a href="#selection" class="px-3 py-1 bg-indigo-600 hover:bg-indigo-500 rounded transition">選擇結構</a>
+                <a href="#iomanip" class="px-3 py-1 bg-indigo-600 hover:bg-indigo-500 rounded transition">格式化輸出</a>
+                <a href="#apcs" class="px-3 py-1 font-semibold bg-amber-500 hover:bg-amber-400 text-slate-900 rounded transition">APCS 真題測驗</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 py-8 space-y-12">
+
+        <!-- 1. 流程圖與演算法 -->
+        <section id="flowchart" class="bg-white rounded-xl shadow-md p-6 border border-slate-200">
+            <h2 class="text-2xl font-bold text-indigo-700 border-b pb-3 mb-6 flex items-center">
+                <span class="bg-indigo-100 text-indigo-700 px-3 py-1 rounded-lg text-lg mr-3">1</span>
+                流程圖與演算法 (Flowchart & Algorithm)
+            </h2>
+
+            <!-- 流程圖定義與符號 -->
+            <div class="grid md:grid-cols-2 gap-6 mb-8">
+                <div>
+                    <h3 class="text-lg font-semibold text-slate-700 mb-2">■ 流程圖 (Flowchart) 表示法</h3>
+                    <p class="text-slate-600 mb-4">將解決問題的步驟與邏輯，用各種**標準化的符號圖形**來表示。</p>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse border border-slate-200 text-sm">
+                            <thead>
+                                <tr class="bg-slate-100">
+                                    <th class="border p-2">名稱</th>
+                                    <th class="border p-2">圖示/形狀</th>
+                                    <th class="border p-2">意義說明</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="border p-2 font-medium">起止符號</td>
+                                    <td class="border p-2"><span class="px-3 py-1 bg-slate-200 rounded-full border border-slate-400 text-xs">圓角矩形/橢圓</span></td>
+                                    <td class="border p-2">表示事件的開始或結束</td>
+                                </tr>
+                                <tr>
+                                    <td class="border p-2 font-medium">流程符號</td>
+                                    <td class="border p-2">➔ (箭號)</td>
+                                    <td class="border p-2">表示流程進行的方向</td>
+                                </tr>
+                                <tr>
+                                    <td class="border p-2 font-medium">輸入/輸出符號</td>
+                                    <td class="border p-2"><span class="px-3 py-1 bg-slate-200 inline-block skew-x-[-12deg] border border-slate-400 text-xs">平行四邊形</span></td>
+                                    <td class="border p-2">表示資料的輸出或輸入</td>
+                                </tr>
+                                <tr>
+                                    <td class="border p-2 font-medium">處理符號</td>
+                                    <td class="border p-2"><span class="px-3 py-1 bg-slate-200 border border-slate-400 text-xs">矩形</span></td>
+                                    <td class="border p-2">表示執行或處理的工作</td>
+                                </tr>
+                                <tr>
+                                    <td class="border p-2 font-medium">決策判斷符號</td>
+                                    <td class="border p-2"><span class="px-3 py-1 bg-slate-200 border border-slate-400 inline-block rotate-45 text-xs my-1">◇</span> 菱形</td>
+                                    <td class="border p-2">表示對某一條件做判斷</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 演算法特性 -->
+                <div>
+                    <h3 class="text-lg font-semibold text-slate-700 mb-2">■ 演算法 (Algorithm)</h3>
+                    <p class="text-slate-600 mb-3">將問題分解成許多小步驟，然後再依一定的次序逐步執行。</p>
+                    <div class="bg-indigo-50 p-4 rounded-lg border border-indigo-100 space-y-2">
+                        <h4 class="font-bold text-indigo-900 text-sm">演算法五大特性 (Algorithm Features)：</h4>
+                        <ul class="list-disc list-inside space-y-1 text-sm text-indigo-800">
+                            <li><strong class="text-indigo-950">輸入 (Input)：</strong>可有可無 (0 個或多個)。</li>
+                            <li><strong class="text-indigo-950">輸出 (Output)：</strong>產出結果，至少要有一項。</li>
+                            <li><strong class="text-indigo-950">明確性 (Definiteness)：</strong>每個步驟必須明確而清楚。</li>
+                            <li><strong class="text-indigo-950">有限性 (Finiteness)：</strong>必須在有限步驟內完成，不能無限循環。</li>
+                            <li><strong class="text-indigo-950">有效性 (Effectiveness)：</strong>步驟可行，能在一定時間內推算結果。</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 流程圖互動展示區 -->
+            <div class="bg-slate-100 p-4 rounded-xl border border-slate-300">
+                <h3 class="font-bold text-slate-800 mb-3 flex items-center">
+                    <span class="mr-2">💡</span> 課本流程圖實例互動模擬
+                </h3>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <!-- 範例 1: 過馬路 -->
+                    <div class="bg-white p-4 rounded-lg shadow-sm">
+                        <h4 class="font-semibold text-slate-700 border-b pb-2 mb-3">範例 1：過馬路流程</h4>
+                        <div class="flex flex-col items-center space-y-2 text-xs">
+                            <span class="bg-indigo-600 text-white px-4 py-1 rounded-full">開始</span>
+                            <span>↓</span>
+                            <div class="border border-indigo-500 bg-indigo-50 p-2 text-center rounded">
+                                <p class="font-bold">號誌亮綠燈？</p>
+                                <div class="mt-2 flex justify-center gap-2">
+                                    <button onclick="toggleLight(true)" class="px-2 py-1 bg-green-500 text-white rounded hover:bg-green-600">True (綠燈)</button>
+                                    <button onclick="toggleLight(false)" class="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600">False (紅燈)</button>
+                                </div>
+                            </div>
+                            <span>↓</span>
+                            <div id="lightResult" class="p-2 w-full text-center font-bold bg-slate-200 rounded">請選擇燈號狀態</div>
+                            <span>↓</span>
+                            <span class="bg-indigo-600 text-white px-4 py-1 rounded-full">結束</span>
+                        </div>
+                    </div>
+
+                    <!-- 範例 2: 猜數字 -->
+                    <div class="bg-white p-4 rounded-lg shadow-sm">
+                        <h4 class="font-semibold text-slate-700 border-b pb-2 mb-3">範例 2：猜數字遊戲流程 (0~100)</h4>
+                        <div class="text-xs space-y-2">
+                            <p>1. 亂數產生密碼 (假設為 <span id="targetNum" class="font-bold text-indigo-600">42</span>)</p>
+                            <div class="flex gap-2">
+                                <input type="number" id="guessInput" placeholder="輸入猜測值" class="border p-1 rounded w-full text-xs">
+                                <button onclick="checkGuess()" class="bg-indigo-600 text-white px-3 py-1 rounded hover:bg-indigo-700">提交判斷</button>
+                            </div>
+                            <div id="guessResult" class="p-2 border rounded bg-slate-50 text-center font-semibold">等待輸入...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. 程式流程控制三大結構 -->
+        <section id="structures" class="bg-white rounded-xl shadow-md p-6 border border-slate-200">
+            <h2 class="text-2xl font-bold text-indigo-700 border-b pb-3 mb-6 flex items-center">
+                <span class="bg-indigo-100 text-indigo-700 px-3 py-1 rounded-lg text-lg mr-3">2</span>
+                程式流程控制 (Program Control Structures)
+            </h2>
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="border rounded-lg p-4 bg-slate-50 border-slate-200">
+                    <h3 class="font-bold text-indigo-600 text-lg mb-2">1. 循序結構</h3>
+                    <p class="text-sm text-slate-600 mb-3">一步一步循序地執行。</p>
+                    <div class="bg-white p-3 border rounded text-center text-xs space-y-1">
+                        <div class="p-1 bg-indigo-100 border border-indigo-300 rounded">敘述 1</div>
+                        <div>↓</div>
+                        <div class="p-1 bg-indigo-100 border border-indigo-300 rounded">敘述 2</div>
+                        <div>↓</div>
+                        <div class="p-1 bg-indigo-100 border border-indigo-300 rounded">敘述 3</div>
+                    </div>
+                </div>
+
+                <div class="border rounded-lg p-4 bg-slate-50 border-slate-200">
+                    <h3 class="font-bold text-indigo-600 text-lg mb-2">2. 選擇結構</h3>
+                    <p class="text-sm text-slate-600 mb-3">根據條件判斷結果，選擇執行不同程式碼 (如 if, switch)。</p>
+                    <div class="bg-white p-3 border rounded text-center text-xs space-y-1">
+                        <div class="p-1 bg-amber-100 border border-amber-300 rounded font-bold">條件式？</div>
+                        <div class="flex justify-around text-xxs">
+                            <span>True ↙</span>
+                            <span>↘ False</span>
+                        </div>
+                        <div class="grid grid-cols-2 gap-1">
+                            <div class="p-1 bg-green-100 border border-green-300 rounded">敘述 1</div>
+                            <div class="p-1 bg-red-100 border border-red-300 rounded">敘述 2</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="border rounded-lg p-4 bg-slate-50 border-slate-200">
+                    <h3 class="font-bold text-indigo-600 text-lg mb-2">3. 重複結構</h3>
+                    <p class="text-sm text-slate-600 mb-3">重複執行程式碼直到滿足特定條件 (如 for, while)。</p>
+                    <div class="bg-white p-3 border rounded text-center text-xs space-y-1">
+                        <div class="p-1 bg-amber-100 border border-amber-300 rounded font-bold">條件式？</div>
+                        <div>↓ True</div>
+                        <div class="p-1 bg-blue-100 border border-blue-300 rounded">迴圈執行敘述 ↺</div>
+                        <div>↓ False</div>
+                        <div class="p-1 bg-slate-200 rounded">離開迴圈</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. 關係與邏輯運算子 -->
+        <section id="operators" class="bg-white rounded-xl shadow-md p-6 border border-slate-200">
+            <h2 class="text-2xl font-bold text-indigo-700 border-b pb-3 mb-6 flex items-center">
+                <span class="bg-indigo-100 text-indigo-700 px-3 py-1 rounded-lg text-lg mr-3">3</span>
+                關係運算子與邏輯運算子 (Relational & Logical Operators)
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- 關係運算子 -->
+                <div>
+                    <h3 class="text-lg font-bold text-slate-800 mb-3">■ 關係運算子 (用來比較兩運算式大小)</h3>
+                    <table class="w-full text-sm border-collapse border border-slate-200 mb-4">
+                        <thead class="bg-slate-100">
+                            <tr>
+                                <th class="border p-2">運算子</th>
+                                <th class="border p-2">數學符號</th>
+                                <th class="border p-2">意義</th>
+                                <th class="border p-2">範例 (a=5)</th>
+                                <th class="border p-2">結果</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td class="border p-2 font-mono font-bold">==</td><td class="border p-2">=</td><td class="border p-2">等於</td><td class="border p-2 font-mono">(5 == 3)</td><td class="border p-2 text-red-600 font-bold">false (0)</td></tr>
+                            <tr><td class="border p-2 font-mono font-bold">!=</td><td class="border p-2">≠</td><td class="border p-2">不等於</td><td class="border p-2 font-mono">(5 != 3)</td><td class="border p-2 text-green-600 font-bold">true (1)</td></tr>
+                            <tr><td class="border p-2 font-mono font-bold">&gt;</td><td class="border p-2">&gt;</td><td class="border p-2">大於</td><td class="border p-2 font-mono">(5 &gt; 3)</td><td class="border p-2 text-green-600 font-bold">true (1)</td></tr>
+                            <tr><td class="border p-2 font-mono font-bold">&lt;</td><td class="border p-2">&lt;</td><td class="border p-2">小於</td><td class="border p-2 font-mono">(5 &lt; 3)</td><td class="border p-2 text-red-600 font-bold">false (0)</td></tr>
+                            <tr><td class="border p-2 font-mono font-bold">&gt;=</td><td class="border p-2">≥</td><td class="border p-2">大於等於</td><td class="border p-2 font-mono">(5 &gt;= 5)</td><td class="border p-2 text-green-600 font-bold">true (1)</td></tr>
+                            <tr><td class="border p-2 font-mono font-bold">&lt;=</td><td class="border p-2">≤</td><td class="border p-2">小於等於</td><td class="border p-2 font-mono">(5 &lt;= 3)</td><td class="border p-2 text-red-600 font-bold">false (0)</td></tr>
+                        </tbody>
+                    </table>
+                    <div class="bg-amber-50 border-l-4 border-amber-500 p-3 text-xs text-amber-900 rounded">
+                        <strong>⚠️ 重要提醒：</strong> 切勿弄錯 <code class="bg-amber-200 px-1 font-bold">=</code>（指定運算子，將右值賦予左邊）與 <code class="bg-amber-200 px-1 font-bold">==</code>（關係運算子，比較兩值是否相等）！
+                    </div>
+                </div>
+
+                <!-- 邏輯運算子與真值表 -->
+                <div>
+                    <h3 class="text-lg font-bold text-slate-800 mb-3">■ 邏輯運算子 (判斷複合條件)</h3>
+                    <div class="grid grid-cols-3 gap-2 text-center text-xs mb-4">
+                        <div class="p-2 border rounded bg-slate-50"><span class="font-bold text-indigo-600 font-mono">!</span> (NOT 反)</div>
+                        <div class="p-2 border rounded bg-slate-50"><span class="font-bold text-indigo-600 font-mono">&amp;&amp;</span> (AND 且)</div>
+                        <div class="p-2 border rounded bg-slate-50"><span class="font-bold text-indigo-600 font-mono">||</span> (OR 或)</div>
+                    </div>
+
+                    <!-- 互動真值表 -->
+                    <h4 class="font-semibold text-slate-700 text-sm mb-2">真值表 (Truth Table) 互動模擬：</h4>
+                    <table class="w-full text-center text-xs border border-slate-200">
+                        <thead class="bg-slate-100">
+                            <tr>
+                                <th class="border p-1">A</th>
+                                <th class="border p-1">B</th>
+                                <th class="border p-1">!A</th>
+                                <th class="border p-1">A &amp;&amp; B</th>
+                                <th class="border p-1">A || B</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td class="border p-1">0</td><td class="border p-1">0</td><td class="border p-1">1</td><td class="border p-1">0</td><td class="border p-1">0</td></tr>
+                            <tr><td class="border p-1">0</td><td class="border p-1">1</td><td class="border p-1">1</td><td class="border p-1">0</td><td class="border p-1">1</td></tr>
+                            <tr><td class="border p-1">1</td><td class="border p-1">0</td><td class="border p-1">0</td><td class="border p-1">0</td><td class="border p-1">1</td></tr>
+                            <tr><td class="border p-1">1</td><td class="border p-1">1</td><td class="border p-1">0</td><td class="border p-1">1</td><td class="border p-1">1</td></tr>
+                        </tbody>
+                    </table>
+
+                    <div class="mt-4 bg-indigo-50 p-3 rounded text-xs space-y-1">
+                        <p class="font-bold text-indigo-900">課本運算式範例解析：</p>
+                        <p>• <code class="font-mono">(6==6) &amp;&amp; (5&gt;6)</code> ➔ <code class="font-mono">(1 &amp;&amp; 0)</code> ➔ <strong>0 (False)</strong></p>
+                        <p>• <code class="font-mono">(6==6) || (5&gt;6)</code> ➔ <code class="font-mono">(1 || 0)</code> ➔ <strong>1 (True)</strong></p>
+                        <p>• <code class="font-mono">!(6!=5)</code> ➔ <code class="font-mono">!(1)</code> ➔ <strong>0 (False)</strong></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. 選擇結構 (if / if-else / if-else-if / 三元運算子 / switch) -->
+        <section id="selection" class="bg-white rounded-xl shadow-md p-6 border border-slate-200">
+            <h2 class="text-2xl font-bold text-indigo-700 border-b pb-3 mb-6 flex items-center">
+                <span class="bg-indigo-100 text-indigo-700 px-3 py-1 rounded-lg text-lg mr-3">4</span>
+                選擇結構語法與實務 (Selection Statements)
+            </h2>
+
+            <div class="space-y-8">
+                <!-- if 與 if-else -->
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <h3 class="font-bold text-slate-800 border-b pb-1 mb-2">■ if 敘述 (單向選擇)</h3>
+                        <p class="text-xs text-slate-600 mb-2">條件式為 true 時才執行被指定的敘述。若有多行程式碼必須使用花括號 <code class="font-mono font-bold">{ }</code> 包裹！</p>
+                        <pre class="code-block p-3 rounded text-xs">
+<span class="keyword">if</span> (a == <span class="number">1</span>) {
+    cout &lt;&lt; <span class="string">"輸入 1"</span> &lt;&lt; endl;
+    cout &lt;&lt; <span class="string">"1是正數"</span> &lt;&lt; endl;
+}</pre>
+                        <p class="text-xxs text-red-500 mt-1">⚠️ 注意：萬一忘記加上 {}，則只會執行第一行敘述句！</p>
+                    </div>
+
+                    <div>
+                        <h3 class="font-bold text-slate-800 border-b pb-1 mb-2">■ if-else 敘述 (雙向選擇)</h3>
+                        <p class="text-xs text-slate-600 mb-2">條件成立執行 if 區塊，條件不成立則執行 else 區塊。</p>
+                        <pre class="code-block p-3 rounded text-xs">
+<span class="keyword">if</span> (score &gt;= <span class="number">60</span>)
+    cout &lt;&lt; <span class="string">"恭喜過關!"</span> &lt;&lt; endl;
+<span class="keyword">else</span>
+    cout &lt;&lt; <span class="string">"未過關!"</span> &lt;&lt; endl;</pre>
+                    </div>
+                </div>
+
+                <!-- 補齊：if ~ else if ~ else 多重判斷 (Else-If Ladder) -->
+                <div class="bg-indigo-50 p-4 rounded-lg border border-indigo-200">
+                    <h3 class="font-bold text-indigo-900 border-b border-indigo-200 pb-2 mb-3">■ if ~ else if ~ else 敘述 (多重選擇 / Else-If Ladder)</h3>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <p class="text-xs text-slate-700 mb-2">用於多個互斥條件判斷，程式會從上到下依次檢查條件，一旦某條件成立便執行對應區塊並跳出。</p>
+                            <pre class="code-block p-3 rounded text-xs">
+<span class="keyword">if</span> (g &gt;= <span class="number">90</span>)
+    cout &lt;&lt; <span class="string">"等級A"</span>;
+<span class="keyword">else if</span> (g &gt;= <span class="number">80</span>)
+    cout &lt;&lt; <span class="string">"等級B"</span>;
+<span class="keyword">else if</span> (g &gt;= <span class="number">70</span>)
+    cout &lt;&lt; <span class="string">"等級C"</span>;
+<span class="keyword">else</span>
+    cout &lt;&lt; <span class="string">"等級D"</span>;</pre>
+                        </div>
+                        <!-- 互動測試器：成績等級判斷 -->
+                        <div class="bg-white p-3 rounded border border-indigo-200 text-xs flex flex-col justify-between">
+                            <div>
+                                <span class="font-bold text-indigo-800">💡 課本成績等級判斷模擬器：</span>
+                                <p class="text-slate-500 my-2">請輸入分數 g (0~100)：</p>
+                                <div class="flex gap-2 mb-3">
+                                    <input type="number" id="gradeInput" placeholder="例如: 85" class="border p-1 rounded w-full">
+                                    <button onclick="checkGrade()" class="bg-indigo-600 text-white px-3 py-1 rounded hover:bg-indigo-700">評定</button>
+                                </div>
+                            </div>
+                            <div id="gradeResult" class="p-2 text-center font-bold bg-slate-100 rounded text-slate-700">等待輸入...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 三元運算子 -->
+                <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                    <h3 class="font-bold text-slate-800 mb-2">■ 三元運算子 (條件運算子 <code class="text-indigo-600 font-mono">?:</code>)</h3>
+                    <p class="text-xs text-slate-600 mb-3">語法：<code class="font-mono bg-white px-2 py-0.5 rounded border">條件式 ? true時執行 : false時執行;</code></p>
+                    <div class="grid md:grid-cols-3 gap-4 text-xs">
+                        <div class="bg-white p-3 rounded border">
+                            <span class="font-bold text-indigo-700">1. 求兩數最大值 max</span>
+                            <pre class="code-block p-2 rounded mt-1">max = (a &gt; b) ? a : b;</pre>
+                        </div>
+                        <div class="bg-white p-3 rounded border">
+                            <span class="font-bold text-indigo-700">2. 求 a 的絕對值 ab</span>
+                            <pre class="code-block p-2 rounded mt-1">ab = (a &gt; 0) ? a : -a;</pre>
+                        </div>
+                        <div class="bg-white p-3 rounded border">
+                            <span class="font-bold text-indigo-700">3. 判斷奇偶數 odd</span>
+                            <pre class="code-block p-2 rounded mt-1">odd = (n % <span class="number">2</span>) ? <span class="number">1</span> : <span class="number">0</span>;</pre>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 巢狀 if 與 switch -->
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <h3 class="font-bold text-slate-800 border-b pb-1 mb-2">■ 巢狀 if 實例 (車速判斷)</h3>
+                        <pre class="code-block p-3 rounded text-xs">
+<span class="keyword">if</span> (vel &gt; <span class="number">60</span>) {
+    <span class="keyword">if</span> (vel &lt; <span class="number">100</span>) {
+        cout &lt;&lt; <span class="string">"標準車速!"</span>;
+    } <span class="keyword">else</span> {
+        cout &lt;&lt; <span class="string">"車速太快!"</span>;
+    }
+} <span class="keyword">else</span> {
+    cout &lt;&lt; <span class="string">"車速太慢!"</span>;
+}</pre>
+                        <div class="mt-3 p-3 bg-indigo-50 rounded text-xs flex gap-2 items-center">
+                            <span>車速測試：</span>
+                            <input type="number" id="speedInput" placeholder="輸入 vel" class="border p-1 rounded w-20">
+                            <button onclick="testSpeed()" class="bg-indigo-600 text-white px-2 py-1 rounded">判斷</button>
+                            <span id="speedResult" class="font-bold text-indigo-900 ml-2"></span>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="font-bold text-slate-800 border-b pb-1 mb-2">■ switch 敘述 (多重選擇)</h3>
+                        <pre class="code-block p-3 rounded text-xs">
+<span class="keyword">switch</span>(res) {
+    <span class="keyword">case</span> <span class="number">1</span>:
+        cout &lt;&lt; <span class="string">"輸入的是1。"</span> &lt;&lt; endl;
+        <span class="keyword">break</span>;
+    <span class="keyword">case</span> <span class="number">2</span>:
+        cout &lt;&lt; <span class="string">"輸入的是2。"</span> &lt;&lt; endl;
+        <span class="keyword">break</span>;
+    <span class="keyword">default</span>:
+        cout &lt;&lt; <span class="string">"請輸入1或2"</span> &lt;&lt; endl;
+        <span class="keyword">break</span>;
+}</pre>
+                        <div class="mt-2 text-xxs text-slate-500 space-y-1">
+                            <p>• 常數值可為單一常數 (如 1, 'A') 或連續常數 (如 1...3)。</p>
+                            <p>• <code class="font-bold text-red-600">break</code> 用於強制跳出，未加會繼續向下執行 (Fall-through)。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. 補充資料：格式化輸出 iomanip -->
+        <section id="iomanip" class="bg-white rounded-xl shadow-md p-6 border border-slate-200">
+            <h2 class="text-2xl font-bold text-indigo-700 border-b pb-3 mb-6 flex items-center">
+                <span class="bg-indigo-100 text-indigo-700 px-3 py-1 rounded-lg text-lg mr-3">5</span>
+                &lt;補充資料&gt; 格式化輸出 (&lt;iomanip&gt;)
+            </h2>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                    <p class="text-xs text-slate-600 mb-3">透過引入 <code class="font-mono font-bold">&lt;iomanip&gt;</code>，可以使用 <code class="font-mono">setw()</code> 設定欄寬，以及 <code class="font-mono">setfill()</code> 設定填補字元。</p>
+                    <pre class="code-block p-3 rounded text-xs">
+<span class="keyword">#include</span> <span class="string">&lt;iostream&gt;</span>
+<span class="keyword">#include</span> <span class="string">&lt;iomanip&gt;</span>
+<span class="keyword">using namespace</span> std;
+
+<span class="keyword">int</span> main() {
+    <span class="keyword">int</span> A = <span class="number">10</span>;
+    cout &lt;&lt; A &lt;&lt; endl;                          <span class="comment">// 10</span>
+    cout &lt;&lt; setw(<span class="number">4</span>) &lt;&lt; A &lt;&lt; endl;                 <span class="comment">//   10</span>
+    cout &lt;&lt; setw(<span class="number">4</span>) &lt;&lt; setfill(<span class="string">'0'</span>) &lt;&lt; A &lt;&lt; endl; <span class="comment">// 0010</span>
+    cout &lt;&lt; setw(<span class="number">4</span>) &lt;&lt; setfill(<span class="string">'_'</span>) &lt;&lt; A &lt;&lt; endl; <span class="comment">// __10</span>
+    <span class="keyword">return</span> <span class="number">0</span>;
+}</pre>
+                </div>
+
+                <div class="bg-slate-900 text-green-400 p-4 rounded-lg font-mono text-xs flex flex-col justify-between">
+                    <div>
+                        <div class="text-slate-500 border-b border-slate-700 pb-1 mb-2">Console Output Preview:</div>
+                        <p class="py-0.5">10</p>
+                        <p class="py-0.5">&nbsp;&nbsp;10</p>
+                        <p class="py-0.5">0010</p>
+                        <p class="py-0.5">__10</p>
+                    </div>
+                    <div class="mt-4 pt-2 border-t border-slate-800 text-xxs text-slate-400">
+                        Process exited after 0.05s with return value 0.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. APCS 觀念題真題實戰解析 -->
+        <section id="apcs" class="bg-amber-50 rounded-xl shadow-md p-6 border border-amber-200">
+            <div class="flex justify-between items-center border-b border-amber-300 pb-3 mb-6">
+                <h2 class="text-2xl font-bold text-amber-900 flex items-center">
+                    <span class="bg-amber-500 text-white px-3 py-1 rounded-lg text-lg mr-3">6</span>
+                    APCS 觀念題真題實戰解析 (全 5 題)
+                </h2>
+                <span class="text-xs bg-amber-200 text-amber-800 px-2 py-1 rounded font-semibold">互動答題與詳解</span>
+            </div>
+
+            <div class="space-y-8">
+                <!-- 題目 1 -->
+                <div class="bg-white p-5 rounded-lg border border-amber-200 shadow-sm">
+                    <h3 class="font-bold text-slate-800 text-sm mb-2">【題目 1】(APCS 第22題)</h3>
+                    <p class="text-xs text-slate-700 mb-3">若要邏輯判斷式 <code class="font-mono bg-slate-100 px-1 font-bold">!(X1 || X2)</code> 計算結果為真 (True)，則 X1 與 X2 的值分別應為何？</p>
+                    <div class="grid md:grid-cols-2 gap-2 text-xs mb-3">
+                        <button onclick="checkApcs(1, 'A')" class="p-2 text-left border rounded hover:bg-amber-50">(A) X1 為 False, X2 為 False</button>
+                        <button onclick="checkApcs(1, 'B')" class="p-2 text-left border rounded hover:bg-amber-50">(B) X1 為 True, X2 為 True</button>
+                        <button onclick="checkApcs(1, 'C')" class="p-2 text-left border rounded hover:bg-amber-50">(C) X1 為 True, X2 為 False</button>
+                        <button onclick="checkApcs(1, 'D')" class="p-2 text-left border rounded hover:bg-amber-50">(D) X1 為 False, X2 為 True</button>
+                    </div>
+                    <div id="ans-1" class="hidden text-xs p-3 rounded bg-slate-50 border"></div>
+                </div>
+
+                <!-- 題目 2 -->
+                <div class="bg-white p-5 rounded-lg border border-amber-200 shadow-sm">
+                    <h3 class="font-bold text-slate-800 text-sm mb-2">【題目 2】(APCS 第14題)</h3>
+                    <p class="text-xs text-slate-700 mb-2">假設 x, y, z 為布林變數，且 <code class="font-mono">x = TRUE, y = TRUE, z = FALSE</code>。請問下面各布林運算式的真假值依序為何？</p>
+                    <ul class="list-disc list-inside text-xs font-mono text-indigo-900 bg-slate-50 p-2 rounded mb-3 space-y-1">
+                        <li>1. !(y || z) || x</li>
+                        <li>2. !y || (z || !x)</li>
+                        <li>3. (x || y) &amp;&amp; (y || z)</li>
+                        <li>4. (x || x) &amp;&amp; z</li>
+                    </ul>
+                    <div class="grid md:grid-cols-2 gap-2 text-xs mb-3">
+                        <button onclick="checkApcs(2, 'A')" class="p-2 text-left border rounded hover:bg-amber-50">(A) TRUE FALSE TRUE FALSE</button>
+                        <button onclick="checkApcs(2, 'B')" class="p-2 text-left border rounded hover:bg-amber-50">(B) FALSE FALSE TRUE FALSE</button>
+                        <button onclick="checkApcs(2, 'C')" class="p-2 text-left border rounded hover:bg-amber-50">(C) FALSE TRUE TRUE FALSE</button>
+                        <button onclick="checkApcs(2, 'D')" class="p-2 text-left border rounded hover:bg-amber-50">(D) TRUE TRUE FALSE TRUE</button>
+                    </div>
+                    <div id="ans-2" class="hidden text-xs p-3 rounded bg-slate-50 border"></div>
+                </div>
+
+                <!-- 題目 3 -->
+                <div class="bg-white p-5 rounded-lg border border-amber-200 shadow-sm">
+                    <h3 class="font-bold text-slate-800 text-sm mb-2">【題目 3】(APCS 第16題)</h3>
+                    <p class="text-xs text-slate-700 mb-2">右側程式執行過後所輸出數值為何？</p>
+                    <pre class="code-block p-3 rounded text-xs mb-3">
+void main() {
+    int count = 10;
+    if (count > 0) {
+        count = 11;
+        if (count > 10) {
+            count = 12;
+            if (count == 4) 
+                count = 1;
+            else { count = 0; }
+        }
+        else if (count > 11) { count = 13; }
+        else { count = 14; }
+
+        if (count) { count = 15; }
+        else { count = 16; }
+    }
+    printf("%d\n", count);
+}</pre>
+                    <div class="grid grid-cols-4 gap-2 text-xs mb-3">
+                        <button onclick="checkApcs(3, 'A')" class="p-2 text-center border rounded hover:bg-amber-50">(A) 11</button>
+                        <button onclick="checkApcs(3, 'B')" class="p-2 text-center border rounded hover:bg-amber-50">(B) 13</button>
+                        <button onclick="checkApcs(3, 'C')" class="p-2 text-center border rounded hover:bg-amber-50">(C) 15</button>
+                        <button onclick="checkApcs(3, 'D')" class="p-2 text-center border rounded hover:bg-amber-50">(D) 16</button>
+                    </div>
+                    <div id="ans-3" class="hidden text-xs p-3 rounded bg-slate-50 border"></div>
+                </div>
+
+                <!-- 題目 4 -->
+                <div class="bg-white p-5 rounded-lg border border-amber-200 shadow-sm">
+                    <h3 class="font-bold text-slate-800 text-sm mb-2">【題目 4】(APCS 第9題)</h3>
+                    <p class="text-xs text-slate-700 mb-2">右側是依據分數 s 評定等第的程式碼。正確公式為：90~100為A、80~89為B、70~79為C、60~69為D、0~59為F。請問這段程式碼在處理 0~100 的整數分數時，有**幾個分數**的等第會算錯？</p>
+                    <pre class="code-block p-3 rounded text-xs mb-3">
+if (s >= 90) { printf("A\n"); }
+else if (s >= 80) { printf("B\n"); }
+else if (s > 60) { printf("D\n"); }
+else if (s > 70) { printf("C\n"); }
+else { printf("E\n"); }</pre>
+                    <div class="grid grid-cols-4 gap-2 text-xs mb-3">
+                        <button onclick="checkApcs(4, 'A')" class="p-2 text-center border rounded hover:bg-amber-50">(A) 20</button>
+                        <button onclick="checkApcs(4, 'B')" class="p-2 text-center border rounded hover:bg-amber-50">(B) 11</button>
+                        <button onclick="checkApcs(4, 'C')" class="p-2 text-center border rounded hover:bg-amber-50">(C) 2</button>
+                        <button onclick="checkApcs(4, 'D')" class="p-2 text-center border rounded hover:bg-amber-50">(D) 10</button>
+                    </div>
+                    <div id="ans-4" class="hidden text-xs p-3 rounded bg-slate-50 border"></div>
+                </div>
+
+                <!-- 題目 5 -->
+                <div class="bg-white p-5 rounded-lg border border-amber-200 shadow-sm">
+                    <h3 class="font-bold text-slate-800 text-sm mb-2">【題目 5】(APCS 第2題)</h3>
+                    <p class="text-xs text-slate-700 mb-2">右側 switch 敘述程式碼可以如何以等價的 if-else 改寫？</p>
+                    <pre class="code-block p-3 rounded text-xs mb-3">
+switch (x) {
+    case 10: y = 'a'; break;
+    case 20:
+    case 30: y = 'b'; break;
+    default: y = 'c';
+}</pre>
+                    <div class="grid md:grid-cols-2 gap-2 text-xs mb-3">
+                        <button onclick="checkApcs(5, 'A')" class="p-2 text-left border rounded hover:bg-amber-50">(A) if(x==10) y='a'; if(x==20||x==30) y='b'; y='c';</button>
+                        <button onclick="checkApcs(5, 'B')" class="p-2 text-left border rounded hover:bg-amber-50">(B) if(x==10) y='a'; else if(x==20||x==30) y='b'; else y='c';</button>
+                        <button onclick="checkApcs(5, 'C')" class="p-2 text-left border rounded hover:bg-amber-50">(C) if(x==10) y='a'; if(x>=20&amp;&amp;x&lt;=30) y='b'; y='c';</button>
+                        <button onclick="checkApcs(5, 'D')" class="p-2 text-left border rounded hover:bg-amber-50">(D) if(x==10) y='a'; else if(x>=20&amp;&amp;x&lt;=30) y='b'; else y='c';</button>
+                    </div>
+                    <div id="ans-5" class="hidden text-xs p-3 rounded bg-slate-50 border"></div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-slate-800 text-slate-400 py-6 text-center text-xs">
+        <p>C++ 選擇結構與流程圖互動教學系統 | 改編自《第四章 選擇結構.pdf》完整課程內容</p>
+    </footer>
+
+    <!-- JavaScript 邏輯控制 -->
+    <script>
+        // 1. 過馬路流程
+        function toggleLight(isGreen) {
+            const res = document.getElementById('lightResult');
+            if(isGreen) {
+                res.textContent = "True ➔ 過馬路";
+                res.className = "p-2 w-full text-center font-bold bg-green-100 text-green-700 border border-green-300 rounded";
+            } else {
+                res.textContent = "False ➔ 停下等待";
+                res.className = "p-2 w-full text-center font-bold bg-red-100 text-red-700 border border-red-300 rounded";
+            }
+        }
+
+        // 2. 猜數字
+        function checkGuess() {
+            const val = parseInt(document.getElementById('guessInput').value);
+            const target = 42;
+            const res = document.getElementById('guessResult');
+            if(isNaN(val)) {
+                res.textContent = "請輸入有效數字";
+                res.className = "p-2 border rounded bg-slate-100 text-slate-600";
+            } else if(val === target) {
+                res.textContent = "True ➔ 印出「猜對了」！";
+                res.className = "p-2 border rounded bg-green-100 text-green-800 font-bold";
+            } else {
+                res.textContent = "False ➔ 印出「猜錯了」！";
+                res.className = "p-2 border rounded bg-red-100 text-red-800 font-bold";
+            }
+        }
+
+        // 3. if~else if~else 成績等級判斷
+        function checkGrade() {
+            const g = parseFloat(document.getElementById('gradeInput').value);
+            const res = document.getElementById('gradeResult');
+            if(isNaN(g)) {
+                res.textContent = "請輸入有效分數";
+                res.className = "p-2 text-center font-bold bg-slate-100 rounded text-slate-700";
+                return;
+            }
+
+            if (g >= 90) {
+                res.textContent = "等級 A";
+                res.className = "p-2 text-center font-bold bg-green-100 text-green-800 rounded border border-green-300";
+            } else if (g >= 80) {
+                res.textContent = "等級 B";
+                res.className = "p-2 text-center font-bold bg-blue-100 text-blue-800 rounded border border-blue-300";
+            } else if (g >= 70) {
+                res.textContent = "等級 C";
+                res.className = "p-2 text-center font-bold bg-amber-100 text-amber-800 rounded border border-amber-300";
+            } else {
+                res.textContent = "等級 D";
+                res.className = "p-2 text-center font-bold bg-red-100 text-red-800 rounded border border-red-300";
+            }
+        }
+
+        // 4. 巢狀 if 車速判斷
+        function testSpeed() {
+            const vel = parseFloat(document.getElementById('speedInput').value);
+            const res = document.getElementById('speedResult');
+            if(isNaN(vel)) {
+                res.textContent = "請輸入速度";
+                return;
+            }
+
+            if (vel > 60) {
+                if (vel < 100) {
+                    res.textContent = "標準車速!";
+                    res.className = "font-bold text-green-600 ml-2";
+                } else {
+                    res.textContent = "車速太快!";
+                    res.className = "font-bold text-red-600 ml-2";
+                }
+            } else {
+                res.textContent = "車速太慢!";
+                res.className = "font-bold text-amber-600 ml-2";
+            }
+        }
+
+        // 5. APCS 題庫解答
+        const apcsData = {
+            1: { correct: 'A', explain: '<strong>【解析】答案為 (A)</strong><br>!(X1 || X2) 為 True ➔ (X1 || X2) 為 False ➔ X1 與 X2 必須皆為 False。' },
+            2: { correct: 'A', explain: '<strong>【解析】答案為 (A) TRUE FALSE TRUE FALSE</strong><br>1. !(T||F)||>T ➔ T<br>2. !T||(F||!T) ➔ F<br>3. (T||T)&&(T||F) ➔ T<br>4. (T||T)&&F ➔ F' },
+            3: { correct: 'D', explain: '<strong>【解析】答案為 (D) 16</strong><br>count=10 ➔ >0成立 ➔ count=11 ➔ count=12 ➔ 判斷==4假 ➔ count=0 ➔ 判斷if(0)為假 ➔ 進入else區塊 count=16。' },
+            4: { correct: 'B', explain: '<strong>【解析】答案為 (B) 11 個分數</strong><br>1. 70~79 (10個分數) 被 s>60 攔截印出 D (錯)。<br>2. 60 (1個分數) 不符合 s>60，進入 else 印出 E (錯)。<br>合計 10 + 1 = 11 個分數算錯。' },
+            5: { correct: 'B', explain: '<strong>【解析】答案為 (B)</strong><br>case 20 與 case 30 共享程式碼，且與 case 10 互斥，需改寫為 else if (x==20 || x==30)。' }
+        };
+
+        function checkApcs(qNum, opt) {
+            const data = apcsData[qNum];
+            const ansDiv = document.getElementById(`ans-${qNum}`);
+            ansDiv.classList.remove('hidden');
+
+            if(opt === data.correct) {
+                ansDiv.className = "text-xs p-3 rounded bg-green-50 border border-green-300 text-green-900 mt-2";
+                ansDiv.innerHTML = `<span class="font-bold text-green-700">🎉 回答正確！</span><br>${data.explain}`;
+            } else {
+                ansDiv.className = "text-xs p-3 rounded bg-red-50 border border-red-300 text-red-900 mt-2";
+                ansDiv.innerHTML = `<span class="font-bold text-red-700">❌ 回答錯誤，請再試試！</span><br>${data.explain}`;
+            }
+        }
+    </script>
+</body>
+</html>
