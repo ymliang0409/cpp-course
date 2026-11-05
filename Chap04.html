@@ -1,870 +1,897 @@
-<!DOCTYPE html>
-
-<html lang="zh-TW">
-<head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>第四章 流程圖與選擇結構 - 互動學習教材</title>
-<!-- Tailwind CSS CDN -->
-<script src="https://cdn.tailwindcss.com"></script>
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>選擇結構互動講義</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=LXGW+WenKai+TC:wght@400;700&family=Noto+Sans+TC:wght@400;500;700&display=swap">
 <style>
-        .code-block {
-            background-color: #1e1e1e;
-            color: #d4d4d4;
-            font-family: 'Consolas', 'Courier New', monospace;
-        }
-        .keyword { color: #569cd6; font-weight: bold; }
-        .string { color: #ce9178; }
-        .comment { color: #6a9955; font-style: italic; }
-        .number { color: #b5cea8; }
-        
-        /* 流程圖動畫與高亮樣式 */
-        .flow-node { transition: all 0.3s ease; }
-        .flow-node.active { fill: #fef08a; stroke: #ca8a04; stroke-width: 3px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.15)); }
-        .flow-node.active-pass { fill: #bbf7d0; stroke: #16a34a; stroke-width: 3px; }
-        .flow-node.active-fail { fill: #fecaca; stroke: #dc2626; stroke-width: 3px; }
-    </style>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/><style>
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&family=Fira+Code:wght@400;600&display=swap');
-body { font-family: 'Noto Sans TC', sans-serif; }
-code, pre { font-family: 'Fira Code', monospace; }
-.slide { display: none; opacity: 0; transition: opacity .3s ease-in-out; }
-.slide.active { display: block; opacity: 1; }
+/* Layout: chapter handout — concept text on the left, a live code tracer or flowchart on the right, quiz at the end */
+:root{
+  --bg:#F2F4F0; --surface:#FFFFFF; --ink:#1C251F; --muted:#5B6860; --line:#D3DBD2;
+  --accent:#2E6A3E; --accent-soft:#E1EDE2; --on-accent:#FFFFFF;
+  --code-bg:#18211B; --code-fg:#DCE6DD; --code-dim:#6E7E72; --cur:#3D4A2A; --cur-bar:#F1C94A;
+  --seg:#F1C94A; --seg-ink:#18211B;
+  --t-k:#8FD3A4; --t-f:#7FC4E8; --t-s:#F0B97A; --t-n:#E8A0C8; --t-c:#7D8E81;
+  --ok:#2C7A4B; --ok-soft:#DDEFE3; --bad:#B23E2C; --bad-soft:#F6E0DB; --warn:#9A6A00;
+  --g-a:#2E6A3E; --g-b:#5E9A4C; --g-c:#C9A227; --g-d:#C9772F; --g-f:#B23E2C;
+  --f-display:"LXGW WenKai TC","Kaiti TC","STKaiti","KaiTi",serif;
+  --f-body:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
+  --f-code:"JetBrains Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#111612; --surface:#19201B; --ink:#E2EAE3; --muted:#97A59B; --line:#2B352E;
+  --accent:#86C796; --accent-soft:#223228; --on-accent:#0F1611;
+  --code-bg:#0C110D; --code-fg:#DCE6DD; --code-dim:#5E6E62; --cur:#36401F; --cur-bar:#F1C94A;
+  --ok:#7FCB98; --ok-soft:#1E3326; --bad:#F0907C; --bad-soft:#3A2420; --warn:#E5B95A;
+  --g-a:#5FA872; --g-b:#8DBF6E; --g-c:#D9B648; --g-d:#DB9050; --g-f:#D96A55;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#111612; --surface:#19201B; --ink:#E2EAE3; --muted:#97A59B; --line:#2B352E;
+  --accent:#86C796; --accent-soft:#223228; --on-accent:#0F1611;
+  --code-bg:#0C110D; --code-fg:#DCE6DD; --code-dim:#5E6E62; --cur:#36401F; --cur-bar:#F1C94A;
+  --ok:#7FCB98; --ok-soft:#1E3326; --bad:#F0907C; --bad-soft:#3A2420; --warn:#E5B95A;
+  --g-a:#5FA872; --g-b:#8DBF6E; --g-c:#D9B648; --g-d:#DB9050; --g-f:#D96A55;
+  color-scheme:dark}
 
-/* Chap03-like dark visual system */
-.slide .bg-white { background-color: rgb(30 41 59) !important; }
-.slide .bg-slate-50, .slide .bg-slate-100 { background-color: rgb(15 23 42) !important; }
-.slide .bg-indigo-50 { background-color: rgb(49 46 129 / .20) !important; }
-.slide .bg-amber-50 { background-color: rgb(120 53 15 / .22) !important; }
-.slide .bg-green-50 { background-color: rgb(20 83 45 / .25) !important; }
-.slide .bg-red-50 { background-color: rgb(127 29 29 / .25) !important; }
-.slide .border-slate-200, .slide .border-slate-300 { border-color: rgb(51 65 85) !important; }
-.slide .border-indigo-100, .slide .border-indigo-200 { border-color: rgb(67 56 202 / .55) !important; }
-.slide .border-amber-200, .slide .border-amber-300 { border-color: rgb(180 83 9 / .55) !important; }
-.slide .text-slate-800, .slide .text-slate-700 { color: rgb(241 245 249) !important; }
-.slide .text-slate-600, .slide .text-slate-500 { color: rgb(148 163 184) !important; }
-.slide .text-indigo-700, .slide .text-indigo-800, .slide .text-indigo-900 { color: rgb(129 140 248) !important; }
-.slide .text-amber-900, .slide .text-amber-800 { color: rgb(252 211 77) !important; }
-.slide table { color: rgb(203 213 225); }
-.slide thead, .slide .bg-slate-100 { background-color: rgb(15 23 42) !important; }
-.slide th, .slide td { border-color: rgb(51 65 85) !important; }
-.slide input { background: rgb(15 23 42); color: rgb(226 232 240); border-color: rgb(71 85 105) !important; }
-.slide input::placeholder { color: rgb(100 116 139); }
-.slide .code-block { background-color: rgb(2 6 23) !important; border: 1px solid rgb(30 41 59); }
-.slide svg { background: rgb(248 250 252); border-radius: .75rem; }
-.slide > h2, .slide > div > h2 { color: rgb(129 140 248) !important; }
-</style></head>
-<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col justify-between selection:bg-indigo-500 selection:text-white">
-<!-- Header Navigation -->
-<header class="bg-slate-800/80 backdrop-blur border-b border-slate-700 sticky top-0 z-50 px-6 py-4 flex justify-between items-center">
-<div class="flex items-center space-x-3">
-<span class="bg-indigo-600 text-white font-bold px-3 py-1 rounded-lg text-sm">C++ 課程</span>
-<h1 class="text-xl font-bold tracking-wide text-white">第四章：流程圖與選擇結構</h1>
-</div>
-<div class="flex items-center space-x-4">
-<span class="text-sm font-medium text-slate-400" id="slide-indicator">頁次 1 / 7</span>
-</div>
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.75}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.wrap{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;line-height:1.25;margin:0}
+p{margin:0}
+code,.mono{font-family:var(--f-code);font-size:.9em}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+header{padding-block:40px 20px}
+.kicker{font-size:13px;letter-spacing:.12em;color:var(--muted);text-transform:uppercase}
+h1{font-size:clamp(34px,6vw,54px);font-weight:700;margin-top:6px}
+h1 em{font-style:normal;color:var(--accent)}
+.lede{max-width:62ch;color:var(--muted);margin-top:10px}
+.legend{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:16px;font-size:14px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.sw{width:14px;height:14px;border-radius:3px;display:inline-block}
+
+nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;gap:6px;overflow-x:auto;padding-block:10px;scrollbar-width:none}
+nav a{flex:none;text-decoration:none;color:var(--ink);font-size:14px;padding:5px 12px;border-radius:999px;border:1px solid var(--line);background:var(--surface);white-space:nowrap}
+nav a:hover{border-color:var(--accent);color:var(--accent)}
+
+section{padding-block:44px 8px;scroll-margin-top:64px}
+.sec-head{display:flex;align-items:baseline;gap:12px;margin-bottom:18px;flex-wrap:wrap}
+.sec-no{font-family:var(--f-code);font-size:14px;color:var(--accent);font-weight:600}
+h2{font-size:clamp(26px,4vw,34px)}
+h3{font-size:21px;margin-bottom:6px}
+.grid2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:28px;align-items:start}
+.grid-even{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;align-items:start}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+@media (max-width:880px){.grid2,.grid-even{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:700px){.grid3{grid-template-columns:minmax(0,1fr)}}
+.stack{display:flex;flex-direction:column;gap:14px;min-width:0}
+.note{border-left:3px solid var(--warn);padding:6px 12px;background:var(--surface);font-size:15px}
+.muted{color:var(--muted)}
+.small{font-size:14px}
+ul.plain{margin:0;padding-left:1.2em}
+ul.plain li{margin:3px 0}
+
+pre.snip{margin:0;background:var(--code-bg);color:var(--code-fg);font-family:var(--f-code);font-size:14px;line-height:1.65;padding:12px 14px;border-radius:8px;overflow-x:auto}
+.t-k{color:var(--t-k);font-weight:600}.t-f{color:var(--t-f)}.t-s{color:var(--t-s)}.t-n{color:var(--t-n)}.t-c{color:var(--t-c);font-style:italic}
+
+/* flowcharts */
+svg.fc{width:100%;height:auto;display:block;max-width:420px;margin:0 auto}
+.fc .n{fill:var(--surface);stroke:var(--ink);stroke-width:1.4;transition:fill .2s,stroke .2s}
+.fc .d{fill:var(--accent-soft);stroke:var(--accent);stroke-width:1.5}
+.fc .e{stroke:var(--muted);stroke-width:1.5;fill:none;transition:stroke .2s}
+.fc text{fill:var(--ink);font-size:13px;text-anchor:middle;font-family:var(--f-body)}
+.fc text.lb{fill:var(--muted);font-size:12px;font-family:var(--f-code);text-anchor:start}
+.fc .ah{fill:var(--muted)}
+.fc .on .n,.fc .n.on{fill:var(--cur-bar);stroke:var(--ink)}
+.fc .on text{fill:#18211B}
+.fc .e.on{stroke:var(--cur-bar);stroke-width:3}
+.fc .dim{opacity:.35}
+.fig{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px;min-width:0}
+.fig figcaption{font-size:14px;color:var(--muted);text-align:center;margin-top:6px}
+figure{margin:0}
+
+/* symbol table */
+.sym{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+@media (max-width:700px){.sym{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.sym button{font:inherit;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:10px 8px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px}
+.sym button:hover,.sym button.on{border-color:var(--accent)}
+.sym button.on{background:var(--accent-soft)}
+.sym svg{width:90px;height:44px}
+.sym svg *{fill:none;stroke:var(--ink);stroke-width:1.5}
+.sym b{font-size:14px}
+.sym-info{min-height:2.5em}
+
+/* tracer */
+.tracer{background:var(--code-bg);color:var(--code-fg);border-radius:10px;overflow:hidden;min-width:0;display:flex;flex-direction:column}
+.tr-head{display:flex;justify-content:space-between;gap:10px;align-items:baseline;padding:10px 14px 4px;font-size:13px;flex-wrap:wrap}
+.tr-title{font-weight:700;color:var(--code-fg)}
+.tr-count{font-family:var(--f-code);color:var(--code-dim);font-variant-numeric:tabular-nums}
+.tr-code{position:relative;font-family:var(--f-code);font-size:14px;line-height:1.7;max-height:340px;overflow:auto;padding:4px 0}
+.ln{display:flex;white-space:pre;border-left:3px solid transparent;padding-right:14px;min-width:max-content}
+.ln .no{width:38px;flex:none;text-align:right;padding-right:12px;color:var(--code-dim);user-select:none}
+.ln.cur{background:var(--cur);border-left-color:var(--cur-bar)}
+.seg{border-radius:3px}
+.seg.on{background:var(--seg);color:var(--seg-ink)}
+.seg.on span{color:var(--seg-ink)}
+.tr-note{min-height:2.2em;padding:6px 14px;font-size:14px;color:var(--cur-bar);border-top:1px solid #ffffff14}
+.tr-io{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);border-top:1px solid #ffffff14}
+@media (max-width:480px){.tr-io{grid-template-columns:minmax(0,1fr)}}
+.tr-vars,.tr-out{padding:8px 14px 10px;min-width:0}
+.tr-out{border-left:1px solid #ffffff14}
+.cap{font-size:11px;letter-spacing:.14em;color:var(--code-dim);margin-bottom:4px}
+.panel .cap,.stack>.cap{color:var(--muted)}
+.tr-vars dl{margin:0;display:flex;flex-wrap:wrap;gap:6px}
+.tr-vars dl div{display:flex;gap:6px;font-family:var(--f-code);font-size:14px;background:#ffffff0d;border-radius:5px;padding:2px 8px;font-variant-numeric:tabular-nums}
+.tr-vars dl div.chg{background:#F1C94A33;box-shadow:inset 0 0 0 1px #F1C94A88}
+.tr-vars dt{color:var(--t-f)}.tr-vars dd{margin:0}
+.tr-vars dt::after{content:" ="}
+.tr-out pre{margin:0;font-family:var(--f-code);font-size:14px;line-height:1.5;max-height:150px;overflow:auto;white-space:pre-wrap;word-break:break-all;color:#E9F2EA}
+.tr-out pre:empty::before{content:"（尚無輸出）";color:var(--code-dim)}
+.tr-ctrl{display:flex;gap:6px;align-items:center;flex-wrap:wrap;padding:10px 14px;background:#ffffff08;border-top:1px solid #ffffff14}
+.tr-ctrl button{font:inherit;font-size:13px;border:1px solid #ffffff2a;background:transparent;color:var(--code-fg);border-radius:6px;padding:4px 10px;cursor:pointer}
+.tr-ctrl button:hover:not(:disabled){background:#ffffff14}
+.tr-ctrl button:disabled{opacity:.35;cursor:default}
+.tr-ctrl button.primary{background:var(--cur-bar);color:#18211B;border-color:var(--cur-bar);font-weight:700;min-width:76px}
+.tr-ctrl input[type=range]{flex:1 1 120px;accent-color:var(--cur-bar);min-width:100px}
+
+/* controls */
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px;min-width:0}
+.ctl-row{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center}
+label.chk{display:inline-flex;gap:8px;align-items:center;cursor:pointer;font-size:15px}
+input[type=number],input[type=text],select{font:inherit;font-family:var(--f-code);font-size:15px;background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:6px;padding:4px 8px}
+input[type=number]{width:5.2em}
+input[type=range]{accent-color:var(--accent)}
+.btn{font:inherit;font-size:14px;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:4px 12px;cursor:pointer}
+.btn:hover{border-color:var(--accent);color:var(--accent)}
+.btn.on{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
+.btn.primary{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
+.console{margin:0;background:var(--code-bg);color:#E9F2EA;font-family:var(--f-code);font-size:14px;line-height:1.5;padding:10px 12px;border-radius:8px;overflow-x:auto;white-space:pre}
+.console .in{color:var(--t-f)}
+.status{font-size:15px;font-weight:500}
+.status.ok{color:var(--ok)}.status.bad{color:var(--bad)}
+
+/* data tables */
+.tbl{overflow-x:auto}
+table.dt{border-collapse:collapse;width:100%;font-size:15px;font-variant-numeric:tabular-nums}
+table.dt th{font-weight:600;text-align:left;font-size:13px;color:var(--muted);border-bottom:1.5px solid var(--ink);padding:6px 10px}
+table.dt td{border-bottom:1px solid var(--line);padding:6px 10px}
+table.dt td.m{font-family:var(--f-code)}
+table.dt tr.hit td{background:var(--accent-soft)}
+.rv{font:inherit;font-family:var(--f-code);font-size:14px;min-width:84px;border:1px dashed var(--line);background:var(--bg);color:var(--ink);border-radius:6px;padding:2px 8px;cursor:pointer}
+.rv.shown{border-style:solid}
+.rv.t{color:var(--ok);border-color:var(--ok)}
+.rv.f{color:var(--bad);border-color:var(--bad)}
+.tog{font:inherit;font-family:var(--f-code);font-weight:700;font-size:16px;min-width:64px;border-radius:8px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);padding:6px 10px;cursor:pointer}
+.tog[aria-pressed="true"]{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
+.expr{display:flex;flex-direction:column;gap:6px}
+.expr-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg)}
+.expr-row code{font-size:15px}
+.expr-row .steps{font-family:var(--f-code);font-size:14px;color:var(--muted)}
+.expr-row .res{font-family:var(--f-code);font-weight:700}
+.big-eval{font-family:var(--f-code);font-size:16px;line-height:1.9}
+.big-eval .r{font-weight:700;color:var(--accent)}
+
+/* grade bar */
+.gbar{position:relative;display:flex;height:34px;border-radius:6px;overflow:hidden;font-family:var(--f-code);font-size:13px;color:#fff}
+.gbar div{display:grid;place-items:center;font-weight:700}
+.gmark{position:relative;height:16px}
+.gmark span{position:absolute;top:0;transform:translateX(-50%);font-family:var(--f-code);font-size:12px;color:var(--ink);transition:left .15s}
+.gmark span::after{content:"▼";display:block;text-align:center;line-height:1}
+.gaxis{position:relative;height:18px;font-family:var(--f-code);font-size:12px;color:var(--muted)}
+.gaxis span{position:absolute;top:0;transform:translateX(-50%)}
+
+/* setw cells */
+.cells{display:flex;gap:3px;flex-wrap:wrap}
+.cells span{width:30px;height:34px;display:grid;place-items:center;font-family:var(--f-code);font-size:17px;border:1px solid var(--line);border-radius:4px;background:var(--surface)}
+.cells span.pad{background:var(--accent-soft);color:var(--accent)}
+.cells span.sp{color:var(--muted)}
+
+/* quiz */
+.score{display:flex;gap:14px;align-items:center;flex-wrap:wrap;font-size:15px}
+.score b{font-family:var(--f-code);font-variant-numeric:tabular-nums}
+.quiz{display:flex;flex-direction:column;gap:22px;margin-top:16px}
+.q{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px}
+@media (max-width:880px){.q{grid-template-columns:minmax(0,1fr)}}
+.q-tag{font-family:var(--f-code);font-size:12px;color:var(--accent);letter-spacing:.06em}
+.q-text{font-size:16px;margin:4px 0 12px}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{display:flex;gap:10px;align-items:flex-start;text-align:left;font:inherit;font-size:15px;background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:8px 12px;cursor:pointer}
+.opt:hover:not(:disabled){border-color:var(--accent)}
+.opt:disabled{cursor:default}
+.opt .L{font-family:var(--f-code);font-weight:600;flex:none}
+.opt .v{font-family:var(--f-code);white-space:pre-wrap;font-size:14px}
+.opt.right{background:var(--ok-soft);border-color:var(--ok)}
+.opt.wrong{background:var(--bad-soft);border-color:var(--bad)}
+.exp{margin-top:12px;font-size:15px;display:flex;flex-direction:column;gap:10px}
+.exp .verdict{font-weight:700}
+.exp .verdict.ok{color:var(--ok)}.exp .verdict.bad{color:var(--bad)}
+table.mini{border-collapse:collapse;font-size:14px;width:100%}
+table.mini th,table.mini td{border-bottom:1px solid var(--line);padding:4px 8px;text-align:left;vertical-align:top}
+table.mini td.bad{color:var(--bad);font-weight:700}
+.sgrid{display:grid;grid-template-columns:repeat(11,minmax(0,1fr));gap:2px;font-family:var(--f-code);font-size:11px}
+.sgrid span{text-align:center;padding:2px 0;border-radius:3px;background:var(--bg)}
+.sgrid span.bad{background:var(--bad);color:#fff;font-weight:700}
+details.trace summary{cursor:pointer;color:var(--accent);font-size:14px;font-weight:500;margin-top:10px}
+details.trace[open] summary{margin-bottom:8px}
+footer{padding-block:40px 56px;color:var(--muted);font-size:14px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<header class="wrap">
+  <div class="kicker">C/C++ 程式設計 · 第四章</div>
+  <h1>流程圖與選擇結構 <em>互動講義</em></h1>
+  <p class="lede">改變輸入值，看流程圖走哪一條路、程式執行哪一行。每個範例都能逐行追蹤，最後有 5 題 APCS 觀念題可以練習。</p>
+  <div class="legend">
+    <span><i class="sw" style="background:#F1C94A"></i>正在執行的那一行／流程圖走過的路徑</span>
+    <span><i class="sw" style="background:#F1C94A55;box-shadow:inset 0 0 0 1px #F1C94A"></i>這一步剛改變的變數</span>
+  </div>
 </header>
-<main class="flex-1 max-w-5xl w-full mx-auto p-6 md:p-10 flex flex-col justify-center"><section class="slide active" data-slide="1" id="slide-1">
-<div class="text-center py-10 space-y-6">
-<div class="inline-block p-4 bg-indigo-500/10 rounded-full border border-indigo-500/20 mb-2">
-<i class="fas fa-code-branch text-5xl text-indigo-400"></i>
-</div>
-<h2 class="text-4xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-cyan-400 to-teal-300">
-      第四章 流程圖與選擇結構
-    </h2>
-<p class="text-lg text-slate-400 max-w-2xl mx-auto leading-relaxed">
-      從流程圖與演算法出發，理解程式流程控制、關係與邏輯運算子，並學會 if、if-else、switch 等選擇結構及格式化輸出。
-    </p>
-<div class="max-w-xl mx-auto bg-slate-800 border border-slate-700 p-5 rounded-2xl text-left shadow-lg">
-<div class="text-xs font-bold text-indigo-400 uppercase tracking-wider mb-3">本章學習重點</div>
-<div class="grid grid-cols-2 gap-3 text-sm">
-<div class="bg-slate-900/80 p-3 rounded-xl border border-slate-700"><i class="fas fa-diagram-project text-cyan-400 mr-2"></i>流程圖與演算法</div>
-<div class="bg-slate-900/80 p-3 rounded-xl border border-slate-700"><i class="fas fa-code-compare text-pink-400 mr-2"></i>關係與邏輯判斷</div>
-<div class="bg-slate-900/80 p-3 rounded-xl border border-slate-700"><i class="fas fa-code-branch text-emerald-400 mr-2"></i>if / switch 選擇結構</div>
-<div class="bg-slate-900/80 p-3 rounded-xl border border-slate-700"><i class="fas fa-graduation-cap text-amber-400 mr-2"></i>APCS 觀念練習</div>
-</div>
-</div>
-<div class="pt-4 flex justify-center">
-<button class="px-6 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-xl shadow-lg shadow-indigo-500/30 transition flex items-center space-x-2" onclick="nextSlide()">
-<span>開始學習</span><i class="fas fa-arrow-right"></i>
-</button>
-</div>
-</div>
+
+<nav aria-label="章節"><div class="wrap">
+  <a href="#flow">流程圖</a><a href="#ctrl">流程控制</a><a href="#rel">關係運算子</a><a href="#logic">邏輯運算子</a><a href="#if">if</a><a href="#ifelse">if～else</a><a href="#tern">三元運算子</a><a href="#ladder">else if</a><a href="#nestif">巢狀 if</a><a href="#switch">switch</a><a href="#fmt">格式化輸出</a><a href="#apcs">APCS 觀念題</a>
+</div></nav>
+
+<main class="wrap">
+
+<!-- 4.1 flowchart -->
+<section id="flow">
+  <div class="sec-head"><span class="sec-no">4.1</span><h2>流程圖與演算法</h2></div>
+  <div class="stack">
+    <p><b>流程圖（Flowchart）</b>：把解決問題的步驟與邏輯，用標準化的符號圖形表示。點一下各符號看它的意義：</p>
+    <div class="sym" id="sym"></div>
+    <p class="sym-info panel small" id="sym-info" aria-live="polite"></p>
+  </div>
+
+  <div class="grid-even" style="margin-top:24px">
+    <figure class="fig stack">
+      <h3>過馬路</h3>
+      <div class="ctl-row"><span class="small">號誌：</span>
+        <button class="tog" id="tl-btn" aria-pressed="true">綠燈</button>
+        <span class="small muted">點一下切換紅綠燈</span></div>
+      <svg class="fc" id="fc-tl" viewBox="0 0 320 252" role="img" aria-label="過馬路流程圖：號誌亮綠燈為 True 就過馬路，False 就停下等待">
+        <defs><marker id="m1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" class="ah"/></marker></defs>
+        <g data-p="c"><rect class="n" x="110" y="4" width="100" height="30" rx="15"/><text x="160" y="24">開始</text></g>
+        <path data-p="c" class="e" d="M160 34V52" marker-end="url(#m1)"/>
+        <g data-p="c"><polygon class="n d" points="160,54 232,85 160,116 88,85"/><text x="160" y="90">號誌亮綠燈</text></g>
+        <path data-p="f" class="e" d="M88 85H48V140" marker-end="url(#m1)"/><text class="lb" x="46" y="78">False</text>
+        <path data-p="t" class="e" d="M232 85H272V140" marker-end="url(#m1)"/><text class="lb" x="240" y="78">True</text>
+        <g data-p="f"><rect class="n" x="4" y="142" width="88" height="34" rx="3"/><text x="48" y="164">停下等待</text></g>
+        <g data-p="t"><rect class="n" x="228" y="142" width="88" height="34" rx="3"/><text x="272" y="164">過馬路</text></g>
+        <path data-p="f" class="e" d="M48 176V198H158"/>
+        <path data-p="t" class="e" d="M272 176V198H162"/>
+        <path data-p="c" class="e" d="M160 198V216" marker-end="url(#m1)"/>
+        <g data-p="c"><rect class="n" x="110" y="218" width="100" height="30" rx="15"/><text x="160" y="238">結束</text></g>
+      </svg>
+      <figcaption id="tl-cap"></figcaption>
+    </figure>
+
+    <figure class="fig stack">
+      <h3>猜密碼</h3>
+      <div class="ctl-row">
+        <label for="gs-in" class="small">你猜（0～100）：</label>
+        <input type="number" id="gs-in" min="0" max="100" value="50">
+        <button class="btn primary" id="gs-go">猜一次</button>
+        <button class="btn" id="gs-new">換一個密碼</button>
+      </div>
+      <svg class="fc" id="fc-gs" viewBox="0 0 340 400" role="img" aria-label="猜密碼流程圖：亂數產生密碼，使用者輸入，判斷密碼值是否等於猜測值，True 印出猜對了，False 印出猜錯了">
+        <defs><marker id="m2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" class="ah"/></marker></defs>
+        <g data-p="c"><rect class="n" x="120" y="4" width="100" height="30" rx="15"/><text x="170" y="24">開始</text></g>
+        <path data-p="c" class="e" d="M170 34V50" marker-end="url(#m2)"/>
+        <g data-p="c"><rect class="n" x="95" y="52" width="150" height="42" rx="3"/><text x="170" y="70">亂數產生</text><text x="170" y="86">0～100 之間</text></g>
+        <path data-p="c" class="e" d="M170 94V110" marker-end="url(#m2)"/>
+        <g data-p="c"><polygon class="n" points="112,112 252,112 228,148 88,148"/><text x="170" y="135">使用者輸入</text></g>
+        <path data-p="c" class="e" d="M170 148V164" marker-end="url(#m2)"/>
+        <g data-p="c"><polygon class="n d" points="170,166 252,200 170,234 88,200"/><text x="170" y="196">密碼值等</text><text x="170" y="212">於猜測值</text></g>
+        <path data-p="t" class="e" d="M170 234V252H104V268" marker-end="url(#m2)"/><text class="lb" x="176" y="250">True</text>
+        <path data-p="f" class="e" d="M252 200H262V268" marker-end="url(#m2)"/><text class="lb" x="266" y="194">False</text>
+        <g data-p="t"><polygon class="n" points="52,270 176,270 156,306 32,306"/><text x="104" y="293">印出「猜對了」</text></g>
+        <g data-p="f"><polygon class="n" points="210,270 334,270 314,306 190,306"/><text x="262" y="293">印出「猜錯了」</text></g>
+        <path data-p="t" class="e" d="M104 306V326H166"/>
+        <path data-p="f" class="e" d="M262 306V326H174"/>
+        <path data-p="c" class="e" d="M170 326V346" marker-end="url(#m2)"/>
+        <g data-p="c"><rect class="n" x="120" y="348" width="100" height="30" rx="15"/><text x="170" y="368">結束</text></g>
+      </svg>
+      <pre class="console" id="gs-out"></pre>
+    </figure>
+  </div>
+
+  <div class="panel" style="margin-top:20px">
+    <div class="grid2">
+      <div class="stack">
+        <h3>演算法（Algorithm）</h3>
+        <p>把問題分解成許多小步驟，再依一定的次序逐步執行。上面兩張流程圖都是演算法的表示方式。</p>
+      </div>
+      <div class="tbl"><table class="dt">
+        <tr><th>特性</th><th>說明</th></tr>
+        <tr><td>輸入（Input）</td><td>可有可無</td></tr>
+        <tr><td>輸出（Output）</td><td>結果，至少有一項</td></tr>
+        <tr><td>明確性（Definiteness）</td><td>每個步驟必須明確而清楚</td></tr>
+        <tr><td>有限性（Finiteness）</td><td>在有限步驟內完成</td></tr>
+        <tr><td>有效性（Effectiveness）</td><td>在一定時間內推算出結果</td></tr>
+      </table></div>
+    </div>
+  </div>
 </section>
-<!-- 1. 流程圖與演算法 -->
-<section class="slide space-y-4" data-slide="2" id="flowchart">
-<h2 class="text-2xl md:text-3xl font-bold text-indigo-400 mb-6 flex items-center gap-3">
 
-                流程圖與演算法 (Flowchart &amp; Algorithm)
-            </h2>
-<!-- 流程圖定義與符號 -->
-<div class="grid md:grid-cols-2 gap-6 mb-8">
-<div>
-<h3 class="text-lg font-semibold text-slate-100 mb-2">■ 流程圖 (Flowchart) 表示法</h3>
-<p class="text-slate-300 mb-4">將解決問題的步驟與邏輯，用各種**標準化的符號圖形**來表示。</p>
-<div class="overflow-x-auto">
-<table class="w-full text-left border-collapse border border-slate-300 text-sm text-slate-900 bg-white rounded-lg overflow-hidden">
-<thead>
-<tr class="bg-slate-100">
-<th class="border p-2">名稱</th>
-<th class="border p-2">圖示/形狀</th>
-<th class="border p-2">意義說明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="border p-2 font-medium">起止符號</td>
-<td class="border p-2"><span class="px-3 py-1 bg-white font-semibold rounded-full border-2 border-slate-500 text-xs shadow-sm">圓角矩形/橢圓</span></td>
-<td class="border p-2">表示事件的開始或結束</td>
-</tr>
-<tr>
-<td class="border p-2 font-medium">流程符號</td>
-<td class="border p-2">➔ (箭號)</td>
-<td class="border p-2">表示流程進行的方向</td>
-</tr>
-<tr>
-<td class="border p-2 font-medium">輸入/輸出符號</td>
-<td class="border p-2"><span class="px-3 py-1 bg-white font-semibold inline-block skew-x-[-12deg] border-2 border-slate-500 text-xs shadow-sm">平行四邊形</span></td>
-<td class="border p-2">表示資料的輸出或輸入</td>
-</tr>
-<tr>
-<td class="border p-2 font-medium">處理符號</td>
-<td class="border p-2"><span class="px-3 py-1 bg-white font-semibold border-2 border-slate-500 text-xs shadow-sm">矩形</span></td>
-<td class="border p-2">表示執行或處理的工作</td>
-</tr>
-<tr>
-<td class="border p-2 font-medium">決策判斷符號</td>
-<td class="border p-2"><span class="px-3 py-1 bg-white font-bold border-2 border-slate-500 inline-block rotate-45 text-xs my-1 shadow-sm">◇</span> <span class="font-semibold">菱形</span></td>
-<td class="border p-2">表示對某一條件做判斷</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<!-- 演算法特性 -->
-<div>
-<h3 class="text-lg font-semibold text-slate-100 mb-2">■ 演算法 (Algorithm)</h3>
-<p class="text-slate-300 mb-3">將問題分解成許多小步驟，然後再依一定的次序逐步執行。</p>
-<div class="bg-slate-800 p-4 rounded-lg border border-indigo-400/40 space-y-2 text-slate-100 shadow-lg">
-<h4 class="font-bold text-cyan-300 text-sm">演算法五大特性 (Algorithm Features)：</h4>
-<ul class="list-disc list-inside space-y-1 text-sm text-slate-100 marker:text-indigo-300">
-<li><strong class="text-indigo-200">輸入 (Input)：</strong> 可有可無 (0 個或多個)。</li>
-<li><strong class="text-indigo-200">輸出 (Output)：</strong> 產出結果，至少要有一項。</li>
-<li><strong class="text-indigo-200">明確性 (Definiteness)：</strong> 每個步驟必須明確而清楚。</li>
-<li><strong class="text-indigo-200">有限性 (Finiteness)：</strong> 必須在有限步驟內完成，不能無限循環。</li>
-<li><strong class="text-indigo-200">有效性 (Effectiveness)：</strong> 步驟可行，能在一定時間內推算結果。</li>
-</ul>
-</div>
-</div>
-</div>
-<!-- 流程圖視覺化與互動展示區 -->
-<div class="bg-slate-100 p-6 rounded-xl border border-slate-300 text-slate-800">
-<h3 class="font-bold text-slate-800 text-lg mb-4 flex items-center">
-<span class="mr-2">💡</span> 課本流程圖視覺化與動態互動模擬
-                </h3>
-<div class="grid lg:grid-cols-2 gap-8">
-<!-- 範例 1：紅綠燈過馬路 -->
-<div class="bg-slate-50 p-5 rounded-xl border border-slate-200 flex flex-col justify-between space-y-4 shadow-sm">
-<div>
-<h4 class="font-bold text-base text-slate-800 mb-2 flex items-center justify-between">
-<span>🚦 範例 1：過馬路流程圖</span>
-<span class="text-xs bg-indigo-100 text-indigo-700 px-2 py-1 rounded">選擇結構</span>
-</h4>
-<!-- SVG 流程圖繪製 (紅綠燈) -->
-<div class="bg-white p-4 rounded-lg border border-slate-200 flex justify-center overflow-x-auto">
-<svg class="text-xs font-semibold" height="350" viewbox="0 0 320 350" width="320">
-<defs>
-<marker id="arrow" markerheight="6" markerwidth="6" orient="auto-start-reverse" refx="6" refy="5" viewbox="0 0 10 10">
-<path d="M 0 0 L 10 5 L 0 10 z" fill="#64748b"></path>
-</marker>
-</defs>
-<!-- 連接線 -->
-<line marker-end="url(#arrow)" stroke="#64748b" stroke-width="2" x1="160" x2="160" y1="45" y2="85"></line>
-<!-- True 路徑 (右) -->
-<path d="M 230 115 L 260 115 L 260 185" fill="none" marker-end="url(#arrow)" stroke="#64748b" stroke-width="2"></path>
-<text class="font-bold" fill="#16a34a" x="235" y="108">True</text>
-<!-- False 路徑 (左) -->
-<path d="M 90 115 L 60 115 L 60 185" fill="none" marker-end="url(#arrow)" stroke="#64748b" stroke-width="2"></path>
-<text class="font-bold" fill="#dc2626" x="68" y="108">False</text>
-<!-- 匯合至結束 -->
-<path d="M 60 235 L 60 280 L 160 280 L 160 295" fill="none" marker-end="url(#arrow)" stroke="#64748b" stroke-width="2"></path>
-<path d="M 260 235 L 260 280 L 160 280" fill="none" stroke="#64748b" stroke-width="2"></path>
-<!-- 節點 1: 開始 -->
-<rect class="flow-node" fill="#e2e8f0" height="35" id="tf-start" rx="17.5" stroke="#475569" stroke-width="1.5" width="100" x="110" y="10"></rect>
-<text fill="#1e293b" text-anchor="middle" x="160" y="32">開始</text>
-<!-- 節點 2: 判斷號誌 -->
-<polygon class="flow-node" fill="#e2e8f0" id="tf-cond" points="160,85 230,115 160,145 90,115" stroke="#475569" stroke-width="1.5"></polygon>
-<text fill="#1e293b" text-anchor="middle" x="160" y="119">號誌亮綠燈</text>
-<!-- 節點 3: 停下等待 (False) -->
-<rect class="flow-node" fill="#e2e8f0" height="50" id="tf-wait" rx="4" stroke="#475569" stroke-width="1.5" width="90" x="15" y="185"></rect>
-<text fill="#1e293b" text-anchor="middle" x="60" y="214">停下等待</text>
-<!-- 節點 4: 過馬路 (True) -->
-<rect class="flow-node" fill="#e2e8f0" height="50" id="tf-cross" rx="4" stroke="#475569" stroke-width="1.5" width="90" x="215" y="185"></rect>
-<text fill="#1e293b" text-anchor="middle" x="260" y="214">過馬路</text>
-<!-- 節點 5: 結束 -->
-<rect class="flow-node" fill="#e2e8f0" height="35" id="tf-end" rx="17.5" stroke="#475569" stroke-width="1.5" width="100" x="110" y="300"></rect>
-<text fill="#1e293b" text-anchor="middle" x="160" y="322">結束</text>
-</svg>
-</div>
-</div>
-<!-- 控制面板 -->
-<div class="bg-white p-4 rounded-lg border border-slate-200 text-xs space-y-3">
-<div class="font-bold text-slate-700">🎮 互動模擬控制：</div>
-<div class="flex gap-3">
-<button class="flex-1 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded font-bold transition" onclick="runTrafficSim(true)">🟢 號誌亮綠燈 (True)</button>
-<button class="flex-1 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded font-bold transition" onclick="runTrafficSim(false)">🔴 號誌亮紅燈 (False)</button>
-</div>
-<div class="p-2.5 rounded text-center font-bold bg-slate-100 text-slate-600" id="trafficStatus">
-                                請選擇燈號狀態以觀察流程圖走勢
-                            </div>
-</div>
-</div>
-<!-- 範例 2：猜數字遊戲 -->
-<div class="bg-slate-50 p-5 rounded-xl border border-slate-200 flex flex-col justify-between space-y-4 shadow-sm">
-<div>
-<h4 class="font-bold text-base text-slate-800 mb-2 flex items-center justify-between">
-<span>🎯 範例 2：猜數字遊戲流程圖 (0~100)</span>
-<span class="text-xs bg-indigo-100 text-indigo-700 px-2 py-1 rounded">判斷與 I/O</span>
-</h4>
-<!-- SVG 流程圖繪製 (猜數字) -->
-<div class="bg-white p-4 rounded-lg border border-slate-200 flex justify-center overflow-x-auto">
-<svg class="text-xs font-semibold" height="420" viewbox="0 0 320 420" width="320">
-<defs>
-<marker id="arrow2" markerheight="6" markerwidth="6" orient="auto-start-reverse" refx="6" refy="5" viewbox="0 0 10 10">
-<path d="M 0 0 L 10 5 L 0 10 z" fill="#64748b"></path>
-</marker>
-</defs>
-<!-- 主軸線 -->
-<line marker-end="url(#arrow2)" stroke="#64748b" stroke-width="2" x1="160" x2="160" y1="40" y2="65"></line>
-<line marker-end="url(#arrow2)" stroke="#64748b" stroke-width="2" x1="160" x2="160" y1="110" y2="135"></line>
-<line marker-end="url(#arrow2)" stroke="#64748b" stroke-width="2" x1="160" x2="160" y1="180" y2="205"></line>
-<!-- True (左) -->
-<path d="M 80 235 L 60 235 L 60 275" fill="none" marker-end="url(#arrow2)" stroke="#64748b" stroke-width="2"></path>
-<text class="font-bold" fill="#16a34a" x="35" y="228">True</text>
-<!-- False (右) -->
-<path d="M 240 235 L 260 235 L 260 275" fill="none" marker-end="url(#arrow2)" stroke="#64748b" stroke-width="2"></path>
-<text class="font-bold" fill="#dc2626" x="268" y="228">False</text>
-<!-- 匯合至結束 -->
-<path d="M 60 325 L 60 355 L 160 355 L 160 370" fill="none" marker-end="url(#arrow2)" stroke="#64748b" stroke-width="2"></path>
-<path d="M 260 325 L 260 355 L 160 355" fill="none" stroke="#64748b" stroke-width="2"></path>
-<!-- 節點 1: 開始 -->
-<rect class="flow-node" fill="#e2e8f0" height="30" id="gn-start" rx="15" stroke="#475569" stroke-width="1.5" width="100" x="110" y="10"></rect>
-<text fill="#1e293b" text-anchor="middle" x="160" y="29">開始</text>
-<!-- 節點 2: 亂數產生 (處理) -->
-<rect class="flow-node" fill="#e2e8f0" height="45" id="gn-rand" rx="4" stroke="#475569" stroke-width="1.5" width="160" x="80" y="65"></rect>
-<text fill="#1e293b" text-anchor="middle" x="160" y="85">亂數產生</text>
-<text fill="#1e293b" text-anchor="middle" x="160" y="100">0~100 之間</text>
-<!-- 節點 3: 使用者輸入 (平行四邊形 I/O) -->
-<polygon class="flow-node" fill="#e2e8f0" id="gn-input" points="80,135 250,135 230,180 60,180" stroke="#475569" stroke-width="1.5"></polygon>
-<text fill="#1e293b" text-anchor="middle" x="155" y="162">使用者輸入</text>
-<!-- 節點 4: 條件判斷 (菱形) -->
-<polygon class="flow-node" fill="#e2e8f0" id="gn-cond" points="160,205 240,235 160,265 80,235" stroke="#475569" stroke-width="1.5"></polygon>
-<text fill="#1e293b" text-anchor="middle" x="160" y="239">密碼值等於猜測值</text>
-<!-- 節點 5: 印出猜對了 (True 平行四邊形) -->
-<polygon class="flow-node" fill="#e2e8f0" id="gn-true" points="15,275 110,275 95,325 0,325" stroke="#475569" stroke-width="1.5"></polygon>
-<text fill="#1e293b" text-anchor="middle" x="52" y="304">印出「猜對了」</text>
-<!-- 節點 6: 印出猜錯了 (False 平行四邊形) -->
-<polygon class="flow-node" fill="#e2e8f0" id="gn-false" points="215,275 310,275 295,325 200,325" stroke="#475569" stroke-width="1.5"></polygon>
-<text fill="#1e293b" text-anchor="middle" x="252" y="304">印出「猜錯了」</text>
-<!-- 節點 7: 結束 -->
-<rect class="flow-node" fill="#e2e8f0" height="30" id="gn-end" rx="15" stroke="#475569" stroke-width="1.5" width="100" x="110" y="375"></rect>
-<text fill="#1e293b" text-anchor="middle" x="160" y="394">結束</text>
-</svg>
-</div>
-</div>
-<!-- 控制面板 -->
-<div class="bg-white p-4 rounded-lg border border-slate-200 text-xs space-y-3">
-<div class="flex justify-between items-center">
-<span class="font-bold text-slate-700">🎮 猜數字互動測試：</span>
-<span class="text-slate-500">系統密碼: <strong class="text-indigo-600 font-mono text-sm" id="targetSecret">42</strong></span>
-<button class="text-indigo-600 hover:underline text-xxs" onclick="resetGuessSecret()">重設密碼</button>
-</div>
-<div class="flex gap-2">
-<input class="border p-2 rounded w-full font-mono text-sm focus:outline-none focus:border-indigo-500" id="guessInputVal" max="100" min="0" placeholder="輸入 0~100" type="number"/>
-<button class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded font-bold whitespace-nowrap transition" onclick="runGuessSim()">提交猜測</button>
-</div>
-<div class="p-2.5 rounded text-center font-bold bg-slate-100 text-slate-600" id="guessStatus">
-                                請輸入數字並按下提交，觀察流程圖判斷點
-                            </div>
-</div>
-</div>
-</div>
-</div>
+<!-- 4.2 control structures -->
+<section id="ctrl">
+  <div class="sec-head"><span class="sec-no">4.2</span><h2>程式流程控制的三種結構</h2></div>
+  <div class="grid3">
+    <figure class="fig stack">
+      <h3>循序結構</h3>
+      <p class="small">一步一步依序執行。</p>
+      <svg class="fc" viewBox="0 0 200 180" role="img" aria-label="循序結構：敘述1、敘述2、敘述3 依序執行">
+        <defs><marker id="m3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" class="ah"/></marker></defs>
+        <path class="e" d="M100 2V20" marker-end="url(#m3)"/>
+        <rect class="n" x="50" y="22" width="100" height="30" rx="3"/><text x="100" y="42">敘述1</text>
+        <path class="e" d="M100 52V72" marker-end="url(#m3)"/>
+        <rect class="n" x="50" y="74" width="100" height="30" rx="3"/><text x="100" y="94">敘述2</text>
+        <path class="e" d="M100 104V124" marker-end="url(#m3)"/>
+        <rect class="n" x="50" y="126" width="100" height="30" rx="3"/><text x="100" y="146">敘述3</text>
+        <path class="e" d="M100 156V176" marker-end="url(#m3)"/>
+      </svg>
+    </figure>
+    <figure class="fig stack">
+      <h3>選擇結構</h3>
+      <p class="small">依條件判斷的結果，選擇執行不同的程式碼。如 if、if-else、switch。<b>本章重點</b></p>
+      <svg class="fc" viewBox="0 0 220 180" role="img" aria-label="選擇結構：條件式為 True 執行敘述1，False 執行敘述2">
+        <defs><marker id="m4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" class="ah"/></marker></defs>
+        <path class="e" d="M110 2V20" marker-end="url(#m4)"/>
+        <polygon class="n d" points="110,22 170,52 110,82 50,52"/><text x="110" y="57">條件式</text>
+        <path class="e" d="M50 52H40V118" marker-end="url(#m4)"/><text class="lb" x="6" y="46">False</text>
+        <path class="e" d="M170 52H180V118" marker-end="url(#m4)"/><text class="lb" x="176" y="46">True</text>
+        <rect class="n" x="2" y="120" width="76" height="30" rx="3"/><text x="40" y="140">敘述2</text>
+        <rect class="n" x="142" y="120" width="76" height="30" rx="3"/><text x="180" y="140">敘述1</text>
+        <path class="e" d="M40 150V176M180 150V176"/>
+      </svg>
+    </figure>
+    <figure class="fig stack">
+      <h3>重複結構</h3>
+      <p class="small">重複執行某些程式碼，直到滿足特定條件。如 for、while、do-while（第五章）。</p>
+      <svg class="fc" viewBox="0 0 230 180" role="img" aria-label="重複結構：條件式為 True 執行敘述後回到條件式，False 離開">
+        <defs><marker id="m5" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" class="ah"/></marker></defs>
+        <path class="e" d="M70 2V62" marker-end="url(#m5)"/>
+        <polygon class="n d" points="70,64 128,94 70,124 12,94"/><text x="70" y="99">條件式</text>
+        <path class="e" d="M128 94H146" marker-end="url(#m5)"/><text class="lb" x="128" y="86">True</text>
+        <rect class="n" x="148" y="79" width="76" height="30" rx="3"/><text x="186" y="99">敘述</text>
+        <path class="e" d="M186 79V36H74" marker-end="url(#m5)"/>
+        <path class="e" d="M70 124V176" marker-end="url(#m5)"/><text class="lb" x="76" y="160">False</text>
+      </svg>
+    </figure>
+  </div>
 </section>
-<!-- 2. 程式流程控制三大結構 -->
-<section class="slide space-y-4" data-slide="3" id="structures">
-<h2 class="text-2xl md:text-3xl font-bold text-indigo-400 mb-6 flex items-center gap-3">
 
-                程式流程控制 (Program Control Structures)
-            </h2>
-<div class="grid md:grid-cols-3 gap-6">
-<div class="border rounded-lg p-4 bg-white border-slate-200 text-slate-900 shadow-sm">
-<h3 class="font-bold text-indigo-600 text-lg mb-2">1. 循序結構</h3>
-<p class="text-sm text-slate-700 mb-3">一步一步循序地執行。</p>
-<div class="bg-slate-50 p-3 border rounded text-center text-xs space-y-1 text-slate-900">
-<div class="p-1 bg-indigo-100 border border-indigo-300 rounded text-indigo-950">敘述 1</div>
-<div class="text-slate-700 font-bold">↓</div>
-<div class="p-1 bg-indigo-100 border border-indigo-300 rounded text-indigo-950">敘述 2</div>
-<div class="text-slate-700 font-bold">↓</div>
-<div class="p-1 bg-indigo-100 border border-indigo-300 rounded text-indigo-950">敘述 3</div>
-</div>
-</div>
-<div class="border rounded-lg p-4 bg-white border-slate-200 text-slate-900 shadow-sm">
-<h3 class="font-bold text-indigo-600 text-lg mb-2">2. 選擇結構</h3>
-<p class="text-sm text-slate-700 mb-3">根據條件判斷結果，選擇執行不同程式碼 (如 if, switch)。</p>
-<div class="bg-slate-50 p-3 border rounded text-center text-xs space-y-1 text-slate-900">
-<div class="p-1 bg-amber-100 border border-amber-300 rounded font-bold text-amber-950">條件式？</div>
-<div class="flex justify-around text-xxs text-slate-800 font-semibold">
-<span>True ↙</span>
-<span>↘ False</span>
-</div>
-<div class="grid grid-cols-2 gap-1">
-<div class="p-1 bg-green-100 border border-green-300 rounded text-green-950">敘述 1</div>
-<div class="p-1 bg-red-100 border border-red-300 rounded text-red-950">敘述 2</div>
-</div>
-</div>
-</div>
-<div class="border rounded-lg p-4 bg-white border-slate-200 text-slate-900 shadow-sm">
-<h3 class="font-bold text-indigo-600 text-lg mb-2">3. 重複結構</h3>
-<p class="text-sm text-slate-700 mb-3">重複執行程式碼直到滿足特定條件 (如 for, while)。</p>
-<div class="bg-slate-50 p-3 border rounded text-center text-xs space-y-1 text-slate-900">
-<div class="p-1 bg-amber-100 border border-amber-300 rounded font-bold text-amber-950">條件式？</div>
-<div class="text-slate-800 font-semibold">↓ True</div>
-<div class="p-1 bg-blue-100 border border-blue-300 rounded text-blue-950">迴圈執行敘述 ↺</div>
-<div class="text-slate-800 font-semibold">↓ False</div>
-<div class="p-1 bg-slate-200 rounded text-slate-900">離開迴圈</div>
-</div>
-</div>
-</div>
+<!-- 4.3 relational -->
+<section id="rel">
+  <div class="sec-head"><span class="sec-no">4.3</span><h2>關係運算子</h2></div>
+  <div class="grid2">
+    <div class="stack">
+      <p>用來比較兩個運算式的大小關係，結果只有兩種：成立為 <b>true（1）</b>，不成立為 <b>false（0）</b>。</p>
+      <div class="ctl-row">
+        <label for="rl-a">左邊</label><input type="number" id="rl-a" value="2">
+        <label for="rl-b">右邊</label><input type="number" id="rl-b" value="1">
+        <button class="btn" id="rl-all">全部顯示</button>
+      </div>
+      <p class="small muted">先自己想結果是什麼，再點右欄的「?」檢查。</p>
+      <div class="note">不要弄錯 <code>=</code>（指定運算子）和 <code>==</code>（關係運算子）。<code>a = 6</code> 是把 6 放進 a；<code>a == 6</code> 才是比較。</div>
+    </div>
+    <div class="tbl"><table class="dt" id="rl-tbl"></table></div>
+  </div>
+
+  <div class="grid2" style="margin-top:28px">
+    <div class="stack">
+      <h3>把 == 寫成 = 會怎樣？</h3>
+      <p class="small"><code>a == 6</code> 的結果會隨變數 a 的值改變。若寫成 <code>a = 6</code>，a 會先被改成 6，而運算式的值是 6（非 0 即為 true），所以<b>不論 a 原本是多少，條件都成立</b>。</p>
+      <div class="ctl-row">
+        <label for="eq-a">a 的值：</label><input type="number" id="eq-a" value="3">
+        <label class="chk"><input type="checkbox" id="eq-bug"> 寫錯成 <code>a = 6</code></label>
+      </div>
+    </div>
+    <div id="tr-eq"></div>
+  </div>
 </section>
-<!-- 3. 關係與邏輯運算子 -->
-<section class="slide space-y-4" data-slide="4" id="operators">
-<h2 class="text-2xl md:text-3xl font-bold text-indigo-400 mb-6 flex items-center gap-3">
 
-                關係運算子與邏輯運算子 (Relational &amp; Logical Operators)
-            </h2>
-<div class="grid md:grid-cols-2 gap-8">
-<!-- 關係運算子 -->
-<div>
-<h3 class="text-lg font-bold text-slate-800 mb-3">■ 關係運算子 (用來比較兩運算式大小)</h3>
-<table class="w-full text-sm border-collapse border border-slate-200 mb-4">
-<thead class="bg-slate-100">
-<tr>
-<th class="border p-2">運算子</th>
-<th class="border p-2">數學符號</th>
-<th class="border p-2">意義</th>
-<th class="border p-2">範例 (a=5)</th>
-<th class="border p-2">結果</th>
-</tr>
-</thead>
-<tbody>
-<tr><td class="border p-2 font-mono font-bold">==</td><td class="border p-2">=</td><td class="border p-2">等於</td><td class="border p-2 font-mono">(5 == 3)</td><td class="border p-2 text-red-600 font-bold">false (0)</td></tr>
-<tr><td class="border p-2 font-mono font-bold">!=</td><td class="border p-2">≠</td><td class="border p-2">不等於</td><td class="border p-2 font-mono">(5 != 3)</td><td class="border p-2 text-green-600 font-bold">true (1)</td></tr>
-<tr><td class="border p-2 font-mono font-bold">&gt;</td><td class="border p-2">&gt;</td><td class="border p-2">大於</td><td class="border p-2 font-mono">(5 &gt; 3)</td><td class="border p-2 text-green-600 font-bold">true (1)</td></tr>
-<tr><td class="border p-2 font-mono font-bold">&lt;</td><td class="border p-2">&lt;</td><td class="border p-2">小於</td><td class="border p-2 font-mono">(5 &lt; 3)</td><td class="border p-2 text-red-600 font-bold">false (0)</td></tr>
-<tr><td class="border p-2 font-mono font-bold">&gt;=</td><td class="border p-2">≥</td><td class="border p-2">大於等於</td><td class="border p-2 font-mono">(5 &gt;= 5)</td><td class="border p-2 text-green-600 font-bold">true (1)</td></tr>
-<tr><td class="border p-2 font-mono font-bold">&lt;=</td><td class="border p-2">≤</td><td class="border p-2">小於等於</td><td class="border p-2 font-mono">(5 &lt;= 3)</td><td class="border p-2 text-red-600 font-bold">false (0)</td></tr>
-</tbody>
-</table>
-<div class="bg-amber-50 border-l-4 border-amber-500 p-3 text-xs text-amber-900 rounded">
-<strong>⚠️ 重要提醒：</strong> 切勿弄錯 <code class="bg-amber-200 px-1 font-bold">=</code>（指定運算子，將右值賦予左邊）與 <code class="bg-amber-200 px-1 font-bold">==</code>（關係運算子，比較兩值是否相等）！
-                    </div>
-</div>
-<!-- 邏輯運算子與真值表 -->
-<div>
-<h3 class="text-lg font-bold text-slate-800 mb-3">■ 邏輯運算子 (判斷複合條件)</h3>
-<div class="grid grid-cols-3 gap-2 text-center text-xs mb-4">
-<div class="p-2 border rounded bg-slate-50"><span class="font-bold text-indigo-600 font-mono">!</span> (NOT 反)</div>
-<div class="p-2 border rounded bg-slate-50"><span class="font-bold text-indigo-600 font-mono">&amp;&amp;</span> (AND 且)</div>
-<div class="p-2 border rounded bg-slate-50"><span class="font-bold text-indigo-600 font-mono">||</span> (OR 或)</div>
-</div>
-<!-- 互動真值表 -->
-<h4 class="font-semibold text-slate-700 text-sm mb-2">真值表 (Truth Table) 互動模擬：</h4>
-<table class="w-full text-center text-xs border border-slate-200">
-<thead class="bg-slate-100">
-<tr>
-<th class="border p-1">A</th>
-<th class="border p-1">B</th>
-<th class="border p-1">!A</th>
-<th class="border p-1">A &amp;&amp; B</th>
-<th class="border p-1">A || B</th>
-</tr>
-</thead>
-<tbody>
-<tr><td class="border p-1">0</td><td class="border p-1">0</td><td class="border p-1">1</td><td class="border p-1">0</td><td class="border p-1">0</td></tr>
-<tr><td class="border p-1">0</td><td class="border p-1">1</td><td class="border p-1">1</td><td class="border p-1">0</td><td class="border p-1">1</td></tr>
-<tr><td class="border p-1">1</td><td class="border p-1">0</td><td class="border p-1">0</td><td class="border p-1">0</td><td class="border p-1">1</td></tr>
-<tr><td class="border p-1">1</td><td class="border p-1">1</td><td class="border p-1">0</td><td class="border p-1">1</td><td class="border p-1">1</td></tr>
-</tbody>
-</table>
-<div class="mt-4 bg-indigo-50 p-3 rounded text-xs space-y-1">
-<p class="font-bold text-indigo-900">課本運算式範例解析：</p>
-<p>• <code class="font-mono">(6==6) &amp;&amp; (5&gt;6)</code> ➔ <code class="font-mono">(1 &amp;&amp; 0)</code> ➔ <strong>0 (False)</strong></p>
-<p>• <code class="font-mono">(6==6) || (5&gt;6)</code> ➔ <code class="font-mono">(1 || 0)</code> ➔ <strong>1 (True)</strong></p>
-<p>• <code class="font-mono">!(6!=5)</code> ➔ <code class="font-mono">!(1)</code> ➔ <strong>0 (False)</strong></p>
-</div>
-</div>
-</div>
+<!-- 4.4 logical -->
+<section id="logic">
+  <div class="sec-head"><span class="sec-no">4.4</span><h2>邏輯運算子</h2></div>
+  <div class="grid2">
+    <div class="stack">
+      <p>用來判斷複合條件。在 C/C++ 中 <b>0 代表 false，非 0 代表 true</b>。</p>
+      <div class="tbl"><table class="dt">
+        <tr><th>運算子</th><th>運算</th><th>意義</th></tr>
+        <tr><td class="m">!</td><td>NOT</td><td>反</td></tr>
+        <tr><td class="m">&amp;&amp;</td><td>AND</td><td>且：兩個都成立才成立</td></tr>
+        <tr><td class="m">||</td><td>OR</td><td>或：任一個成立就成立</td></tr>
+      </table></div>
+      <div class="ctl-row">
+        <span>A =</span><button class="tog" id="lg-a" aria-pressed="false">0</button>
+        <span>B =</span><button class="tog" id="lg-b" aria-pressed="true">1</button>
+      </div>
+      <div class="big-eval" id="lg-eval"></div>
+    </div>
+    <div class="tbl"><table class="dt" id="lg-tbl"></table></div>
+  </div>
+  <div class="panel" style="margin-top:20px">
+    <h3>算算看</h3>
+    <p class="small muted" style="margin-bottom:10px">點「計算」看每一步怎麼化簡。</p>
+    <div class="expr" id="lg-ex"></div>
+  </div>
 </section>
-<!-- 4. 選擇結構 (if / if-else / if-else-if / 三元運算子 / switch) -->
-<section class="slide space-y-4" data-slide="5" id="selection">
-<h2 class="text-2xl md:text-3xl font-bold text-indigo-400 mb-6 flex items-center gap-3">
 
-                選擇結構語法與實務 (Selection Statements)
-            </h2>
-<div class="space-y-8">
-<!-- if 與 if-else -->
-<div class="grid md:grid-cols-2 gap-6">
-<div>
-<h3 class="font-bold text-slate-800 border-b pb-1 mb-2">■ if 敘述 (單向選擇)</h3>
-<p class="text-xs text-slate-600 mb-2">條件式為 true 時才執行被指定的敘述。若有多行程式碼必須使用花括號 <code class="font-mono font-bold">{ }</code> 包裹！</p>
-<pre class="code-block p-3 rounded text-xs">
-<span class="keyword">if</span> (a == <span class="number">1</span>) {
-    cout &lt;&lt; <span class="string">"輸入 1"</span> &lt;&lt; endl;
-    cout &lt;&lt; <span class="string">"1是正數"</span> &lt;&lt; endl;
+<!-- 4.5 if -->
+<section id="if">
+  <div class="sec-head"><span class="sec-no">4.5</span><h2>if 敘述</h2></div>
+  <div class="grid2">
+    <div class="stack">
+<pre class="snip" data-hl>if (條件式)
+    其他敘述句;
+
+if (條件式) {        // 2 行以上要加大括號
+    程式敘述句1;
+    程式敘述句2;
 }</pre>
-<p class="text-xxs text-red-500 mt-1">⚠️ 注意：萬一忘記加上 {}，則只會執行第一行敘述句！</p>
-</div>
-<div>
-<h3 class="font-bold text-slate-800 border-b pb-1 mb-2">■ if-else 敘述 (雙向選擇)</h3>
-<p class="text-xs text-slate-600 mb-2">條件成立執行 if 區塊，條件不成立則執行 else 區塊。</p>
-<pre class="code-block p-3 rounded text-xs">
-<span class="keyword">if</span> (score &gt;= <span class="number">60</span>)
-    cout &lt;&lt; <span class="string">"恭喜過關!"</span> &lt;&lt; endl;
-<span class="keyword">else</span>
-    cout &lt;&lt; <span class="string">"未過關!"</span> &lt;&lt; endl;</pre>
-</div>
-</div>
-<!-- if ~ else if ~ else 多重判斷 -->
-<div class="bg-indigo-50 p-4 rounded-lg border border-indigo-200">
-<h3 class="font-bold text-indigo-900 border-b border-indigo-200 pb-2 mb-3">■ if ~ else if ~ else 敘述 (多重選擇 / Else-If Ladder)</h3>
-<div class="grid md:grid-cols-2 gap-6">
-<div>
-<p class="text-xs text-slate-700 mb-2">用於多個互斥條件判斷，程式會從上到下依次檢查條件，一旦某條件成立便執行對應區塊並跳出。</p>
-<pre class="code-block p-3 rounded text-xs">
-<span class="keyword">if</span> (g &gt;= <span class="number">90</span>)
-    cout &lt;&lt; <span class="string">"等級A"</span>;
-<span class="keyword">else if</span> (g &gt;= <span class="number">80</span>)
-    cout &lt;&lt; <span class="string">"等級B"</span>;
-<span class="keyword">else if</span> (g &gt;= <span class="number">70</span>)
-    cout &lt;&lt; <span class="string">"等級C"</span>;
-<span class="keyword">else</span>
-    cout &lt;&lt; <span class="string">"等級D"</span>;</pre>
-</div>
-<!-- 互動測試器：成績等級判斷 -->
-<div class="bg-white p-3 rounded border border-indigo-200 text-xs flex flex-col justify-between">
-<div>
-<span class="font-bold text-indigo-800">💡 課本成績等級判斷模擬器：</span>
-<p class="text-slate-500 my-2">請輸入分數 g (0~100)：</p>
-<div class="flex gap-2 mb-3">
-<input class="border p-1 rounded w-full" id="gradeInput" placeholder="例如: 85" type="number"/>
-<button class="bg-indigo-600 text-white px-3 py-1 rounded hover:bg-indigo-700" onclick="checkGrade()">評定</button>
-</div>
-</div>
-<div class="p-2 text-center font-bold bg-slate-100 rounded text-slate-700" id="gradeResult">等待輸入...</div>
-</div>
-</div>
-</div>
-<!-- 三元運算子 -->
-<div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
-<h3 class="font-bold text-slate-800 mb-2">■ 三元運算子 (條件運算子 <code class="text-indigo-600 font-mono">?:</code>)</h3>
-<p class="text-xs text-slate-600 mb-3">語法：<code class="font-mono bg-white px-2 py-0.5 rounded border">條件式 ? true時執行 : false時執行;</code></p>
-<div class="grid md:grid-cols-3 gap-4 text-xs">
-<div class="bg-white p-3 rounded border">
-<span class="font-bold text-indigo-700">1. 求兩數最大值 max</span>
-<pre class="code-block p-2 rounded mt-1">max = (a &gt; b) ? a : b;</pre>
-</div>
-<div class="bg-white p-3 rounded border">
-<span class="font-bold text-indigo-700">2. 求 a 的絕對值 ab</span>
-<pre class="code-block p-2 rounded mt-1">ab = (a &gt; 0) ? a : -a;</pre>
-</div>
-<div class="bg-white p-3 rounded border">
-<span class="font-bold text-indigo-700">3. 判斷奇偶數 odd</span>
-<pre class="code-block p-2 rounded mt-1">odd = (n % <span class="number">2</span>) ? <span class="number">1</span> : <span class="number">0</span>;</pre>
-</div>
-</div>
-</div>
-<!-- 巢狀 if 與 switch -->
-<div class="grid md:grid-cols-2 gap-6">
-<div>
-<h3 class="font-bold text-slate-800 border-b pb-1 mb-2">■ 巢狀 if 實例 (車速判斷)</h3>
-<pre class="code-block p-3 rounded text-xs">
-<span class="keyword">if</span> (vel &gt; <span class="number">60</span>) {
-    <span class="keyword">if</span> (vel &lt; <span class="number">100</span>) {
-        cout &lt;&lt; <span class="string">"標準車速!"</span>;
-    } <span class="keyword">else</span> {
-        cout &lt;&lt; <span class="string">"車速太快!"</span>;
-    }
-} <span class="keyword">else</span> {
-    cout &lt;&lt; <span class="string">"車速太慢!"</span>;
-}</pre>
-<div class="mt-3 p-3 bg-indigo-50 rounded text-xs flex gap-2 items-center">
-<span>車速測試：</span>
-<input class="border p-1 rounded w-20" id="speedInput" placeholder="輸入 vel" type="number"/>
-<button class="bg-indigo-600 text-white px-2 py-1 rounded" onclick="testSpeed()">判斷</button>
-<span class="font-bold text-indigo-900 ml-2" id="speedResult"></span>
-</div>
-</div>
-<div>
-<h3 class="font-bold text-slate-800 border-b pb-1 mb-2">■ switch 敘述 (多重選擇)</h3>
-<pre class="code-block p-3 rounded text-xs">
-<span class="keyword">switch</span>(res) {
-    <span class="keyword">case</span> <span class="number">1</span>:
-        cout &lt;&lt; <span class="string">"輸入的是1。"</span> &lt;&lt; endl;
-        <span class="keyword">break</span>;
-    <span class="keyword">case</span> <span class="number">2</span>:
-        cout &lt;&lt; <span class="string">"輸入的是2。"</span> &lt;&lt; endl;
-        <span class="keyword">break</span>;
-    <span class="keyword">default</span>:
-        cout &lt;&lt; <span class="string">"請輸入1或2"</span> &lt;&lt; endl;
-        <span class="keyword">break</span>;
-}</pre>
-<div class="mt-2 text-xxs text-slate-500 space-y-1">
-<p>• 常數值可為單一常數 (如 1, 'A') 或連續常數 (如 1...3)。</p>
-<p>• <code class="font-bold text-red-600">break</code> 用於強制跳出，未加會繼續向下執行 (Fall-through)。</p>
-</div>
-</div>
-</div>
-</div>
+      <p>唯有當條件式為 true 時，才會執行被指定的敘述。</p>
+      <div class="note">萬一忘記加上 <code>{ }</code>，if 只管到下一行敘述，之後的敘述就不屬於 if。縮排只是給人看的，編譯器不看縮排。</div>
+      <div class="ctl-row">
+        <label for="if-a">a 的值：</label><input type="number" id="if-a" value="5">
+        <label class="chk"><input type="checkbox" id="if-br"> 加上 { }</label>
+      </div>
+      <p class="small muted">試試 a = 5：沒有大括號時，「1 是正數」還是會印出來。</p>
+    </div>
+    <div id="tr-if"></div>
+  </div>
 </section>
-<!-- 5. 補充資料：格式化輸出 iomanip -->
-<section class="slide space-y-4" data-slide="6" id="iomanip">
-<h2 class="text-2xl md:text-3xl font-bold text-indigo-400 mb-6 flex items-center gap-3">
 
-                &lt;補充資料&gt; 格式化輸出 (&lt;iomanip&gt;)
-            </h2>
-<div class="grid md:grid-cols-2 gap-6">
-<div>
-<p class="text-xs text-slate-600 mb-3">透過引入 <code class="font-mono font-bold">&lt;iomanip&gt;</code>，可以使用 <code class="font-mono">setw()</code> 設定欄寬，以及 <code class="font-mono">setfill()</code> 設定填補字元。</p>
-<pre class="code-block p-3 rounded text-xs">
-<span class="keyword">#include</span> <span class="string">&lt;iostream&gt;</span>
-<span class="keyword">#include</span> <span class="string">&lt;iomanip&gt;</span>
-<span class="keyword">using namespace</span> std;
-
-<span class="keyword">int</span> main() {
-    <span class="keyword">int</span> A = <span class="number">10</span>;
-    cout &lt;&lt; A &lt;&lt; endl;                          <span class="comment">// 10</span>
-    cout &lt;&lt; setw(<span class="number">4</span>) &lt;&lt; A &lt;&lt; endl;                 <span class="comment">//   10</span>
-    cout &lt;&lt; setw(<span class="number">4</span>) &lt;&lt; setfill(<span class="string">'0'</span>) &lt;&lt; A &lt;&lt; endl; <span class="comment">// 0010</span>
-    cout &lt;&lt; setw(<span class="number">4</span>) &lt;&lt; setfill(<span class="string">'_'</span>) &lt;&lt; A &lt;&lt; endl; <span class="comment">// __10</span>
-    <span class="keyword">return</span> <span class="number">0</span>;
-}</pre>
-</div>
-<div class="bg-slate-900 text-green-400 p-4 rounded-lg font-mono text-xs flex flex-col justify-between">
-<div>
-<div class="text-slate-500 border-b border-slate-700 pb-1 mb-2">Console Output Preview:</div>
-<p class="py-0.5">10</p>
-<p class="py-0.5">  10</p>
-<p class="py-0.5">0010</p>
-<p class="py-0.5">__10</p>
-</div>
-<div class="mt-4 pt-2 border-t border-slate-800 text-xxs text-slate-400">
-                        Process exited after 0.05s with return value 0.
-                    </div>
-</div>
-</div>
+<!-- 4.6 if-else -->
+<section id="ifelse">
+  <div class="sec-head"><span class="sec-no">4.6</span><h2>if～else 敘述</h2></div>
+  <div class="grid2">
+    <div class="stack">
+<pre class="snip" data-hl>if (條件式)
+    程式敘述1;
+else
+    程式敘述2;</pre>
+      <p>條件式不成立時，便會執行 else 之後的敘述句。兩條路<b>一定會走其中一條，也只會走一條</b>。</p>
+      <div class="panel ctl-row">
+        <label for="sc-in">score：</label>
+        <input type="range" id="sc-in" min="0" max="100" value="72" style="flex:1 1 160px">
+        <b class="mono" id="sc-v">72</b>
+      </div>
+    </div>
+    <div id="tr-score"></div>
+  </div>
+  <div class="grid2" style="margin-top:28px">
+    <div class="stack">
+      <h3>大括號搭配 else</h3>
+      <p class="small">if 的部分有兩行，所以用 <code>{ }</code> 包起來；else 只有一行，可以不加。</p>
+      <div class="ctl-row"><label for="ie-a">a 的值：</label><input type="number" id="ie-a" value="1"></div>
+    </div>
+    <div id="tr-ie"></div>
+  </div>
 </section>
-<!-- 6. APCS 觀念題真題實戰解析 -->
-<section class="slide space-y-4" data-slide="7" id="apcs">
-<div class="flex justify-between items-center border-b border-amber-300 pb-3 mb-6">
-<h2 class="text-2xl md:text-3xl font-bold text-indigo-400 mb-6 flex items-center gap-3">
 
-                    APCS 觀念題真題實戰解析 (全 5 題)
-                </h2>
-<span class="text-xs bg-amber-200 text-amber-800 px-2 py-1 rounded font-semibold">互動答題與詳解</span>
-</div>
-<div class="space-y-8">
-<!-- 題目 1 -->
-<div class="bg-white p-5 rounded-lg border border-amber-200 shadow-sm">
-<h3 class="font-bold text-slate-800 text-sm mb-2">【題目 1】(APCS 第22題)</h3>
-<p class="text-xs text-slate-700 mb-3">若要邏輯判斷式 <code class="font-mono bg-slate-100 px-1 font-bold">!(X1 || X2)</code> 計算結果為真 (True)，則 X1 與 X2 的值分別應為何？</p>
-<div class="grid md:grid-cols-2 gap-2 text-xs mb-3">
-<button class="p-2 text-left border rounded hover:bg-amber-50" onclick="checkApcs(1, 'A')">(A) X1 為 False, X2 為 False</button>
-<button class="p-2 text-left border rounded hover:bg-amber-50" onclick="checkApcs(1, 'B')">(B) X1 為 True, X2 為 True</button>
-<button class="p-2 text-left border rounded hover:bg-amber-50" onclick="checkApcs(1, 'C')">(C) X1 為 True, X2 為 False</button>
-<button class="p-2 text-left border rounded hover:bg-amber-50" onclick="checkApcs(1, 'D')">(D) X1 為 False, X2 為 True</button>
-</div>
-<div class="hidden text-xs p-3 rounded bg-slate-50 border" id="ans-1"></div>
-</div>
-<!-- 題目 2 -->
-<div class="bg-white p-5 rounded-lg border border-amber-200 shadow-sm">
-<h3 class="font-bold text-slate-800 text-sm mb-2">【題目 2】(APCS 第14題)</h3>
-<p class="text-xs text-slate-700 mb-2">假設 x, y, z 為布林變數，且 <code class="font-mono">x = TRUE, y = TRUE, z = FALSE</code>。請問下面各布林運算式的真假值依序為何？</p>
-<ul class="list-disc list-inside text-xs font-mono text-indigo-900 bg-slate-50 p-2 rounded mb-3 space-y-1">
-<li>1. !(y || z) || x</li>
-<li>2. !y || (z || !x)</li>
-<li>3. (x || y) &amp;&amp; (y || z)</li>
-<li>4. (x || x) &amp;&amp; z</li>
-</ul>
-<div class="grid md:grid-cols-2 gap-2 text-xs mb-3">
-<button class="p-2 text-left border rounded hover:bg-amber-50" onclick="checkApcs(2, 'A')">(A) TRUE FALSE TRUE FALSE</button>
-<button class="p-2 text-left border rounded hover:bg-amber-50" onclick="checkApcs(2, 'B')">(B) FALSE FALSE TRUE FALSE</button>
-<button class="p-2 text-left border rounded hover:bg-amber-50" onclick="checkApcs(2, 'C')">(C) FALSE TRUE TRUE FALSE</button>
-<button class="p-2 text-left border rounded hover:bg-amber-50" onclick="checkApcs(2, 'D')">(D) TRUE TRUE FALSE TRUE</button>
-</div>
-<div class="hidden text-xs p-3 rounded bg-slate-50 border" id="ans-2"></div>
-</div>
-<!-- 題目 3 -->
-<div class="bg-white p-5 rounded-lg border border-amber-200 shadow-sm">
-<h3 class="font-bold text-slate-800 text-sm mb-2">【題目 3】(APCS 第16題)</h3>
-<p class="text-xs text-slate-700 mb-2">右側程式執行過後所輸出數值為何？</p>
-<pre class="code-block p-3 rounded text-xs mb-3">
-void main() {
-    int count = 10;
-    if (count &gt; 0) {
-        count = 11;
-        if (count &gt; 10) {
-            count = 12;
-            if (count == 4) 
-                count = 1;
-            else { count = 0; }
-        }
-        else if (count &gt; 11) { count = 13; }
-        else { count = 14; }
+<!-- 4.7 ternary -->
+<section id="tern">
+  <div class="sec-head"><span class="sec-no">4.7</span><h2>三元運算子（條件運算子）</h2></div>
+  <div class="grid2">
+    <div class="stack">
+      <p class="big-eval">條件式 <b>?</b> <span class="r">true 的時候</span> <b>:</b> false 的時候</p>
+      <p>可以把簡單的 if～else 濃縮成一行：</p>
+<pre class="snip" data-hl>if (a > b)
+    max = a;
+else
+    max = b;
+// ↓ 等同於
+max = (a > b) ? a : b;</pre>
+      <div class="ctl-row">
+        <label for="tn-a">a</label><input type="number" id="tn-a" value="-3">
+        <label for="tn-b">b</label><input type="number" id="tn-b" value="7">
+        <label for="tn-n">n</label><input type="number" id="tn-n" value="9">
+      </div>
+    </div>
+    <div class="tbl"><table class="dt" id="tn-tbl"></table></div>
+  </div>
+</section>
 
-        if (count) { count = 15; }
-        else { count = 16; }
-    }
-    printf("%d\n", count);
-}</pre>
-<div class="grid grid-cols-4 gap-2 text-xs mb-3">
-<button class="p-2 text-center border rounded hover:bg-amber-50" onclick="checkApcs(3, 'A')">(A) 11</button>
-<button class="p-2 text-center border rounded hover:bg-amber-50" onclick="checkApcs(3, 'B')">(B) 13</button>
-<button class="p-2 text-center border rounded hover:bg-amber-50" onclick="checkApcs(3, 'C')">(C) 15</button>
-<button class="p-2 text-center border rounded hover:bg-amber-50" onclick="checkApcs(3, 'D')">(D) 16</button>
-</div>
-<div class="hidden text-xs p-3 rounded bg-slate-50 border" id="ans-3"></div>
-</div>
-<!-- 題目 4 -->
-<div class="bg-white p-5 rounded-lg border border-amber-200 shadow-sm">
-<h3 class="font-bold text-slate-800 text-sm mb-2">【題目 4】(APCS 第9題)</h3>
-<p class="text-xs text-slate-700 mb-2">右側是依據分數 s 評定等第的程式碼。正確公式為：90~100為A、80~89為B、70~79為C、60~69為D、0~59為F。請問這段程式碼在處理 0~100 的整數分數時，有**幾個分數**的等第會算錯？</p>
-<pre class="code-block p-3 rounded text-xs mb-3">
-if (s &gt;= 90) { printf("A\n"); }
-else if (s &gt;= 80) { printf("B\n"); }
-else if (s &gt; 60) { printf("D\n"); }
-else if (s &gt; 70) { printf("C\n"); }
-else { printf("E\n"); }</pre>
-<div class="grid grid-cols-4 gap-2 text-xs mb-3">
-<button class="p-2 text-center border rounded hover:bg-amber-50" onclick="checkApcs(4, 'A')">(A) 20</button>
-<button class="p-2 text-center border rounded hover:bg-amber-50" onclick="checkApcs(4, 'B')">(B) 11</button>
-<button class="p-2 text-center border rounded hover:bg-amber-50" onclick="checkApcs(4, 'C')">(C) 2</button>
-<button class="p-2 text-center border rounded hover:bg-amber-50" onclick="checkApcs(4, 'D')">(D) 10</button>
-</div>
-<div class="hidden text-xs p-3 rounded bg-slate-50 border" id="ans-4"></div>
-</div>
-<!-- 題目 5 -->
-<div class="bg-white p-5 rounded-lg border border-amber-200 shadow-sm">
-<h3 class="font-bold text-slate-800 text-sm mb-2">【題目 5】(APCS 第2題)</h3>
-<p class="text-xs text-slate-700 mb-2">右側 switch 敘述程式碼可以如何以等價的 if-else 改寫？</p>
-<pre class="code-block p-3 rounded text-xs mb-3">
-switch (x) {
-    case 10: y = 'a'; break;
-    case 20:
-    case 30: y = 'b'; break;
-    default: y = 'c';
-}</pre>
-<div class="grid md:grid-cols-2 gap-2 text-xs mb-3">
-<button class="p-2 text-left border rounded hover:bg-amber-50" onclick="checkApcs(5, 'A')">(A) if(x==10) y='a'; if(x==20||x==30) y='b'; y='c';</button>
-<button class="p-2 text-left border rounded hover:bg-amber-50" onclick="checkApcs(5, 'B')">(B) if(x==10) y='a'; else if(x==20||x==30) y='b'; else y='c';</button>
-<button class="p-2 text-left border rounded hover:bg-amber-50" onclick="checkApcs(5, 'C')">(C) if(x==10) y='a'; if(x&gt;=20&amp;&amp;x&lt;=30) y='b'; y='c';</button>
-<button class="p-2 text-left border rounded hover:bg-amber-50" onclick="checkApcs(5, 'D')">(D) if(x==10) y='a'; else if(x&gt;=20&amp;&amp;x&lt;=30) y='b'; else y='c';</button>
-</div>
-<div class="hidden text-xs p-3 rounded bg-slate-50 border" id="ans-5"></div>
-</div>
-</div>
+<!-- 4.8 ladder -->
+<section id="ladder">
+  <div class="sec-head"><span class="sec-no">4.8</span><h2>if～else if～else</h2></div>
+  <div class="grid2">
+    <div class="stack">
+      <p>多個條件由上往下依序檢查，<b>遇到第一個成立的就執行它，其餘全部跳過</b>。都不成立才執行最後的 else。</p>
+      <div class="panel stack">
+        <div class="ctl-row"><label for="gd-in">g：</label><input type="range" id="gd-in" min="0" max="100" value="84" style="flex:1 1 160px"><b class="mono" id="gd-v">84</b></div>
+        <div>
+          <div class="gmark"><span id="gd-mk">84</span></div>
+          <div class="gbar">
+            <div style="flex:70;background:var(--g-d)">D</div>
+            <div style="flex:10;background:var(--g-c)">C</div>
+            <div style="flex:10;background:var(--g-b)">B</div>
+            <div style="flex:10;background:var(--g-a)">A</div>
+          </div>
+          <div class="gaxis"><span style="left:0;transform:none">0</span><span style="left:70%">70</span><span style="left:80%">80</span><span style="left:90%">90</span><span style="left:100%;transform:translateX(-100%)">100</span></div>
+        </div>
+      </div>
+      <p class="small muted">為什麼第二個條件只寫 <code>g &gt;= 80</code>，不用寫 <code>g &gt;= 80 &amp;&amp; g &lt; 90</code>？因為能走到這裡，代表前面的 <code>g &gt;= 90</code> 已經不成立。</p>
+    </div>
+    <div id="tr-gd"></div>
+  </div>
+</section>
+
+<!-- 4.9 nested if -->
+<section id="nestif">
+  <div class="sec-head"><span class="sec-no">4.9</span><h2>巢狀 if</h2></div>
+  <div class="grid2">
+    <div class="stack">
+      <p>if 裡面還有 if。只有外層條件成立時，才會進去判斷內層條件。</p>
+      <div class="panel ctl-row">
+        <label for="vl-in">車速 vel：</label>
+        <input type="range" id="vl-in" min="0" max="150" value="80" style="flex:1 1 160px">
+        <b class="mono" id="vl-v">80</b>
+      </div>
+      <figure class="fig">
+        <svg class="fc" id="fc-vl" viewBox="0 0 360 200" role="img" aria-label="巢狀 if 流程圖：vel 大於 60 再判斷 vel 小於 100">
+          <defs><marker id="m6" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" class="ah"/></marker></defs>
+          <path class="e" d="M180 2V18" marker-end="url(#m6)"/>
+          <g data-p="o"><polygon class="n d" points="180,20 246,46 180,72 114,46"/><text x="180" y="51">vel &gt; 60</text></g>
+          <path data-p="t" class="e" d="M114 46H90V88" marker-end="url(#m6)"/><text class="lb" x="76" y="40">True</text>
+          <path data-p="f" class="e" d="M246 46H290V150" marker-end="url(#m6)"/><text class="lb" x="252" y="40">False</text>
+          <g data-p="t"><polygon class="n d" points="90,90 152,116 90,142 28,116"/><text x="90" y="121">vel &lt; 100</text></g>
+          <path data-p="tt" class="e" d="M28 116H14V156" marker-end="url(#m6)"/>
+          <path data-p="tf" class="e" d="M152 116H170V156" marker-end="url(#m6)"/>
+          <g data-p="tt"><rect class="n" x="2" y="158" width="96" height="30" rx="3"/><text x="50" y="178">標準車速!</text></g>
+          <g data-p="tf"><rect class="n" x="118" y="158" width="96" height="30" rx="3"/><text x="166" y="178">車速太快!</text></g>
+          <g data-p="f"><rect class="n" x="242" y="152" width="96" height="30" rx="3"/><text x="290" y="172">車速太慢!</text></g>
+        </svg>
+      </figure>
+    </div>
+    <div id="tr-vl"></div>
+  </div>
+</section>
+
+<!-- 4.10 switch -->
+<section id="switch">
+  <div class="sec-head"><span class="sec-no">4.10</span><h2>switch 敘述</h2></div>
+  <div class="grid2">
+    <div class="stack">
+      <ul class="plain">
+        <li>括號內運算式的值與某個 case 後面的值一致，就從該 case 開始執行，<b>直到碰上 break 為止</b>。</li>
+        <li>沒有任何相符的 case，就跳到 <code>default:</code> 執行。</li>
+        <li>case 後面的常數值可以是單一常數，例如 <code>1</code> 或 <code>'A'</code>；GCC 也接受連續範圍，例如 <code>case 1 ... 3:</code>、<code>case 'A' ... 'C':</code>。</li>
+        <li>break 會強制中斷執行流程，位置放錯就會影響結果。勾選下面的選項看看。</li>
+      </ul>
+      <div class="panel ctl-row">
+        <span>res =</span>
+        <span class="ctl-row" id="sw-pick" style="gap:6px"></span>
+        <label class="chk" style="flex-basis:100%"><input type="checkbox" id="sw-nb"> 刪掉 case 1 的 break</label>
+      </div>
+      <p class="small muted">刪掉 break 後選 res = 1：程式會「穿越」到 case 2 繼續執行，印出兩行。</p>
+    </div>
+    <div id="tr-sw"></div>
+  </div>
+</section>
+
+<!-- 4.11 format -->
+<section id="fmt">
+  <div class="sec-head"><span class="sec-no">補充</span><h2>格式化輸出：setw 與 setfill</h2></div>
+  <div class="grid2">
+    <div class="stack">
+      <p>要先 <code>#include &lt;iomanip&gt;</code>。<code>setw(n)</code> 設定<b>下一個</b>輸出項目至少佔 n 格，不足的部分從左邊補上 <code>setfill</code> 指定的字元（預設是空白）。</p>
+<pre class="snip" data-hl>int A = 10;
+cout << A << endl;
+cout << setw(4) << A << endl;
+cout << setw(4) << setfill('0') << A << endl;
+cout << setw(4) << setfill('_') << A << endl;</pre>
+      <pre class="console">10
+  10
+0010
+__10</pre>
+      <p class="small muted">注意：setw 只影響下一個輸出；setfill 設定後會一直有效，直到再次更改。</p>
+    </div>
+    <div class="panel stack">
+      <h3>自己試試</h3>
+      <div class="ctl-row">
+        <label for="fm-v">輸出值</label><input type="text" id="fm-v" value="10" size="6">
+        <label for="fm-w">setw</label><input type="number" id="fm-w" min="0" max="12" value="6">
+        <label for="fm-f">setfill</label>
+        <select id="fm-f"><option value=" ">' '（空白）</option><option value="0" selected>'0'</option><option value="_">'_'</option><option value="*">'*'</option><option value="#">'#'</option></select>
+      </div>
+      <pre class="snip" id="fm-code"></pre>
+      <div><div class="cap">輸出（每格一個字元，綠色是補上的字元）</div><div class="cells" id="fm-cells"></div></div>
+      <p class="small" id="fm-note"></p>
+    </div>
+  </div>
+</section>
+
+<!-- APCS -->
+<section id="apcs">
+  <div class="sec-head"><span class="sec-no">4.12</span><h2>APCS 觀念題</h2></div>
+  <div class="score">
+    <span>已作答 <b id="sc-done">0</b> / <b id="sc-total">5</b></span>
+    <span>一次就答對 <b id="sc-ok">0</b></span>
+    <button class="btn" id="sc-reset">全部重做</button>
+  </div>
+  <div class="quiz" id="quiz"></div>
 </section>
 </main>
-<footer class="bg-slate-800/80 backdrop-blur border-t border-slate-700 px-6 py-4 flex justify-between items-center">
-<button class="px-4 py-2 bg-slate-700 hover:bg-slate-600 disabled:opacity-40 disabled:cursor-not-allowed rounded-lg text-sm font-medium transition flex items-center space-x-2" id="btn-prev" onclick="prevSlide()">
-<i class="fas fa-chevron-left"></i><span>上一頁</span>
-</button>
-<div class="flex space-x-2" id="dots-container"></div>
-<button class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 disabled:cursor-not-allowed rounded-lg text-sm font-medium transition flex items-center space-x-2" id="btn-next" onclick="nextSlide()">
-<span>下一頁</span><i class="fas fa-chevron-right"></i>
-</button>
-</footer>
-<!-- JavaScript 邏輯控制 -->
+
+<footer class="wrap">第四章 流程圖與選擇結構 · 依課堂投影片內容製作。追蹤器是依每段程式逐行模擬的結果。</footer>
+
 <script>
-        // 1.1 紅綠燈動態流程圖模擬
-        function runTrafficSim(isGreen) {
-            const nodes = ['tf-start', 'tf-cond', 'tf-wait', 'tf-cross', 'tf-end'];
-            nodes.forEach(id => {
-                document.getElementById(id).className.baseVal = "flow-node";
-            });
+/* ---------- highlighting ---------- */
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const RE=/(\/\/.*$)|("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')|\b(int|char|bool|while|do|for|if|else|switch|case|default|continue|break|return|void|true|false)\b|\b(cout|cin|endl|printf|setw|setfill)\b|(\b\d+\b)/g;
+function hl(s){let o='',last=0;s.replace(RE,(m,cm,st,kw,io,num,idx)=>{o+=esc(s.slice(last,idx));const c=cm?'c':st?'s':kw?'k':io?'f':'n';o+=`<span class="t-${c}">${esc(m)}</span>`;last=idx+m.length;return m;});return o+esc(s.slice(last));}
+function renderLine(s){let o='',last=0;s.replace(/⟦(\d+):(.*?)⟧/g,(m,n,inner,idx)=>{o+=hl(s.slice(last,idx));o+=`<span class="seg" data-seg="${n}">${hl(inner)}</span>`;last=idx+m.length;return m;});return o+hl(s.slice(last));}
+document.querySelectorAll('[data-hl]').forEach(el=>{el.innerHTML=el.textContent.split('\n').map(hl).join('\n');});
+const $=id=>document.getElementById(id);
+const TF=v=>v?'true':'false';
 
-            const status = document.getElementById('trafficStatus');
-            document.getElementById('tf-start').classList.add('active');
-            
-            setTimeout(() => {
-                document.getElementById('tf-cond').classList.add('active');
-            }, 200);
-
-            setTimeout(() => {
-                if (isGreen) {
-                    document.getElementById('tf-cross').classList.add('active-pass');
-                    status.textContent = "True (綠燈) ➔ 執行「過馬路」步驟！";
-                    status.className = "p-2.5 rounded text-center font-bold bg-green-100 text-green-800 border border-green-300";
-                } else {
-                    document.getElementById('tf-wait').classList.add('active-fail');
-                    status.textContent = "False (紅燈) ➔ 執行「停下等待」步驟！";
-                    status.className = "p-2.5 rounded text-center font-bold bg-red-100 text-red-800 border border-red-300";
-                }
-                document.getElementById('tf-end').classList.add('active');
-            }, 500);
-        }
-
-        // 1.2 猜數字動態流程圖模擬
-        let secretCode = 42;
-
-        function resetGuessSecret() {
-            secretCode = Math.floor(Math.random() * 101);
-            document.getElementById('targetSecret').textContent = secretCode;
-            document.getElementById('guessStatus').textContent = "密碼已重設！請重新輸入猜測值。";
-            document.getElementById('guessStatus').className = "p-2.5 rounded text-center font-bold bg-slate-100 text-slate-600";
-        }
-
-        function runGuessSim() {
-            const inputEl = document.getElementById('guessInputVal');
-            const val = parseInt(inputEl.value);
-            const status = document.getElementById('guessStatus');
-
-            if (isNaN(val) || val < 0 || val > 100) {
-                status.textContent = "⚠️ 請輸入 0~100 之間的有效數字！";
-                status.className = "p-2.5 rounded text-center font-bold bg-amber-100 text-amber-800 border border-amber-300";
-                return;
-            }
-
-            const nodes = ['gn-start', 'gn-rand', 'gn-input', 'gn-cond', 'gn-true', 'gn-false', 'gn-end'];
-            nodes.forEach(id => {
-                document.getElementById(id).className.baseVal = "flow-node";
-            });
-
-            document.getElementById('gn-start').classList.add('active');
-            document.getElementById('gn-rand').classList.add('active');
-
-            setTimeout(() => {
-                document.getElementById('gn-input').classList.add('active');
-                document.getElementById('gn-cond').classList.add('active');
-            }, 200);
-
-            setTimeout(() => {
-                if (val === secretCode) {
-                    document.getElementById('gn-true').classList.add('active-pass');
-                    status.textContent = `輸入 ${val} == 密碼 ${secretCode} (True) ➔ 印出「猜對了」！🎉`;
-                    status.className = "p-2.5 rounded text-center font-bold bg-green-100 text-green-800 border border-green-300";
-                } else {
-                    document.getElementById('gn-false').classList.add('active-fail');
-                    status.textContent = `輸入 ${val} != 密碼 ${secretCode} (False) ➔ 印出「猜錯了」！❌`;
-                    status.className = "p-2.5 rounded text-center font-bold bg-red-100 text-red-800 border border-red-300";
-                }
-                document.getElementById('gn-end').classList.add('active');
-            }, 500);
-        }
-
-        // 3. if~else if~else 成績等級判斷
-        function checkGrade() {
-            const g = parseFloat(document.getElementById('gradeInput').value);
-            const res = document.getElementById('gradeResult');
-            if(isNaN(g)) {
-                res.textContent = "請輸入有效分數";
-                res.className = "p-2 text-center font-bold bg-slate-100 rounded text-slate-700";
-                return;
-            }
-
-            if (g >= 90) {
-                res.textContent = "等級 A";
-                res.className = "p-2 text-center font-bold bg-green-100 text-green-800 rounded border border-green-300";
-            } else if (g >= 80) {
-                res.textContent = "等級 B";
-                res.className = "p-2 text-center font-bold bg-blue-100 text-blue-800 rounded border border-blue-300";
-            } else if (g >= 70) {
-                res.textContent = "等級 C";
-                res.className = "p-2 text-center font-bold bg-amber-100 text-amber-800 rounded border border-amber-300";
-            } else {
-                res.textContent = "等級 D";
-                res.className = "p-2 text-center font-bold bg-red-100 text-red-800 rounded border border-red-300";
-            }
-        }
-
-        // 4. 巢狀 if 車速判斷
-        function testSpeed() {
-            const vel = parseFloat(document.getElementById('speedInput').value);
-            const res = document.getElementById('speedResult');
-            if(isNaN(vel)) {
-                res.textContent = "請輸入速度";
-                return;
-            }
-
-            if (vel > 60) {
-                if (vel < 100) {
-                    res.textContent = "標準車速!";
-                    res.className = "font-bold text-green-600 ml-2";
-                } else {
-                    res.textContent = "車速太快!";
-                    res.className = "font-bold text-red-600 ml-2";
-                }
-            } else {
-                res.textContent = "車速太慢!";
-                res.className = "font-bold text-amber-600 ml-2";
-            }
-        }
-
-        // 5. APCS 題庫解答
-        const apcsData = {
-            1: { correct: 'A', explain: '<strong>【解析】答案為 (A)</strong><br>!(X1 || X2) 為 True ➔ (X1 || X2) 為 False ➔ X1 與 X2 必須皆為 False。' },
-            2: { correct: 'A', explain: '<strong>【解析】答案為 (A) TRUE FALSE TRUE FALSE</strong><br>1. !(T||F)||>T ➔ T<br>2. !T||(F||!T) ➔ F<br>3. (T||T)&&(T||F) ➔ T<br>4. (T||T)&&F ➔ F' },
-            3: { correct: 'D', explain: '<strong>【解析】答案為 (D) 16</strong><br>count=10 ➔ >0成立 ➔ count=11 ➔ count=12 ➔ 判斷==4假 ➔ count=0 ➔ 判斷if(0)為假 ➔ 進入else區塊 count=16。' },
-            4: { correct: 'B', explain: '<strong>【解析】答案為 (B) 11 個分數</strong><br>1. 70~79 (10個分數) 被 s>60 攔截印出 D (錯)。<br>2. 60 (1個分數) 不符合 s>60，進入 else 印出 E (錯)。<br>合計 10 + 1 = 11 個分數算錯。' },
-            5: { correct: 'B', explain: '<strong>【解析】答案為 (B)</strong><br>case 20 與 case 30 共享程式碼，且與 case 10 互斥，需改寫為 else if (x==20 || x==30)。' }
-        };
-
-        function checkApcs(qNum, opt) {
-            const data = apcsData[qNum];
-            const ansDiv = document.getElementById(`ans-${qNum}`);
-            ansDiv.classList.remove('hidden');
-
-            if(opt === data.correct) {
-                ansDiv.className = "text-xs p-3 rounded bg-green-50 border border-green-300 text-green-900 mt-2";
-                ansDiv.innerHTML = `<span class="font-bold text-green-700">🎉 回答正確！</span><br>${data.explain}`;
-            } else {
-                ansDiv.className = "text-xs p-3 rounded bg-red-50 border border-red-300 text-red-900 mt-2";
-                ansDiv.innerHTML = `<span class="font-bold text-red-700">❌ 回答錯誤，請再試試！</span><br>${data.explain}`;
-            }
-        }
-    </script>
-<script>
-let currentSlide = 1;
-const totalSlides = 7;
-
-function updateSlide() {
-  document.querySelectorAll('.slide').forEach((el, idx) => {
-    el.classList.toggle('active', idx + 1 === currentSlide);
-  });
-  document.getElementById('slide-indicator').textContent = `頁次 ${currentSlide} / ${totalSlides}`;
-  document.getElementById('btn-prev').disabled = currentSlide === 1;
-  document.getElementById('btn-next').disabled = currentSlide === totalSlides;
-  updateDots();
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-function nextSlide() { if (currentSlide < totalSlides) { currentSlide++; updateSlide(); } }
-function prevSlide() { if (currentSlide > 1) { currentSlide--; updateSlide(); } }
-function goToSlide(n) { currentSlide = n; updateSlide(); }
-function updateDots() {
-  const container = document.getElementById('dots-container');
-  container.innerHTML = '';
-  for (let i = 1; i <= totalSlides; i++) {
-    const dot = document.createElement('button');
-    dot.className = `w-2.5 h-2.5 rounded-full transition-all ${i === currentSlide ? 'bg-indigo-400 w-6' : 'bg-slate-600 hover:bg-slate-500'}`;
-    dot.onclick = () => goToSlide(i);
-    container.appendChild(dot);
+/* ---------- tracer ---------- */
+function record(run,p,limit){const steps=[];let out='';const STOP={};
+  const T={at(line,vars,note='',seg=0){steps.push({line,vars:{...vars},out,note,seg});if(steps.length>=limit)throw STOP;},print(s){out+=s;}};
+  try{run(T,p)}catch(e){if(e!==STOP)throw e;}return{steps};}
+function mountTracer(root,cfg){
+  root.className='tracer';
+  root.innerHTML=`<div class="tr-head"><span class="tr-title"></span><span class="tr-count"></span></div>
+  <div class="tr-code"></div><p class="tr-note" aria-live="polite"></p>
+  <div class="tr-io"><div class="tr-vars"><div class="cap">變數</div><dl></dl></div><div class="tr-out"><div class="cap">輸出</div><pre></pre></div></div>
+  <div class="tr-ctrl"><button data-a="reset" aria-label="回到開頭">⏮</button><button data-a="prev">上一步</button><button data-a="play" class="primary">▶ 播放</button><button data-a="next">下一步</button><button data-a="end" aria-label="跳到最後">⏭</button><input type="range" min="0" value="0" aria-label="拖曳到任一步"></div>`;
+  const q=s=>root.querySelector(s);
+  const codeEl=q('.tr-code'),note=q('.tr-note'),dl=q('.tr-vars dl'),outEl=q('.tr-out pre'),count=q('.tr-count'),range=q('input[type=range]');
+  const bPrev=q('[data-a=prev]'),bNext=q('[data-a=next]'),bPlay=q('[data-a=play]'),bReset=q('[data-a=reset]'),bEnd=q('[data-a=end]');
+  q('.tr-title').textContent=cfg.title||'';
+  let st,idx=0,timer=null;
+  function stop(){clearInterval(timer);timer=null;bPlay.textContent='▶ 播放';}
+  function show(){
+    const s=st.steps[idx],pv=st.steps[idx-1];
+    codeEl.querySelectorAll('.ln').forEach(el=>el.classList.toggle('cur',+el.dataset.l===s.line));
+    codeEl.querySelectorAll('.seg').forEach(el=>el.classList.toggle('on',+el.dataset.seg===s.seg&&s.seg>0));
+    note.textContent=s.note||'\u00a0';
+    dl.innerHTML=Object.entries(s.vars).map(([k,v])=>`<div class="${pv&&pv.vars[k]!==v?'chg':''}"><dt>${esc(k)}</dt><dd>${v===undefined?'?':esc(String(v))}</dd></div>`).join('');
+    outEl.textContent=s.out;outEl.scrollTop=outEl.scrollHeight;
+    count.textContent=`第 ${idx+1} / ${st.steps.length} 步`;range.value=idx;
+    bPrev.disabled=bReset.disabled=idx===0;bNext.disabled=bEnd.disabled=idx===st.steps.length-1;
+    const cur=codeEl.querySelector('.ln.cur');
+    if(cur){const t=cur.offsetTop,h=codeEl.clientHeight;if(t<codeEl.scrollTop+4||t>codeEl.scrollTop+h-30)codeEl.scrollTop=t-h/2;}
+    if(cfg.onStep)cfg.onStep(s,idx===st.steps.length-1);
   }
+  function build(){
+    stop();const p=cfg.params?cfg.params():{};
+    const lines=typeof cfg.lines==='function'?cfg.lines(p):cfg.lines;
+    codeEl.innerHTML=lines.map((l,i)=>`<div class="ln" data-l="${i}"><span class="no">${i+1}</span><span class="tx">${renderLine(l)||' '}</span></div>`).join('');
+    st=record(cfg.run,p,cfg.limit||500);range.max=st.steps.length-1;idx=0;show();
+  }
+  bNext.onclick=()=>{stop();if(idx<st.steps.length-1){idx++;show();}};
+  bPrev.onclick=()=>{stop();if(idx>0){idx--;show();}};
+  bReset.onclick=()=>{stop();idx=0;show();};
+  bEnd.onclick=()=>{stop();idx=st.steps.length-1;show();};
+  range.oninput=()=>{stop();idx=+range.value;show();};
+  bPlay.onclick=()=>{
+    if(timer){stop();return;}
+    if(idx>=st.steps.length-1)idx=0;
+    bPlay.textContent='❚❚ 暫停';
+    timer=setInterval(()=>{if(idx>=st.steps.length-1){stop();return;}idx++;show();},cfg.speed||650);
+  };
+  build();return{build};
 }
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'ArrowRight' || e.key === 'PageDown') nextSlide();
-  if (e.key === 'ArrowLeft' || e.key === 'PageUp') prevSlide();
-});
-updateSlide();
-</script></body>
-</html>
+function lightFC(svg,on){svg.querySelectorAll('[data-p]').forEach(el=>{const p=el.dataset.p;const a=on.includes(p);el.classList.toggle('on',a);el.classList.toggle('dim',!a&&on.length>0);});}
+
+/* ---------- 4.1 ---------- */
+const SYM=[
+ ['起止符號','<rect x="10" y="8" width="70" height="28" rx="14"/>','表示事件的開始或結束。'],
+ ['流程符號','<path d="M8 22H78M70 16L80 22L70 28"/>','表示流程進行的方向。'],
+ ['輸入／輸出符號','<polygon points="22,8 84,8 68,36 6,36"/>','表示資料的輸入或輸出，例如使用者輸入、印出結果。'],
+ ['處理符號','<rect x="8" y="8" width="74" height="28"/>','表示執行或處理的工作，例如計算、指定變數的值。'],
+ ['決策判斷符號','<polygon points="45,4 84,22 45,40 6,22"/>','表示對某一條件做判斷，會分出 True／False 兩條路。']];
+const symEl=$('sym');
+SYM.forEach(([n,s,d],i)=>{const b=document.createElement('button');b.innerHTML=`<svg viewBox="0 0 90 44" aria-hidden="true">${s}</svg><b>${n}</b>`;
+  b.onclick=()=>{symEl.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));$('sym-info').innerHTML=`<b>${n}</b>：${d}`;};symEl.appendChild(b);if(i===0)b.click();});
+
+const tlBtn=$('tl-btn');
+function tl(){const g=tlBtn.getAttribute('aria-pressed')==='true';tlBtn.textContent=g?'綠燈':'紅燈';
+  lightFC($('fc-tl'),['c',g?'t':'f']);$('tl-cap').textContent=g?'號誌亮綠燈 → True → 過馬路':'號誌亮紅燈 → False → 停下等待';}
+tlBtn.onclick=()=>{tlBtn.setAttribute('aria-pressed',tlBtn.getAttribute('aria-pressed')!=='true');tl();};tl();
+
+let secret=Math.floor(Math.random()*101),tries=0,log='';
+function gsNew(){secret=Math.floor(Math.random()*101);tries=0;log='已產生新的密碼（0～100 之間）。\n';$('gs-out').textContent=log;lightFC($('fc-gs'),[]);}
+$('gs-new').onclick=gsNew;
+$('gs-go').onclick=()=>{const g=Math.round(+$('gs-in').value);tries++;const ok=g===secret;
+  lightFC($('fc-gs'),['c',ok?'t':'f']);
+  log+=`第 ${tries} 次輸入 ${g} → ${ok?'猜對了':'猜錯了'}${ok?'':`（提示：密碼比 ${g} ${secret>g?'大':'小'}）`}\n`;
+  if(ok)log+='恭喜！按「換一個密碼」再玩一次。\n';
+  $('gs-out').textContent=log;$('gs-out').scrollTop=1e9;};
+$('gs-in').addEventListener('keydown',e=>{if(e.key==='Enter')$('gs-go').click();});
+gsNew();$('gs-out').textContent+='提示是額外加的：流程圖只判斷對或錯，要說「大或小」就得再多一個決策判斷符號。\n';
+
+/* ---------- 4.3 relational ---------- */
+const OPS=[['==','=','等於',(a,b)=>a==b],['!=','≠','不等於',(a,b)=>a!=b],['>','>','大於',(a,b)=>a>b],['<','<','小於',(a,b)=>a<b],['>=','≥','大於等於',(a,b)=>a>=b],['<=','≤','小於等於',(a,b)=>a<=b]];
+function rl(){const a=+$('rl-a').value,b=+$('rl-b').value;
+  $('rl-tbl').innerHTML='<tr><th>運算子</th><th>數學式</th><th>意義</th><th>運算式</th><th>結果</th></tr>'+OPS.map(([o,m,d,f],i)=>{const r=f(a,b);
+    return `<tr><td class="m">${esc(o)}</td><td>${m}</td><td>${d}</td><td class="m">(${a} ${esc(o)} ${b})</td><td><button class="rv" data-r="${r?1:0}">?</button></td></tr>`;}).join('');
+  $('rl-tbl').querySelectorAll('.rv').forEach(b=>b.onclick=()=>rev(b));}
+function rev(b){const r=b.dataset.r==='1';b.textContent=r?'1（true）':'0（false）';b.className='rv shown '+(r?'t':'f');}
+['rl-a','rl-b'].forEach(id=>$(id).oninput=rl);$('rl-all').onclick=()=>$('rl-tbl').querySelectorAll('.rv').forEach(rev);rl();
+
+const trEq=mountTracer($('tr-eq'),{title:'比較還是指定？',
+  params:()=>({a:Math.round(+$('eq-a').value),bug:$('eq-bug').checked}),
+  lines:p=>[`int a = ${p.a};`,p.bug?'if (a = 6)        // 少寫一個 =':'if (a == 6)','    cout << "a 是 6" << endl;','cout << "a = " << a << endl;'],
+  run(T,p){let a=p.a;T.at(0,{a});
+    if(p.bug){a=6;T.at(1,{a},'a = 6 把 a 改成 6，運算式的值是 6，非 0 → true');}
+    else T.at(1,{a},`a == 6 → ${a} == 6 → ${TF(a===6)}`);
+    if(p.bug||a===6){T.print('a 是 6\n');T.at(2,{a},'條件成立，執行這行');}
+    T.print(`a = ${a}\n`);T.at(3,{a},p.bug?'a 原本的值已經被改掉了':'');}});
+['eq-a','eq-bug'].forEach(id=>$(id).addEventListener('input',()=>trEq.build()));
+
+/* ---------- 4.4 logical ---------- */
+const lgA=$('lg-a'),lgB=$('lg-b');
+function lg(){const A=lgA.getAttribute('aria-pressed')==='true'?1:0,B=lgB.getAttribute('aria-pressed')==='true'?1:0;
+  lgA.textContent=A;lgB.textContent=B;
+  $('lg-eval').innerHTML=`!A = !${A} = <span class="r">${A?0:1}</span><br>A &amp;&amp; B = ${A} &amp;&amp; ${B} = <span class="r">${A&&B?1:0}</span><br>A || B = ${A} || ${B} = <span class="r">${A||B?1:0}</span>`;
+  $('lg-tbl').innerHTML='<tr><th>A</th><th>B</th><th>!A</th><th>A&amp;&amp;B</th><th>A||B</th></tr>'+[[0,0],[0,1],[1,0],[1,1]].map(([a,b])=>`<tr class="${a===A&&b===B?'hit':''}"><td class="m">${a}</td><td class="m">${b}</td><td class="m">${a?0:1}</td><td class="m">${a&&b?1:0}</td><td class="m">${a||b?1:0}</td></tr>`).join('');}
+[lgA,lgB].forEach(b=>b.onclick=()=>{b.setAttribute('aria-pressed',b.getAttribute('aria-pressed')!=='true');lg();});lg();
+const EX=[['(5 && 5)','5 和 5 都非 0，都是 true','1'],['(0 || 0)','兩邊都是 0（false）','0'],['(!8)','8 非 0 是 true，反過來是 false','0'],
+  ['(6 == 6) && (5 > 6)','(1 && 0)','0'],['(6 == 6) || (5 > 6)','(1 || 0)','1'],['!(6 != 5)','!(1)','0']];
+$('lg-ex').innerHTML=EX.map(([e,s,r],i)=>`<div class="expr-row"><code>${esc(e)}</code><button class="btn" data-i="${i}">計算</button><span class="steps" hidden>→ ${esc(s)} → <span class="res">${r}</span></span></div>`).join('');
+$('lg-ex').querySelectorAll('button').forEach(b=>b.onclick=()=>{b.nextElementSibling.hidden=false;b.hidden=true;});
+
+/* ---------- 4.5 if ---------- */
+const trIf=mountTracer($('tr-if'),{title:'if 範例',
+  params:()=>({a:Math.round(+$('if-a').value),br:$('if-br').checked}),
+  lines:p=>p.br?['if (a == 1) {','    cout << "輸入 1" << endl;','    cout << "1 是正數" << endl;','}']:['if (a == 1)','    cout << "輸入 1" << endl;','    cout << "1 是正數" << endl;   // 看起來在 if 裡，其實不是'],
+  run(T,p){const a=p.a,c=a===1;T.at(0,{a},`a == 1 → ${a} == 1 → ${TF(c)}`);
+    if(c){T.print('輸入 1\n');T.at(1,{a},'條件成立，執行');}
+    if(p.br){if(c){T.print('1 是正數\n');T.at(2,{a},'在大括號內，屬於 if');}T.at(3,{a},c?'if 結束':'條件不成立，整個 { } 區塊都跳過');}
+    else{if(!c)T.at(1,{a},'條件不成立，跳過 if 的「下一行」');T.print('1 是正數\n');T.at(2,{a},'沒有大括號：這行不屬於 if，一定會執行');}}});
+['if-a','if-br'].forEach(id=>$(id).addEventListener('input',()=>trIf.build()));
+
+/* ---------- 4.6 if-else ---------- */
+const trSc=mountTracer($('tr-score'),{title:'及格判斷',
+  params:()=>({s:+$('sc-in').value}),
+  lines:p=>[`int score = ${p.s};`,'if (score >= 60)','    cout << "恭喜過關!" << endl;','else','    cout << "未過關!" << endl;'],
+  run(T,p){const score=p.s;T.at(0,{score});const c=score>=60;T.at(1,{score},`score >= 60 → ${score} >= 60 → ${TF(c)}`);
+    if(c){T.print('恭喜過關!\n');T.at(2,{score},'true：執行 if 的敘述，跳過 else');}
+    else{T.at(3,{score},'false：走 else');T.print('未過關!\n');T.at(4,{score});}}});
+$('sc-in').oninput=()=>{$('sc-v').textContent=$('sc-in').value;trSc.build();};
+const trIe=mountTracer($('tr-ie'),{title:'if { } else',
+  params:()=>({a:Math.round(+$('ie-a').value)}),
+  lines:['if (a == 1) {','    cout << "輸入 1" << endl;','    cout << "1 是正數" << endl;','}','else','    cout << "輸入不是 1" << endl;'],
+  run(T,p){const a=p.a,c=a===1;T.at(0,{a},`a == 1 → ${TF(c)}`);
+    if(c){T.print('輸入 1\n');T.at(1,{a});T.print('1 是正數\n');T.at(2,{a});T.at(3,{a},'if 區塊結束，跳過 else');}
+    else{T.at(4,{a},'false：走 else');T.print('輸入不是 1\n');T.at(5,{a});}}});
+$('ie-a').addEventListener('input',()=>trIe.build());
+
+/* ---------- 4.7 ternary ---------- */
+function tn(){const a=Math.round(+$('tn-a').value),b=Math.round(+$('tn-b').value),n=Math.round(+$('tn-n').value);
+  const rows=[['求 a 和 b 兩數之最大數 max','max = (a > b) ? a : b;',`(${a} > ${b}) ? ${a} : ${b}`,a>b,a>b?a:b],
+   ['求 a 的絕對值 ab','ab = (a > 0) ? a : -a;',`(${a} > 0) ? ${a} : -(${a})`,a>0,a>0?a:-a],
+   ['判斷 n 是否為奇數 odd','odd = (n % 2) ? 1 : 0;',`(${n} % 2 = ${n%2}) ? 1 : 0`,n%2!==0,n%2?1:0]];
+  $('tn-tbl').innerHTML='<tr><th>實例</th><th>敘述與代入</th><th>結果</th></tr>'+rows.map(([d,s,sub,c,r])=>`<tr><td>${d}</td><td class="m">${hl(s)}<br><span class="muted">${esc(sub)} → 條件 ${TF(c)}，取${c?'前':'後'}者</span></td><td class="m"><b>${r}</b></td></tr>`).join('');}
+['tn-a','tn-b','tn-n'].forEach(id=>$(id).oninput=tn);tn();
+
+/* ---------- 4.8 ladder ---------- */
+const trGd=mountTracer($('tr-gd'),{title:'等第判斷',
+  params:()=>({g:+$('gd-in').value}),
+  lines:p=>[`int g = ${p.g};`,'if (g >= 90)','    cout << "等級A";','else if (g >= 80)','    cout << "等級B";','else if (g >= 70)','    cout << "等級C";','else','    cout << "等級D";','cout << endl << "程式結束" << endl;'],
+  run(T,p){const g=p.g;T.at(0,{g});const L=[[90,'A',1],[80,'B',3],[70,'C',5]];let done=false;
+    for(const [v,k,l] of L){const c=g>=v;T.at(l,{g},`g >= ${v} → ${TF(c)}${c?'，執行並跳過其餘':'，往下檢查'}`);if(c){T.print('等級'+k);T.at(l+1,{g});done=true;break;}}
+    if(!done){T.at(7,{g},'前面都不成立，走 else');T.print('等級D');T.at(8,{g});}
+    T.print('\n程式結束\n');T.at(9,{g},'不論走哪一條路，最後都會執行這一行');}});
+$('gd-in').oninput=()=>{const g=$('gd-in').value;$('gd-v').textContent=g;const mk=$('gd-mk');mk.textContent=g;mk.style.left=(g/100*100)+'%';trGd.build();};
+$('gd-mk').style.left='84%';
+
+/* ---------- 4.9 nested if ---------- */
+const trVl=mountTracer($('tr-vl'),{title:'車速判斷',
+  params:()=>({v:+$('vl-in').value}),
+  lines:p=>[`int vel = ${p.v};`,'if (vel > 60)','{','    if (vel < 100)','    {','        cout << "標準車速!";','    }','    else','    {','        cout << "車速太快!";','    }','}','else','{','    cout << "車速太慢!";','}','cout << endl << "程式結束" << endl;'],
+  run(T,p){const vel=p.v;T.at(0,{vel});const o=vel>60;T.at(1,{vel},`外層：vel > 60 → ${TF(o)}`);
+    if(o){const i=vel<100;T.at(3,{vel},`內層：vel < 100 → ${TF(i)}`);
+      if(i){T.print('標準車速!');T.at(5,{vel});}else{T.at(7,{vel},'內層走 else');T.print('車速太快!');T.at(9,{vel});}}
+    else{T.at(12,{vel},'外層不成立，內層根本不會判斷');T.print('車速太慢!');T.at(14,{vel});}
+    T.print('\n程式結束\n');T.at(16,{vel},'巢狀 if 結束後，接著執行這一行');}});
+function vl(){const v=+$('vl-in').value;$('vl-v').textContent=v;lightFC($('fc-vl'),v>60?['o','t',v<100?'tt':'tf']:['o','f']);trVl.build();}
+$('vl-in').oninput=vl;vl();
+
+/* ---------- 4.10 switch ---------- */
+let swRes=1;
+const swPick=$('sw-pick');
+[1,2,3].forEach(v=>{const b=document.createElement('button');b.className='btn mono';b.textContent=v;b.onclick=()=>{swRes=v;swPick.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));trSw.build();};swPick.appendChild(b);});
+const trSw=mountTracer($('tr-sw'),{title:'switch 範例',
+  params:()=>({res:swRes,nb:$('sw-nb').checked}),
+  lines:p=>[`switch (res) {        // res = ${p.res}`,'    case 1:','        cout << "輸入的是1。" << endl;',p.nb?'        // break;   ← 被刪掉了':'        break;','    case 2:','        cout << "輸入的是2。" << endl;','        break;','    default:','        cout << "請輸入1或2。" << endl;','        break;','}'],
+  run(T,p){const res=p.res;
+    const items=[{l:1,t:'L',name:'case 1'},{l:2,t:'P',s:'輸入的是1。'},{l:3,t:'B',on:!p.nb},{l:4,t:'L',name:'case 2'},{l:5,t:'P',s:'輸入的是2。'},{l:6,t:'B',on:true},{l:7,t:'L',name:'default'},{l:8,t:'P',s:'請輸入1或2。'},{l:9,t:'B',on:true}];
+    const start=res===1?0:res===2?3:6;
+    T.at(0,{res},`res 的值是 ${res}，${res===1||res===2?'找到相符的 case '+res:'沒有相符的 case，跳到 default'}`);
+    T.at(items[start].l,{res},`從 ${items[start].name} 開始執行`);
+    for(let i=start+1;i<items.length;i++){const it=items[i];
+      if(it.t==='L')T.at(it.l,{res},`沒有遇到 break，穿越 ${it.name} 標籤繼續往下執行！`);
+      else if(it.t==='P'){T.print(it.s+'\n');T.at(it.l,{res});}
+      else if(it.on){T.at(it.l,{res},'break：跳出 switch');break;}
+      else T.at(it.l,{res},'這裡沒有 break，不會停下來');}
+    T.at(10,{res},'switch 結束');}});
+swPick.firstChild.classList.add('on');
+$('sw-nb').addEventListener('input',()=>trSw.build());
+
+/* ---------- format ---------- */
+function fm(){const v=$('fm-v').value.slice(0,12),w=Math.max(0,Math.min(12,Math.round(+$('fm-w').value||0))),f=$('fm-f').value;
+  const pad=Math.max(0,w-v.length);
+  $('fm-code').innerHTML=hl(`cout << setw(${w}) << setfill('${f}') << ${/^-?\d+$/.test(v)?v:'"'+v+'"'} << endl;`);
+  $('fm-cells').innerHTML=Array.from({length:pad},()=>`<span class="pad${f===' '?' sp':''}">${f===' '?'·':esc(f)}</span>`).join('')+[...v].map(c=>`<span>${esc(c)}</span>`).join('');
+  $('fm-note').textContent=pad?`內容 ${v.length} 個字元，寬度 ${w}，左邊補 ${pad} 個${f===' '?'空白（以 · 表示）':'「'+f+'」'}。`:`內容已有 ${v.length} 個字元，不小於寬度 ${w}，不會補字元，也不會被截斷。`;}
+['fm-v','fm-w','fm-f'].forEach(id=>$(id).addEventListener('input',fm));fm();
+
+/* ---------- APCS quiz ---------- */
+function wrongGrade(s){const code=s>=90?'A':s>=80?'B':s>60?'D':s>70?'C':'F';const ok=s>=90?'A':s>=80?'B':s>=70?'C':s>=60?'D':'F';return[code,ok];}
+const q2opts=[
+ x=>{let y;if(x==10)y='a';if(x==20||x==30)y='b';y='c';return y;},
+ x=>x==10?'a':(x==20||x==30)?'b':'c',
+ x=>{let y;if(x==10)y='a';if(x>=20&&x<=30)y='b';y='c';return y;},
+ x=>x==10?'a':(x>=20&&x<=30)?'b':'c'];
+const swq=x=>x==10?'a':(x==20||x==30)?'b':'c';
+const Q=[
+ {tag:'邏輯 · 22',q:'若要邏輯判斷式 <code>!(X1 || X2)</code> 計算結果為真（True），則 X1 與 X2 的值分別應為何？',
+  opts:['X1 為 False，X2 為 False','X1 為 True，X2 為 True','X1 為 True，X2 為 False','X1 為 False，X2 為 True'],ans:0,
+  exp:'要讓 !( … ) 為 True，括號內的 X1 || X2 必須為 False；而 OR 只有在兩邊都是 False 時才是 False。',
+  extra:()=>`<div class="tbl"><table class="mini"><tr><th>X1</th><th>X2</th><th>X1 || X2</th><th>!(X1 || X2)</th></tr>${[[0,0],[1,1],[1,0],[0,1]].map(([a,b],i)=>`<tr><td>${a?'True':'False'}</td><td>${b?'True':'False'}</td><td>${a||b?'True':'False'}</td><td${i===0?' style="font-weight:700;color:var(--ok)"':''}>${a||b?'False':'True'}</td></tr>`).join('')}</table></div>`},
+ {tag:'邏輯 · 14',q:'假設 x, y, z 為布林變數，且 x = TRUE、y = TRUE、z = FALSE。請問下面各布林運算式的真假值依序為何？',
+  code:'!(y || z) || x\n!y || (z || !x)\nz || (x && (y || z))\n(x || x) && z',
+  opts:['TRUE  FALSE  TRUE  FALSE','FALSE FALSE  TRUE  FALSE','FALSE TRUE   TRUE  FALSE','TRUE  TRUE   FALSE TRUE'],ans:0,
+  exp:'把 x = T、y = T、z = F 代入，由括號內往外算：',
+  extra:()=>`<div class="tbl"><table class="mini"><tr><th>運算式</th><th>化簡過程</th><th>結果</th></tr>
+   <tr><td class="mono">!(y || z) || x</td><td class="mono">!(T || F) || T → !T || T → F || T</td><td><b>TRUE</b></td></tr>
+   <tr><td class="mono">!y || (z || !x)</td><td class="mono">F || (F || F) → F || F</td><td><b>FALSE</b></td></tr>
+   <tr><td class="mono">z || (x &amp;&amp; (y || z))</td><td class="mono">F || (T &amp;&amp; T) → F || T</td><td><b>TRUE</b></td></tr>
+   <tr><td class="mono">(x || x) &amp;&amp; z</td><td class="mono">T &amp;&amp; F</td><td><b>FALSE</b></td></tr></table></div>`},
+ {tag:'if · 16',q:'下列程式執行過後所輸出數值為何？',
+  code:'void main() {\n    int count = 10;\n    if (count > 0) {\n        count = 11;\n    }\n    if (count > 10) {\n        count = 12;\n        if (count % 3 == 4) {\n            count = 1;\n        }\n        else {\n            count = 0;\n        }\n    }\n    else if (count > 11) {\n        count = 13;\n    }\n    else {\n        count = 14;\n    }\n    if (count) {\n        count = 15;\n    }\n    else {\n        count = 16;\n    }\n    printf("%d\\n", count);\n}',
+  opts:['11','13','15','16'],ans:3,
+  exp:'count 先變 11；11 > 10 成立，count 改為 12，而 12 % 3 = 0 不等於 4，所以 count = 0（else if 與 else 都跳過）。最後 if (count) 是 if (0)，0 代表 false，走 else 得到 <b>16</b>。關鍵是「0 為 false，非 0 為 true」。',
+  trace:{title:'逐步追蹤',lines:['int count = 10;','if (count > 0) {','    count = 11;','}','if (count > 10) {','    count = 12;','    if (count % 3 == 4) {','        count = 1;','    }','    else {','        count = 0;','    }','}','else if (count > 11) {','    count = 13;','}','else {','    count = 14;','}','if (count) {','    count = 15;','}','else {','    count = 16;','}','printf("%d\\n", count);'],
+   run(T){let count=10;T.at(0,{count});T.at(1,{count},'10 > 0 → true');count=11;T.at(2,{count});
+     T.at(4,{count},'11 > 10 → true');count=12;T.at(5,{count});T.at(6,{count},'12 % 3 = 0，0 == 4 → false');T.at(9,{count},'走內層 else');count=0;T.at(10,{count});
+     T.at(12,{count},'外層 if 成立，所以 else if 和 else 都跳過');T.at(19,{count},'if (0) → 0 代表 false');T.at(22,{count},'走 else');count=16;T.at(23,{count});T.print('16\n');T.at(25,{count});}}},
+ {tag:'else if · 9',q:'右側是依據分數 s 評定等第的程式碼片段，正確的等第公式應為：90～100 A、80～89 B、70～79 C、60～69 D、0～59 F。這段程式碼在處理 0～100 的分數時，有幾個分數的等第是錯的？',
+  code:'if (s >= 90) {\n    printf("A \\n");\n}\nelse if (s >= 80) {\n    printf("B \\n");\n}\nelse if (s > 60) {\n    printf("D \\n");\n}\nelse if (s > 70) {\n    printf("C \\n");\n}\nelse {\n    printf("F\\n");\n}',
+  opts:['20','11','2','10'],ans:1,
+  exp:'兩個錯誤：(1) <code>s &gt; 60</code> 放在 <code>s &gt; 70</code> 前面，71～79 會先被判為 D，而且 70 也被判為 D，所以 70～79 共 <b>10</b> 個錯；<code>s &gt; 70</code> 那一段永遠走不到。(2) 寫成 <code>s &gt; 60</code> 而不是 <code>&gt;=</code>，60 分被判為 F，再錯 <b>1</b> 個。合計 11 個。拉動滑桿或看下面紅色格子：',
+  extra:()=>`<div class="ctl-row small"><label for="q9s">s =</label><input type="range" id="q9s" min="0" max="100" value="75" style="flex:1 1 140px"><span class="mono" id="q9r"></span></div>
+   <div class="sgrid">${Array.from({length:101},(_,s)=>{const[c,o]=wrongGrade(s);return `<span class="${c!==o?'bad':''}" title="${s}：程式 ${c}，應為 ${o}">${s}</span>`;}).join('')}</div>`,
+  after:()=>{const r=$('q9s');const f=()=>{const s=+r.value,[c,o]=wrongGrade(s);$('q9r').innerHTML=`程式判為 <b>${c}</b>，正確為 <b>${o}</b> ${c===o?'✓':'<b style="color:var(--bad)">✗ 錯</b>'}`;};r.oninput=f;f();}},
+ {tag:'switch · 2',q:'下列 switch 敘述程式碼可以如何以 if-else 改寫？',
+  code:"switch (x) {\n    case 10: y = 'a'; break;\n    case 20:\n    case 30: y = 'b'; break;\n    default: y = 'c';\n}",code_opts:true,
+  opts:["if (x==10) y = 'a';\nif (x==20 || x==30) y = 'b';\ny = 'c';","if (x==10) y = 'a';\nelse if (x==20 || x==30) y = 'b';\nelse y = 'c';","if (x==10) y = 'a';\nif (x>=20 && x<=30) y = 'b';\ny = 'c';","if (x==10) y = 'a';\nelse if (x>=20 && x<=30) y = 'b';\nelse y = 'c';"],ans:1,
+  exp:'case 20 後面沒有敘述也沒有 break，會穿越到 case 30，所以 x 是 20 或 30 都得到 \'b\'。(A)(C) 最後一行 <code>y = \'c\'</code> 沒有放在 else 裡，一定會執行，y 永遠是 \'c\'。(D) 的 20～30 範圍把 25 這類數字也判成 \'b\'。用幾個 x 值檢驗：',
+  extra:()=>{const xs=[10,20,25,30,40];return `<div class="tbl"><table class="mini"><tr><th>x</th><th>switch</th>${'ABCD'.split('').map(c=>`<th>(${c})</th>`).join('')}</tr>${xs.map(x=>{const s=swq(x);return `<tr><td class="mono">${x}</td><td class="mono">'${s}'</td>${q2opts.map(f=>{const r=f(x);return `<td class="mono${r!==s?' bad':''}">'${r}'</td>`;}).join('')}</tr>`;}).join('')}</table></div>`;}}
+];
+const quizEl=$('quiz');const answered={};
+function renderQuiz(){
+  quizEl.innerHTML='';
+  Q.forEach((q,qi)=>{
+    const card=document.createElement('article');card.className='q';
+    card.innerHTML=`<div class="stack"><div><div class="q-tag">APCS 觀念題 · ${esc(q.tag)}</div><p class="q-text">${q.q}</p></div>${q.code?`<pre class="snip">${q.code.split('\n').map(hl).join('\n')}</pre>`:''}</div>
+      <div><div class="opts">${q.opts.map((o,i)=>`<button class="opt" data-i="${i}"><span class="L">(${'ABCD'[i]})</span><span class="${q.code_opts||/^[A-Z ]+$|^\d+$/.test(o)?'v':''}">${esc(o)}</span></button>`).join('')}</div><div class="exp" hidden></div></div>`;
+    const exp=card.querySelector('.exp');let tries=0;
+    card.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{
+      const pick=+b.dataset.i;tries++;
+      if(!(qi in answered))answered[qi]=pick===q.ans;
+      if(pick!==q.ans){b.classList.add('wrong');b.disabled=true;exp.hidden=false;
+        exp.innerHTML=`<div class="verdict bad">✗ (${'ABCD'[pick]}) 不對，再選一次看看</div>`;score();return;}
+      card.querySelectorAll('.opt').forEach(x=>{x.disabled=true;});b.classList.add('right');
+      exp.hidden=false;
+      exp.innerHTML=`<div class="verdict ok">✓ 答對了${tries>1?`（第 ${tries} 次作答）`:''}</div><p>${q.exp}</p>${q.extra?q.extra():''}${q.trace?'<details class="trace"><summary>逐行追蹤這段程式</summary><div class="trh"></div></details>':''}`;
+      if(q.after)q.after();
+      if(q.trace){const d=exp.querySelector('details');d.addEventListener('toggle',()=>{const h=d.querySelector('.trh');if(d.open&&!h.dataset.m){h.dataset.m=1;mountTracer(h,q.trace);}});}
+      score();
+    });
+    quizEl.appendChild(card);
+  });
+  score();
+}
+function score(){const v=Object.values(answered);$('sc-done').textContent=v.length;$('sc-ok').textContent=v.filter(Boolean).length;$('sc-total').textContent=Q.length;}
+$('sc-reset').onclick=()=>{for(const k in answered)delete answered[k];renderQuiz();};
+renderQuiz();
+</script>
+
+</body></html>

@@ -1,395 +1,784 @@
-<!DOCTYPE html>
-<html lang="zh-TW">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>第二章 變數與常數</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=Fira+Code:wght@400;600&display=swap');
-        body { font-family: 'Noto Sans TC', sans-serif; }
-        code, pre { font-family: 'Fira Code', monospace; }
-        .slide { display: none; opacity: 0; transition: opacity 0.3s ease-in-out; }
-        .slide.active { display: block; opacity: 1; }
-    </style>
-</head>
-<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col justify-between selection:bg-indigo-500 selection:text-white">
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>變數與常數互動講義</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=LXGW+WenKai+TC:wght@400;700&family=Noto+Sans+TC:wght@400;500;700&display=swap">
+<style>
+/* Layout: chapter handout — concept text on the left, a live code tracer or flowchart on the right, quiz at the end */
+:root{
+  --bg:#F2F4F0; --surface:#FFFFFF; --ink:#1C251F; --muted:#5B6860; --line:#D3DBD2;
+  --accent:#2E6A3E; --accent-soft:#E1EDE2; --on-accent:#FFFFFF;
+  --code-bg:#18211B; --code-fg:#DCE6DD; --code-dim:#6E7E72; --cur:#3D4A2A; --cur-bar:#F1C94A;
+  --seg:#F1C94A; --seg-ink:#18211B;
+  --t-k:#8FD3A4; --t-f:#7FC4E8; --t-s:#F0B97A; --t-n:#E8A0C8; --t-c:#7D8E81;
+  --ok:#2C7A4B; --ok-soft:#DDEFE3; --bad:#B23E2C; --bad-soft:#F6E0DB; --warn:#9A6A00;
+  --g-a:#2E6A3E; --g-b:#5E9A4C; --g-c:#C9A227; --g-d:#C9772F; --g-f:#B23E2C;
+  --f-display:"LXGW WenKai TC","Kaiti TC","STKaiti","KaiTi",serif;
+  --f-body:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
+  --f-code:"JetBrains Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#111612; --surface:#19201B; --ink:#E2EAE3; --muted:#97A59B; --line:#2B352E;
+  --accent:#86C796; --accent-soft:#223228; --on-accent:#0F1611;
+  --code-bg:#0C110D; --code-fg:#DCE6DD; --code-dim:#5E6E62; --cur:#36401F; --cur-bar:#F1C94A;
+  --ok:#7FCB98; --ok-soft:#1E3326; --bad:#F0907C; --bad-soft:#3A2420; --warn:#E5B95A;
+  --g-a:#5FA872; --g-b:#8DBF6E; --g-c:#D9B648; --g-d:#DB9050; --g-f:#D96A55;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#111612; --surface:#19201B; --ink:#E2EAE3; --muted:#97A59B; --line:#2B352E;
+  --accent:#86C796; --accent-soft:#223228; --on-accent:#0F1611;
+  --code-bg:#0C110D; --code-fg:#DCE6DD; --code-dim:#5E6E62; --cur:#36401F; --cur-bar:#F1C94A;
+  --ok:#7FCB98; --ok-soft:#1E3326; --bad:#F0907C; --bad-soft:#3A2420; --warn:#E5B95A;
+  --g-a:#5FA872; --g-b:#8DBF6E; --g-c:#D9B648; --g-d:#DB9050; --g-f:#D96A55;
+  color-scheme:dark}
 
-    <!-- Header Navigation -->
-    <header class="bg-slate-800/80 backdrop-blur border-b border-slate-700 sticky top-0 z-50 px-6 py-4 flex justify-between items-center">
-        <div class="flex items-center space-x-3">
-            <span class="bg-indigo-600 text-white font-bold px-3 py-1 rounded-lg text-sm">C++ 課程</span>
-            <h1 class="text-xl font-bold tracking-wide text-white">第二章：變數與常數</h1>
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.75}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.wrap{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;line-height:1.25;margin:0}
+p{margin:0}
+code,.mono{font-family:var(--f-code);font-size:.9em}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+header{padding-block:40px 20px}
+.kicker{font-size:13px;letter-spacing:.12em;color:var(--muted);text-transform:uppercase}
+h1{font-size:clamp(34px,6vw,54px);font-weight:700;margin-top:6px}
+h1 em{font-style:normal;color:var(--accent)}
+.lede{max-width:62ch;color:var(--muted);margin-top:10px}
+.legend{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:16px;font-size:14px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.sw{width:14px;height:14px;border-radius:3px;display:inline-block}
+
+nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;gap:6px;overflow-x:auto;padding-block:10px;scrollbar-width:none}
+nav a{flex:none;text-decoration:none;color:var(--ink);font-size:14px;padding:5px 12px;border-radius:999px;border:1px solid var(--line);background:var(--surface);white-space:nowrap}
+nav a:hover{border-color:var(--accent);color:var(--accent)}
+
+section{padding-block:44px 8px;scroll-margin-top:64px}
+.sec-head{display:flex;align-items:baseline;gap:12px;margin-bottom:18px;flex-wrap:wrap}
+.sec-no{font-family:var(--f-code);font-size:14px;color:var(--accent);font-weight:600}
+h2{font-size:clamp(26px,4vw,34px)}
+h3{font-size:21px;margin-bottom:6px}
+.grid2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:28px;align-items:start}
+.grid-even{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;align-items:start}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+@media (max-width:880px){.grid2,.grid-even{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:700px){.grid3{grid-template-columns:minmax(0,1fr)}}
+.stack{display:flex;flex-direction:column;gap:14px;min-width:0}
+.note{border-left:3px solid var(--warn);padding:6px 12px;background:var(--surface);font-size:15px}
+.muted{color:var(--muted)}
+.small{font-size:14px}
+ul.plain{margin:0;padding-left:1.2em}
+ul.plain li{margin:3px 0}
+
+pre.snip{margin:0;background:var(--code-bg);color:var(--code-fg);font-family:var(--f-code);font-size:14px;line-height:1.65;padding:12px 14px;border-radius:8px;overflow-x:auto}
+.t-k{color:var(--t-k);font-weight:600}.t-f{color:var(--t-f)}.t-s{color:var(--t-s)}.t-n{color:var(--t-n)}.t-c{color:var(--t-c);font-style:italic}
+
+/* flowcharts */
+svg.fc{width:100%;height:auto;display:block;max-width:420px;margin:0 auto}
+.fc .n{fill:var(--surface);stroke:var(--ink);stroke-width:1.4;transition:fill .2s,stroke .2s}
+.fc .d{fill:var(--accent-soft);stroke:var(--accent);stroke-width:1.5}
+.fc .e{stroke:var(--muted);stroke-width:1.5;fill:none;transition:stroke .2s}
+.fc text{fill:var(--ink);font-size:13px;text-anchor:middle;font-family:var(--f-body)}
+.fc text.lb{fill:var(--muted);font-size:12px;font-family:var(--f-code);text-anchor:start}
+.fc .ah{fill:var(--muted)}
+.fc .on .n,.fc .n.on{fill:var(--cur-bar);stroke:var(--ink)}
+.fc .on text{fill:#18211B}
+.fc .e.on{stroke:var(--cur-bar);stroke-width:3}
+.fc .dim{opacity:.35}
+.fig{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px;min-width:0}
+.fig figcaption{font-size:14px;color:var(--muted);text-align:center;margin-top:6px}
+figure{margin:0}
+
+/* symbol table */
+.sym{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+@media (max-width:700px){.sym{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.sym button{font:inherit;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:10px 8px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px}
+.sym button:hover,.sym button.on{border-color:var(--accent)}
+.sym button.on{background:var(--accent-soft)}
+.sym svg{width:90px;height:44px}
+.sym svg *{fill:none;stroke:var(--ink);stroke-width:1.5}
+.sym b{font-size:14px}
+.sym-info{min-height:2.5em}
+
+/* tracer */
+.tracer{background:var(--code-bg);color:var(--code-fg);border-radius:10px;overflow:hidden;min-width:0;display:flex;flex-direction:column}
+.tr-head{display:flex;justify-content:space-between;gap:10px;align-items:baseline;padding:10px 14px 4px;font-size:13px;flex-wrap:wrap}
+.tr-title{font-weight:700;color:var(--code-fg)}
+.tr-count{font-family:var(--f-code);color:var(--code-dim);font-variant-numeric:tabular-nums}
+.tr-code{position:relative;font-family:var(--f-code);font-size:14px;line-height:1.7;max-height:340px;overflow:auto;padding:4px 0}
+.ln{display:flex;white-space:pre;border-left:3px solid transparent;padding-right:14px;min-width:max-content}
+.ln .no{width:38px;flex:none;text-align:right;padding-right:12px;color:var(--code-dim);user-select:none}
+.ln.cur{background:var(--cur);border-left-color:var(--cur-bar)}
+.seg{border-radius:3px}
+.seg.on{background:var(--seg);color:var(--seg-ink)}
+.seg.on span{color:var(--seg-ink)}
+.tr-note{min-height:2.2em;padding:6px 14px;font-size:14px;color:var(--cur-bar);border-top:1px solid #ffffff14}
+.tr-io{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);border-top:1px solid #ffffff14}
+@media (max-width:480px){.tr-io{grid-template-columns:minmax(0,1fr)}}
+.tr-vars,.tr-out{padding:8px 14px 10px;min-width:0}
+.tr-out{border-left:1px solid #ffffff14}
+.cap{font-size:11px;letter-spacing:.14em;color:var(--code-dim);margin-bottom:4px}
+.panel .cap,.stack>.cap{color:var(--muted)}
+.tr-vars dl{margin:0;display:flex;flex-wrap:wrap;gap:6px}
+.tr-vars dl div{display:flex;gap:6px;font-family:var(--f-code);font-size:14px;background:#ffffff0d;border-radius:5px;padding:2px 8px;font-variant-numeric:tabular-nums}
+.tr-vars dl div.chg{background:#F1C94A33;box-shadow:inset 0 0 0 1px #F1C94A88}
+.tr-vars dt{color:var(--t-f)}.tr-vars dd{margin:0}
+.tr-vars dt::after{content:" ="}
+.tr-out pre{margin:0;font-family:var(--f-code);font-size:14px;line-height:1.5;max-height:150px;overflow:auto;white-space:pre-wrap;word-break:break-all;color:#E9F2EA}
+.tr-out pre:empty::before{content:"（尚無輸出）";color:var(--code-dim)}
+.tr-ctrl{display:flex;gap:6px;align-items:center;flex-wrap:wrap;padding:10px 14px;background:#ffffff08;border-top:1px solid #ffffff14}
+.tr-ctrl button{font:inherit;font-size:13px;border:1px solid #ffffff2a;background:transparent;color:var(--code-fg);border-radius:6px;padding:4px 10px;cursor:pointer}
+.tr-ctrl button:hover:not(:disabled){background:#ffffff14}
+.tr-ctrl button:disabled{opacity:.35;cursor:default}
+.tr-ctrl button.primary{background:var(--cur-bar);color:#18211B;border-color:var(--cur-bar);font-weight:700;min-width:76px}
+.tr-ctrl input[type=range]{flex:1 1 120px;accent-color:var(--cur-bar);min-width:100px}
+
+/* controls */
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px;min-width:0}
+.ctl-row{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center}
+label.chk{display:inline-flex;gap:8px;align-items:center;cursor:pointer;font-size:15px}
+input[type=number],input[type=text],select{font:inherit;font-family:var(--f-code);font-size:15px;background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:6px;padding:4px 8px}
+input[type=number]{width:5.2em}
+input[type=range]{accent-color:var(--accent)}
+.btn{font:inherit;font-size:14px;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:4px 12px;cursor:pointer}
+.btn:hover{border-color:var(--accent);color:var(--accent)}
+.btn.on{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
+.btn.primary{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
+.console{margin:0;background:var(--code-bg);color:#E9F2EA;font-family:var(--f-code);font-size:14px;line-height:1.5;padding:10px 12px;border-radius:8px;overflow-x:auto;white-space:pre}
+.console .in{color:var(--t-f)}
+.status{font-size:15px;font-weight:500}
+.status.ok{color:var(--ok)}.status.bad{color:var(--bad)}
+
+/* data tables */
+.tbl{overflow-x:auto}
+table.dt{border-collapse:collapse;width:100%;font-size:15px;font-variant-numeric:tabular-nums}
+table.dt th{font-weight:600;text-align:left;font-size:13px;color:var(--muted);border-bottom:1.5px solid var(--ink);padding:6px 10px}
+table.dt td{border-bottom:1px solid var(--line);padding:6px 10px}
+table.dt td.m{font-family:var(--f-code)}
+table.dt tr.hit td{background:var(--accent-soft)}
+.rv{font:inherit;font-family:var(--f-code);font-size:14px;min-width:84px;border:1px dashed var(--line);background:var(--bg);color:var(--ink);border-radius:6px;padding:2px 8px;cursor:pointer}
+.rv.shown{border-style:solid}
+.rv.t{color:var(--ok);border-color:var(--ok)}
+.rv.f{color:var(--bad);border-color:var(--bad)}
+.tog{font:inherit;font-family:var(--f-code);font-weight:700;font-size:16px;min-width:64px;border-radius:8px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);padding:6px 10px;cursor:pointer}
+.tog[aria-pressed="true"]{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
+.expr{display:flex;flex-direction:column;gap:6px}
+.expr-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg)}
+.expr-row code{font-size:15px}
+.expr-row .steps{font-family:var(--f-code);font-size:14px;color:var(--muted)}
+.expr-row .res{font-family:var(--f-code);font-weight:700}
+.big-eval{font-family:var(--f-code);font-size:16px;line-height:1.9}
+.big-eval .r{font-weight:700;color:var(--accent)}
+
+/* grade bar */
+.gbar{position:relative;display:flex;height:34px;border-radius:6px;overflow:hidden;font-family:var(--f-code);font-size:13px;color:#fff}
+.gbar div{display:grid;place-items:center;font-weight:700}
+.gmark{position:relative;height:16px}
+.gmark span{position:absolute;top:0;transform:translateX(-50%);font-family:var(--f-code);font-size:12px;color:var(--ink);transition:left .15s}
+.gmark span::after{content:"▼";display:block;text-align:center;line-height:1}
+.gaxis{position:relative;height:18px;font-family:var(--f-code);font-size:12px;color:var(--muted)}
+.gaxis span{position:absolute;top:0;transform:translateX(-50%)}
+
+/* setw cells */
+.cells{display:flex;gap:3px;flex-wrap:wrap}
+.cells span{width:30px;height:34px;display:grid;place-items:center;font-family:var(--f-code);font-size:17px;border:1px solid var(--line);border-radius:4px;background:var(--surface)}
+.cells span.pad{background:var(--accent-soft);color:var(--accent)}
+.cells span.sp{color:var(--muted)}
+
+/* quiz */
+.score{display:flex;gap:14px;align-items:center;flex-wrap:wrap;font-size:15px}
+.score b{font-family:var(--f-code);font-variant-numeric:tabular-nums}
+.quiz{display:flex;flex-direction:column;gap:22px;margin-top:16px}
+.q{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px}
+@media (max-width:880px){.q{grid-template-columns:minmax(0,1fr)}}
+.q-tag{font-family:var(--f-code);font-size:12px;color:var(--accent);letter-spacing:.06em}
+.q-text{font-size:16px;margin:4px 0 12px}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{display:flex;gap:10px;align-items:flex-start;text-align:left;font:inherit;font-size:15px;background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:8px 12px;cursor:pointer}
+.opt:hover:not(:disabled){border-color:var(--accent)}
+.opt:disabled{cursor:default}
+.opt .L{font-family:var(--f-code);font-weight:600;flex:none}
+.opt .v{font-family:var(--f-code);white-space:pre-wrap;font-size:14px}
+.opt.right{background:var(--ok-soft);border-color:var(--ok)}
+.opt.wrong{background:var(--bad-soft);border-color:var(--bad)}
+.exp{margin-top:12px;font-size:15px;display:flex;flex-direction:column;gap:10px}
+.exp .verdict{font-weight:700}
+.exp .verdict.ok{color:var(--ok)}.exp .verdict.bad{color:var(--bad)}
+table.mini{border-collapse:collapse;font-size:14px;width:100%}
+table.mini th,table.mini td{border-bottom:1px solid var(--line);padding:4px 8px;text-align:left;vertical-align:top}
+table.mini td.bad{color:var(--bad);font-weight:700}
+.sgrid{display:grid;grid-template-columns:repeat(11,minmax(0,1fr));gap:2px;font-family:var(--f-code);font-size:11px}
+.sgrid span{text-align:center;padding:2px 0;border-radius:3px;background:var(--bg)}
+.sgrid span.bad{background:var(--bad);color:#fff;font-weight:700}
+details.trace summary{cursor:pointer;color:var(--accent);font-size:14px;font-weight:500;margin-top:10px}
+details.trace[open] summary{margin-bottom:8px}
+footer{padding-block:40px 56px;color:var(--muted);font-size:14px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+<style>
+/* chapter 2 additions */
+.chiprow{display:flex;flex-wrap:wrap;gap:6px}
+.bytes{display:inline-flex;gap:3px;vertical-align:middle}
+.bytes i{width:12px;height:16px;border-radius:3px;background:var(--accent);opacity:.85}
+mark{background:var(--seg);color:var(--seg-ink);border-radius:3px;padding:0 2px}
+mark span{color:var(--seg-ink)!important}
+.mem{display:flex;flex-wrap:wrap;gap:3px;padding:10px;background:var(--bg);border:1px solid var(--line);border-radius:8px}
+.mem .cell{width:34px;height:40px;border:1px solid var(--line);border-radius:3px;background:var(--surface);display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:var(--f-code);font-size:9px;color:var(--muted);position:relative}
+.mem .cell.used{background:var(--accent-soft);border-color:var(--accent)}
+.mem .cell.first::before{content:attr(data-n);position:absolute;top:2px;left:3px;font-size:10px;color:var(--accent);font-weight:700;white-space:nowrap}
+.mem .cell .adr{position:absolute;bottom:2px;font-size:8px}
+.boxes{display:flex;flex-wrap:wrap;gap:12px}
+.vbox{min-width:110px;border:1.5px solid var(--ink);border-top-width:6px;border-radius:4px 4px 8px 8px;background:var(--surface);padding:6px 10px;display:flex;flex-direction:column;gap:2px}
+.vbox .ty{font-family:var(--f-code);font-size:12px;color:var(--muted)}
+.vbox .nm{font-family:var(--f-code);font-weight:700}
+.vbox .vl{font-family:var(--f-code);font-size:20px;color:var(--accent)}
+.vbox .sz{font-size:12px;color:var(--muted)}
+.vbox.const{border-style:solid;border-color:var(--warn)}
+.vbox.const .vl::after{content:" 🔒";font-size:14px}
+.rule{display:flex;gap:8px;align-items:flex-start;font-size:15px;padding:4px 0}
+.rule .ic{flex:none;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-size:13px;font-weight:700;color:#fff;background:var(--muted)}
+.rule.ok .ic{background:var(--ok)}.rule.bad .ic{background:var(--bad)}
+.rule.bad{color:var(--bad)}
+.verdict-big{font-size:18px;font-weight:700}
+.verdict-big.ok{color:var(--ok)}.verdict-big.bad{color:var(--bad)}.verdict-big.warn{color:var(--warn)}
+.ascii{display:grid;grid-template-columns:repeat(16,minmax(0,1fr));gap:2px;font-family:var(--f-code);font-size:12px}
+.ascii button{font:inherit;padding:3px 0;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:3px;cursor:pointer;display:flex;flex-direction:column;align-items:center;line-height:1.2}
+.ascii button small{font-size:9px;color:var(--muted)}
+.ascii button.on{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
+.ascii button.on small{color:var(--on-accent)}
+@media (max-width:560px){.ascii{grid-template-columns:repeat(8,minmax(0,1fr))}}
+.screen{margin:0;background:var(--code-bg);color:#E9F2EA;font-family:var(--f-code);font-size:15px;line-height:1.5;padding:10px 12px;border-radius:8px;overflow-x:auto;white-space:pre;min-height:3em;tab-size:8}
+.screen .ctl{color:var(--cur-bar)}
+.esc-tbl button{font:inherit;font-family:var(--f-code);border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:5px;padding:1px 8px;cursor:pointer}
+.esc-tbl button:hover{border-color:var(--accent)}
+.prec-out{font-family:var(--f-code);font-size:30px;font-weight:600;color:var(--accent);word-break:break-all}
+.digits span{border-bottom:3px solid var(--seg)}
+.define-view{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:10px;align-items:center}
+@media (max-width:640px){.define-view{grid-template-columns:minmax(0,1fr)}.define-view .arrow{transform:rotate(90deg);justify-self:center}}
+.arrow{font-size:22px;color:var(--muted)}
+.tokbar{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-family:var(--f-code)}
+.tok{padding:3px 10px;border-radius:5px;background:var(--bg);border:1px solid var(--line)}
+.tok.used{background:var(--accent-soft);border-color:var(--accent)}
+.tok.sp{padding:3px 4px;color:var(--muted);border-style:dashed}
+.tok.left{opacity:.5}
+</style>
+
+<header class="wrap">
+  <div class="kicker">C/C++ 程式設計 · 第二章</div>
+  <h1>變數與常數 <em>互動講義</em></h1>
+  <p class="lede">宣告變數、看它在記憶體裡佔多少空間、檢查變數名稱合不合法、試試各種輸出格式。程式範例都能逐行追蹤，最後有 6 題課堂練習。</p>
+  <div class="legend">
+    <span><i class="sw" style="background:#F1C94A"></i>正在執行的那一行</span>
+    <span><i class="sw" style="background:#F1C94A55;box-shadow:inset 0 0 0 1px #F1C94A"></i>這一步剛改變的變數</span>
+  </div>
+</header>
+
+<nav aria-label="章節"><div class="wrap">
+  <a href="#var">變數與記憶體</a><a href="#type">資料型態</a><a href="#name">命名規則</a><a href="#init">初始化</a><a href="#const">常數與 #define</a><a href="#cout">cout 輸出</a><a href="#esc">跳脫字元</a><a href="#prec">小數位數</a><a href="#change">改變變數</a><a href="#cin">cin 輸入</a><a href="#quiz-sec">課堂練習</a>
+</div></nav>
+
+<main class="wrap">
+
+<!-- 2.1 -->
+<section id="var">
+  <div class="sec-head"><span class="sec-no">2.1</span><h2>變數與記憶體</h2></div>
+  <div class="grid2">
+    <div class="stack">
+      <p><b>變數</b>是程式語言最基本的元素之一，通常存放在<b>記憶體（memory）</b>內。</p>
+      <p>可以把變數想成記憶體裡的一個<b>盒子</b>：宣告變數時，程式會在記憶體中切出一塊空間，貼上名字，之後就能把資料放進去、拿出來。</p>
+      <p class="big-eval"><span class="r">type</span> var-name;</p>
+      <ul class="plain">
+        <li><b>type</b>：變數的資料型態，例如 int（整數）、float（小數）、char（字元）、bool（布林值）。</li>
+        <li><b>var-name</b>：變數名稱。</li>
+      </ul>
+    </div>
+    <div class="panel stack">
+      <h3>宣告變數，看記憶體被切出幾格</h3>
+      <div class="ctl-row mono">
+        <select id="mm-t" aria-label="資料型態"><option>int</option><option>char</option><option>bool</option><option>short</option><option>float</option><option>double</option><option>long long</option></select>
+        <input type="text" id="mm-n" value="score" size="8" aria-label="變數名稱"><span>;</span>
+        <button class="btn primary" id="mm-add">宣告</button>
+        <button class="btn" id="mm-clr">清空</button>
+      </div>
+      <p class="small status" id="mm-msg" aria-live="polite"></p>
+      <div><div class="cap">記憶體（每格 1 Byte，下方是位址）</div><div class="mem" id="mm"></div></div>
+      <div><div class="cap">變數盒子</div><div class="boxes" id="mm-box"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 2.2 -->
+<section id="type">
+  <div class="sec-head"><span class="sec-no">2.2</span><h2>資料型態</h2></div>
+  <div class="grid2">
+    <div class="tbl"><table class="dt" id="ty-tbl"></table></div>
+    <div class="stack">
+      <p>型態決定變數<b>佔多少記憶體</b>，也決定<b>能存多大的數</b>。1 位元組（Byte）= 8 位元（bit），n 位元可以表示 2<sup>n</sup> 種不同的值。</p>
+      <div class="panel stack">
+        <h3>放得下嗎？</h3>
+        <div class="ctl-row"><label for="fit-v">輸入一個整數：</label><input type="text" id="fit-v" value="3000000000" size="14" class="mono"></div>
+        <div id="fit-out" class="stack" style="gap:4px"></div>
+      </div>
+      <p class="small muted">補充：投影片把 bool 的範圍寫成 0～255，bool 雖然佔 1 Byte，實際上只存 true 或 false。char 在多數編譯器上是 -128～127；要 0～255 需寫成 unsigned char。</p>
+    </div>
+  </div>
+</section>
+
+<!-- 2.3 -->
+<section id="name">
+  <div class="sec-head"><span class="sec-no">2.3</span><h2>變數名稱的規則</h2></div>
+  <div class="grid2">
+    <div class="stack">
+      <ul class="plain">
+        <li>使用<b>英文字母、阿拉伯數字、底線（_）</b>等符號作為識別字名稱，不能包含其他特殊符號（空白、-、#、@…）。</li>
+        <li>視環境而定，最長不得超過 255 個字元。</li>
+        <li>保留起來的<b>關鍵字（keyword）</b>不能作為識別字名稱，例如 return、int、for。</li>
+        <li>識別字名稱<b>不能用阿拉伯數字開頭</b>。</li>
+        <li>英文字母的<b>大小寫有區別</b>：Score 和 score 是兩個不同的變數。</li>
+      </ul>
+      <p class="small muted">投影片提到 $：GCC 等編譯器接受 $ 當作名稱的一部分，但它不是 C++ 標準，考試與正式程式都建議不要使用。</p>
+    </div>
+    <div class="panel stack">
+      <h3>名稱檢查器</h3>
+      <input type="text" id="nm-in" value="2ndPlace" class="mono" style="width:100%" spellcheck="false" aria-label="要檢查的變數名稱">
+      <div class="chiprow" id="nm-pre"></div>
+      <p class="verdict-big" id="nm-v" aria-live="polite"></p>
+      <div id="nm-rules"></div>
+    </div>
+  </div>
+</section>
+
+<!-- 2.4 -->
+<section id="init">
+  <div class="sec-head"><span class="sec-no">2.4</span><h2>變數初始化</h2></div>
+  <div class="grid2">
+    <div class="stack">
+      <p>宣告時順便給初始值，叫做<b>初始化</b>。</p>
+      <p class="note">等號（=）的意思並不是「等於」，而是「<b>指定給</b>」：把右邊的值放進左邊的變數。</p>
+<pre class="snip" data-hl>int num1 = 3;          // 整數
+float num2 = 3.14;     // 浮點數（小數）
+char ch = 'A';         // 字元：用單引號
+char ch2 = 65;         // 字母 A 的 ASCII 碼是 65
+bool check = true;     // 布林值：true 也可寫 1，false 寫 0</pre>
+      <p class="small"><code>char ch = "A";</code> 是錯的：雙引號是<b>字串</b>，char 只能放一個字元。要存字串請宣告 <code>string ch = "A";</code>（需要 <code>#include &lt;string&gt;</code>）。</p>
+    </div>
+    <div id="tr-init"></div>
+  </div>
+
+  <div class="panel" style="margin-top:20px">
+    <div class="grid2">
+      <div class="stack">
+        <h3>字元與 ASCII 碼</h3>
+        <p class="small">電腦裡的字元其實是一個數字。點表格裡的字元，或直接輸入：</p>
+        <div class="ctl-row mono">
+          <span>char ch = '</span><input type="text" id="as-c" value="A" maxlength="1" size="2" aria-label="字元"><span>';</span>
+          <span class="muted">⇔</span>
+          <span>char ch =</span><input type="number" id="as-n" value="65" min="32" max="126" aria-label="ASCII 碼"><span>;</span>
         </div>
-        <div class="flex items-center space-x-4">
-            <span id="slide-indicator" class="text-sm font-medium text-slate-400">頁次 1 / 12</span>
+        <p class="small" id="as-info"></p>
+      </div>
+      <div class="ascii" id="as-grid"></div>
+    </div>
+  </div>
+</section>
+
+<!-- 2.5 -->
+<section id="const">
+  <div class="sec-head"><span class="sec-no">2.5</span><h2>常數與前置處理器</h2></div>
+  <div class="grid2">
+    <div class="stack">
+      <p><b>常數</b>：執行時不可被指定或改變。宣告時在前面加上 <code>const</code>，而且必須同時給值。</p>
+      <pre class="snip" data-hl>const int num = 35;</pre>
+      <label class="chk"><input type="checkbox" id="ck-change"> 在程式中加一行 <code>num = 40;</code></label>
+    </div>
+    <div id="tr-const"></div>
+  </div>
+  <div class="panel" style="margin-top:20px">
+    <div class="stack">
+      <h3>#define：編譯前先做「文字取代」</h3>
+      <p class="small">前置處理器 <code>#define</code> 把常數或字串換成自訂的識別名稱。<b>後面不需要分號</b>，名稱習慣用全大寫。編譯前，程式裡所有的 PI 都會被換成 3.14159：</p>
+      <div class="ctl-row"><label for="df-r">半徑 r =</label><input type="number" id="df-r" value="2"></div>
+      <div class="define-view">
+        <pre class="snip" id="df-src"></pre>
+        <span class="arrow" aria-hidden="true">➜</span>
+        <pre class="snip" id="df-dst"></pre>
+      </div>
+      <p class="small" id="df-out"></p>
+      <label class="chk small"><input type="checkbox" id="df-semi"> 不小心寫成 <code>#define PI 3.14159;</code>（多了分號）</label>
+    </div>
+  </div>
+</section>
+
+<!-- 2.6 -->
+<section id="cout">
+  <div class="sec-head"><span class="sec-no">2.6</span><h2>輸出基本操作 cout</h2></div>
+  <div class="grid2">
+    <div class="stack">
+      <p class="big-eval">cout &lt;&lt; 運算式1 &lt;&lt; 運算式2 &lt;&lt; … &lt;&lt; 運算式n;</p>
+      <p>用 <code>&lt;&lt;</code> 把要輸出的東西一個接一個送到螢幕上。雙引號裡的文字原樣輸出；變數或運算式則輸出它的<b>值</b>；<code>endl</code> 代表換行。</p>
+      <div class="panel stack">
+        <div class="ctl-row mono">
+          <select id="co-t1" aria-label="num1 的型態"><option>int</option><option>float</option></select><span>num1 =</span><input type="number" id="co-1" value="7" step="any" aria-label="num1">
         </div>
-    </header>
+        <div class="ctl-row mono">
+          <select id="co-t2" aria-label="num2 的型態"><option>int</option><option>float</option></select><span>num2 =</span><input type="number" id="co-2" value="2" step="any" aria-label="num2">
+        </div>
+        <p class="small muted" id="co-note"></p>
+      </div>
+    </div>
+    <div id="tr-cout"></div>
+  </div>
+</section>
 
-    <!-- Main Slide Content Container -->
-    <main class="flex-1 max-w-5xl w-full mx-auto p-6 md:p-10 flex flex-col justify-center">
+<!-- 2.7 -->
+<section id="esc">
+  <div class="sec-head"><span class="sec-no">2.7</span><h2>跳脫字元</h2></div>
+  <div class="grid2">
+    <div class="tbl esc-tbl"><table class="dt" id="es-tbl"></table></div>
+    <div class="panel stack">
+      <h3>試試看</h3>
+      <p class="small">反斜線 <code>\</code> 加上一個字元，代表一個無法直接打出來的特殊字元。點左邊表格可以插入，或自己輸入雙引號內的文字：</p>
+      <div class="ctl-row mono" style="flex-wrap:nowrap"><span>cout&nbsp;&lt;&lt;&nbsp;"</span><input type="text" id="es-in" value="姓名\t分數\n小明\t95\n\&quot;加油\&quot;" class="mono" style="flex:1;min-width:0" spellcheck="false" aria-label="字串內容"><span>";</span></div>
+      <div><div class="cap">螢幕輸出</div><pre class="screen" id="es-out"></pre></div>
+      <p class="small" id="es-note"></p>
+    </div>
+  </div>
+</section>
 
-        <!-- Slide 1: Cover -->
-        <section class="slide active" id="slide-1">
-            <div class="text-center py-12 space-y-6">
-                <div class="inline-block p-4 bg-indigo-500/10 rounded-full border border-indigo-500/20 mb-4">
-                    <i class="fas fa-cube text-5xl text-indigo-400"></i>
-                </div>
-                <h2 class="text-4xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-cyan-400">
-                    第二章 變數與常數
-                </h2>
-                <p class="text-lg text-slate-400 max-w-2xl mx-auto">
-                    深入瞭解記憶體概念、資料型態、變數命名規則、常數宣告以及基本輸入輸出（cin / cout）操作。
-                </p>
-                <div class="pt-8 flex justify-center gap-4">
-                    <button onclick="nextSlide()" class="px-6 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-xl shadow-lg shadow-indigo-500/30 transition flex items-center space-x-2">
-                        <span>開始進入章節</span>
-                        <i class="fas fa-arrow-right"></i>
-                    </button>
-                </div>
-            </div>
-        </section>
+<!-- 2.8 -->
+<section id="prec">
+  <div class="sec-head"><span class="sec-no">2.8</span><h2>浮點數的輸出位數</h2></div>
+  <div class="grid2">
+    <div class="stack">
+      <p><code>setprecision(i)</code>：控制輸出位數，需要 <code>#include &lt;iomanip&gt;</code>。</p>
+      <ul class="plain">
+        <li>只寫 <code>setprecision(i)</code>：i 是<b>全部的有效位數</b>（整數部分也算）。</li>
+        <li>加上 <code>fixed</code>：i 變成<b>小數點以下的位數</b>，會四捨五入、不足補 0。</li>
+      </ul>
+      <p class="big-eval">cout &lt;&lt; fixed &lt;&lt; setprecision(2) &lt;&lt; 3.14159;　→ <span class="r">3.14</span></p>
+    </div>
+    <div class="panel stack">
+      <div class="ctl-row"><label for="pc-v">數值</label><input type="number" id="pc-v" value="3.14159" step="any" style="width:9em"></div>
+      <div class="ctl-row"><label for="pc-n">setprecision(</label><input type="range" id="pc-n" min="0" max="10" value="2" style="flex:1 1 140px"><b class="mono" id="pc-nv">2</b><span>)</span></div>
+      <label class="chk"><input type="checkbox" id="pc-f" checked> 加上 fixed</label>
+      <pre class="snip" id="pc-code"></pre>
+      <div class="prec-out" id="pc-out" aria-live="polite"></div>
+      <p class="small muted" id="pc-note"></p>
+    </div>
+  </div>
+</section>
 
-        <!-- Slide 2: What is Variable -->
-        <section class="slide" id="slide-2">
-            <h2 class="text-2xl md:text-3xl font-bold text-indigo-400 mb-6 flex items-center gap-3">
-                <i class="fas fa-box"></i> 什麼是變數 (Variable)？
-            </h2>
-            <div class="grid md:grid-cols-2 gap-6 items-center">
-                <div class="space-y-4 text-slate-300">
-                    <div class="bg-slate-800 p-5 rounded-2xl border border-slate-700">
-                        <h3 class="text-lg font-bold text-white mb-2"><i class="fas fa-check-circle text-indigo-400 mr-2"></i>基本概念</h3>
-                        <p class="text-sm leading-relaxed">變數是程式語言中最基本的元素之一。</p>
-                    </div>
-                    <div class="bg-slate-800 p-5 rounded-2xl border border-slate-700">
-                        <h3 class="text-lg font-bold text-white mb-2"><i class="fas fa-memory text-cyan-400 mr-2"></i>存放位置</h3>
-                        <p class="text-sm leading-relaxed">變數通常是存放在電腦的<strong>記憶體 (Memory)</strong> 空間內，就像一個用來儲存資料的「盒子」。</p>
-                    </div>
-                </div>
-                <div class="bg-slate-950 p-6 rounded-2xl border border-slate-800 text-center">
-                    <div class="text-slate-400 text-sm mb-4">記憶體與變數對照示意圖</div>
-                    <div class="p-4 bg-slate-900 rounded-xl border border-indigo-500/30 inline-block w-full">
-                        <div class="flex justify-center items-center gap-2 mb-3">
-                            <span class="p-2 bg-indigo-600/30 rounded text-xs">記憶體位址</span>
-                            <i class="fas fa-arrow-down text-indigo-400"></i>
-                        </div>
-                        <div class="bg-indigo-950/80 border-2 border-indigo-500 p-4 rounded-xl text-indigo-200 font-bold">
-                            📦 變數 (Variable Box)
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
+<!-- 2.9 -->
+<section id="change">
+  <div class="sec-head"><span class="sec-no">2.9</span><h2>改變變數的值</h2></div>
+  <div class="grid2">
+    <div class="stack">
+      <p>變數的值可以隨時改變。放入新值後，<b>舊值就被蓋掉</b>，盒子裡永遠只有一個值。</p>
+      <div class="boxes" id="ch-box"></div>
+    </div>
+    <div id="tr-change"></div>
+  </div>
+</section>
 
-        <!-- Slide 3: Variable Declaration -->
-        <section class="slide" id="slide-3">
-            <h2 class="text-2xl md:text-3xl font-bold text-indigo-400 mb-6 flex items-center gap-3">
-                <i class="fas fa-code"></i> 變數宣告方式
-            </h2>
-            <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 mb-6">
-                <div class="text-sm text-slate-400 mb-2">宣告語法格式：</div>
-                <div class="bg-slate-950 p-4 rounded-xl font-mono text-xl text-emerald-400 border border-slate-800">
-                    type var-name;
-                </div>
-            </div>
-            <div class="grid md:grid-cols-2 gap-4">
-                <div class="bg-slate-800/80 p-5 rounded-2xl border border-slate-700">
-                    <h3 class="font-bold text-indigo-300 mb-2">1. type（資料型態）</h3>
-                    <ul class="space-y-1 text-sm text-slate-300">
-                        <li>• <code class="text-amber-300">int</code>：整數</li>
-                        <li>• <code class="text-amber-300">float</code>：小數（浮點數）</li>
-                        <li>• <code class="text-amber-300">char</code>：字元</li>
-                        <li>• <code class="text-amber-300">bool</code>：布林值 (true/false)</li>
-                    </ul>
-                </div>
-                <div class="bg-slate-800/80 p-5 rounded-2xl border border-slate-700">
-                    <h3 class="font-bold text-indigo-300 mb-2">2. var-name（變數名稱）</h3>
-                    <p class="text-sm text-slate-300">自行設定的識別字名稱，用於代表該變數以供後續程式存取與修改。</p>
-                </div>
-            </div>
-        </section>
+<!-- 2.10 -->
+<section id="cin">
+  <div class="sec-head"><span class="sec-no">2.10</span><h2>輸入基本操作 cin</h2></div>
+  <div class="grid2">
+    <div class="stack">
+      <p class="big-eval">cin &gt;&gt; 運算式1 &gt;&gt; 運算式2 &gt;&gt; … &gt;&gt; 運算式n;</p>
+      <p>從鍵盤讀入資料，依序放進變數。多個值之間用<b>空白、Tab 或 Enter</b> 隔開都可以。</p>
+<pre class="snip" data-hl>int num1, num2;
+cin >> num1 >> num2;
+cout << num1 + num2 << endl;</pre>
+      <p class="small muted">試試：用空白或換行隔開兩個數；或輸入小數 3.7，看 int 怎麼讀。</p>
+    </div>
+    <div class="panel stack">
+      <label for="ci-in" class="small">鍵盤輸入：</label>
+      <textarea id="ci-in" rows="3" spellcheck="false" class="mono" style="font:inherit;font-family:var(--f-code);background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:6px;padding:6px 8px">12   30</textarea>
+      <div><div class="cap">cin 怎麼切開輸入</div><div class="tokbar" id="ci-tok"></div></div>
+      <div class="boxes" id="ci-box"></div>
+      <div><div class="cap">輸出</div><pre class="screen" id="ci-out"></pre></div>
+      <p class="small" id="ci-note"></p>
+    </div>
+  </div>
+</section>
 
-        <!-- Slide 4: Naming Rules -->
-        <section class="slide" id="slide-4">
-            <h2 class="text-2xl md:text-3xl font-bold text-indigo-400 mb-6 flex items-center gap-3">
-                <i class="fas fa-list-check"></i> 建立變數名稱規則
-            </h2>
-            <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 space-y-3 text-sm text-slate-300">
-                <div class="flex items-start gap-3">
-                    <i class="fas fa-check text-emerald-400 mt-1"></i>
-                    <div>可以使用<strong>英文字母、阿拉伯數字、底線（_）、$</strong> 等符號作為名稱，無法包含其他特殊符號。</div>
-                </div>
-                <div class="flex items-start gap-3">
-                    <i class="fas fa-check text-emerald-400 mt-1"></i>
-                    <div>視環境而定，名稱最長不得超過 <strong>255 個字元</strong>。</div>
-                </div>
-                <div class="flex items-start gap-3">
-                    <i class="fas fa-times text-rose-400 mt-1"></i>
-                    <div>保留起來的<strong>關鍵字 (keyword)</strong> 不能做為名稱（常見如：<code class="text-rose-300">return</code>, <code class="text-rose-300">int</code>, <code class="text-rose-300">for</code>...）。</div>
-                </div>
-                <div class="flex items-start gap-3">
-                    <i class="fas fa-times text-rose-400 mt-1"></i>
-                    <div>名稱<strong>不能用阿拉伯數字作為開頭</strong>（例如 <code class="text-rose-300">1num</code> 不合法）。</div>
-                </div>
-                <div class="flex items-start gap-3">
-                    <i class="fas fa-exclamation-triangle text-amber-400 mt-1"></i>
-                    <div><strong>英文字母的大小寫有區別</strong>（例如 <code class="text-amber-300">Num</code> 與 <code class="text-amber-300">num</code> 代表不同變數）。</div>
-                </div>
-            </div>
-        </section>
+<!-- quiz -->
+<section id="quiz-sec">
+  <div class="sec-head"><span class="sec-no">2.11</span><h2>課堂練習</h2></div>
+  <div class="score">
+    <span>已作答 <b id="sc-done">0</b> / <b id="sc-total">6</b></span>
+    <span>一次就答對 <b id="sc-ok">0</b></span>
+    <button class="btn" id="sc-reset">全部重做</button>
+  </div>
+  <div class="quiz" id="quiz"></div>
+</section>
+</main>
 
-        <!-- Slide 5: Data Types Table -->
-        <section class="slide" id="slide-5">
-            <h2 class="text-2xl md:text-3xl font-bold text-indigo-400 mb-4 flex items-center gap-3">
-                <i class="fas fa-table"></i> 資料型態、記憶體與範圍
-            </h2>
-            <div class="overflow-x-auto">
-                <table class="w-full text-left text-sm border-collapse bg-slate-800 rounded-xl overflow-hidden">
-                    <thead class="bg-slate-700 text-indigo-300">
-                        <tr>
-                            <th class="p-3">類型</th>
-                            <th class="p-3">型態</th>
-                            <th class="p-3">佔用記憶體</th>
-                            <th class="p-3">可儲存數值範圍</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-slate-700 text-slate-300">
-                        <tr><td class="p-2.5">布林</td><td class="p-2.5 font-mono text-amber-300">bool</td><td class="p-2.5">1 位元組</td><td class="p-2.5">0 ~ 255 (true / false)</td></tr>
-                        <tr><td class="p-2.5" rowspan="3">整數</td><td class="p-2.5 font-mono text-amber-300">short</td><td class="p-2.5">2 位元組</td><td class="p-2.5">-2<sup>15</sup> ~ 2<sup>15</sup>-1</td></tr>
-                        <tr><td class="p-2.5 font-mono text-amber-300">int</td><td class="p-2.5">4 位元組</td><td class="p-2.5">-2<sup>31</sup> ~ 2<sup>31</sup>-1</td></tr>
-                        <tr><td class="p-2.5 font-mono text-amber-300">long long</td><td class="p-2.5">8 位元組</td><td class="p-2.5">-2<sup>63</sup> ~ 2<sup>63</sup>-1</td></tr>
-                        <tr><td class="p-2.5" rowspan="2">小數</td><td class="p-2.5 font-mono text-amber-300">float</td><td class="p-2.5">4 位元組</td><td class="p-2.5">精確位數 7~8 位</td></tr>
-                        <tr><td class="p-2.5 font-mono text-amber-300">double</td><td class="p-2.5">8 位元組</td><td class="p-2.5">精確位數 16~17 位</td></tr>
-                        <tr><td class="p-2.5">字元</td><td class="p-2.5 font-mono text-amber-300">char</td><td class="p-2.5">1 位元組</td><td class="p-2.5">0 ~ 255 (ASCII)</td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </section>
+<footer class="wrap">第二章 變數與常數 · 依課堂投影片內容製作。型態大小以常見的 Windows 編譯器（Dev-C++ 等）為準。</footer>
 
-        <!-- Slide 6: Variable Initialization -->
-        <section class="slide" id="slide-6">
-            <h2 class="text-2xl md:text-3xl font-bold text-indigo-400 mb-4 flex items-center gap-3">
-                <i class="fas fa-play"></i> 變數初始化與賦值
-            </h2>
-            <blockquote class="bg-amber-500/10 border-l-4 border-amber-500 p-3 text-amber-300 text-xs mb-4">
-                注意：等號 (<code>=</code>) 的意思並非數學上的「等於」，而是將右方的數值<strong>「指定給 (Assign)」</strong>左方的變數。
-            </blockquote>
-            <div class="grid md:grid-cols-2 gap-4 text-xs font-mono">
-                <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
-                    <span class="text-slate-500">// 整數型態</span><br>
-                    <span class="text-blue-400">int</span>&nbsp;<span class="text-slate-200">num1 = 3;</span><br><br>
-                    <span class="text-slate-500">// 浮點數型態</span><br>
-                    <span class="text-blue-400">float</span>&nbsp;<span class="text-slate-200">num2 = 3.14;</span><br><br>
-                    <span class="text-slate-500">// 布林變數</span><br>
-                    <span class="text-blue-400">bool</span>&nbsp;<span class="text-slate-200">check = true;</span> <span class="text-slate-500 font-sans">(1亦可, 0表false)</span>
-                </div>
-                <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
-                    <span class="text-slate-500">// 字元型態 (使用單引號)</span><br>
-                    <span class="text-blue-400">char</span>&nbsp;<span class="text-slate-200">ch = 'A';</span><br><br>
-                    <span class="text-slate-500">// 亦可指定 ASCII 碼 (A的ASCII為65)</span><br>
-                    <span class="text-blue-400">char</span>&nbsp;<span class="text-slate-200">ch = 65;</span><br><br>
-                    <span class="text-rose-400">// 錯誤示範: char ch = "A";</span><br>
-                    <span class="text-emerald-400">// 若使用雙引號需改為 string ch = "A";</span>
-                </div>
-            </div>
-        </section>
+<script>
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const RE=/(\/\/.*$)|("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')|(#\w+)|\b(int|char|bool|short|long|float|double|const|string|return|true|false|fixed)\b|\b(cout|cin|endl|setprecision)\b|(\b\d+(?:\.\d+)?\b)/g;
+function hl(s){let o='',last=0;s.replace(RE,(m,cm,st,pp,kw,io,num,idx)=>{o+=esc(s.slice(last,idx));const c=cm?'c':st?'s':pp||kw?'k':io?'f':'n';o+=`<span class="t-${c}">${esc(m)}</span>`;last=idx+m.length;return m;});return o+esc(s.slice(last));}
+document.querySelectorAll('[data-hl]').forEach(el=>{el.innerHTML=el.textContent.split('\n').map(hl).join('\n');});
+const $=id=>document.getElementById(id);
+function chips(el,items,onPick){items.forEach((t,i)=>{const b=document.createElement('button');b.className='btn mono';b.textContent=t;b.onclick=()=>onPick(i,t);el.appendChild(b);});}
 
-        <!-- Slide 7: Constants & Preprocessor -->
-        <section class="slide" id="slide-7">
-            <h2 class="text-2xl md:text-3xl font-bold text-indigo-400 mb-6 flex items-center gap-3">
-                <i class="fas fa-lock"></i> 常數與前置處理器
-            </h2>
-            <div class="grid md:grid-cols-2 gap-6">
-                <!-- const -->
-                <div class="bg-slate-800 border border-slate-700 rounded-2xl p-5">
-                    <h3 class="text-lg font-bold text-white mb-2"><i class="fas fa-shield-alt text-indigo-400 mr-2"></i>常數 (const)</h3>
-                    <p class="text-slate-300 text-xs mb-3">執行期間數值<strong>不可被重新指定或改變</strong>。</p>
-                    <div class="bg-slate-950 p-3 rounded-xl font-mono text-xs text-indigo-300">
-                        <span class="text-pink-400">const</span>&nbsp;<span class="text-blue-400">int</span>&nbsp;<span class="text-slate-200">num = 35;</span>
-                    </div>
-                </div>
-                <!-- #define -->
-                <div class="bg-slate-800 border border-slate-700 rounded-2xl p-5">
-                    <h3 class="text-lg font-bold text-white mb-2"><i class="fas fa-hashtag text-cyan-400 mr-2"></i>前置處理器 (#define)</h3>
-                    <p class="text-slate-300 text-xs mb-3">替換常數或字串為自訂識別名稱，在編譯前直接替換。</p>
-                    <div class="bg-slate-950 p-3 rounded-xl font-mono text-xs text-cyan-300">
-                        <span class="text-pink-400">#define</span>&nbsp;<span class="text-slate-200">PI 3.14159</span><br>
-                        <span class="text-slate-500 font-sans text-[10px]">(注意：末端不需要加分號)</span>
-                    </div>
-                </div>
-            </div>
-        </section>
+/* ---------- tracer ---------- */
+function record(run,p,limit){const steps=[];let out='';const STOP={};
+  const T={at(line,vars,note=''){steps.push({line,vars:{...vars},out,note});if(steps.length>=limit)throw STOP;},print(s){out+=s;}};
+  try{run(T,p)}catch(e){if(e!==STOP)throw e;}return{steps};}
+function mountTracer(root,cfg){
+  root.className='tracer';
+  root.innerHTML=`<div class="tr-head"><span class="tr-title"></span><span class="tr-count"></span></div>
+  <div class="tr-code"></div><p class="tr-note" aria-live="polite"></p>
+  <div class="tr-io"><div class="tr-vars"><div class="cap">變數</div><dl></dl></div><div class="tr-out"><div class="cap">輸出</div><pre></pre></div></div>
+  <div class="tr-ctrl"><button data-a="reset" aria-label="回到開頭">⏮</button><button data-a="prev">上一步</button><button data-a="play" class="primary">▶ 播放</button><button data-a="next">下一步</button><button data-a="end" aria-label="跳到最後">⏭</button><input type="range" min="0" value="0" aria-label="拖曳到任一步"></div>`;
+  const q=s=>root.querySelector(s);
+  const codeEl=q('.tr-code'),note=q('.tr-note'),dl=q('.tr-vars dl'),outEl=q('.tr-out pre'),count=q('.tr-count'),range=q('input[type=range]');
+  const bPrev=q('[data-a=prev]'),bNext=q('[data-a=next]'),bPlay=q('[data-a=play]'),bReset=q('[data-a=reset]'),bEnd=q('[data-a=end]');
+  q('.tr-title').textContent=cfg.title||'';
+  let st,idx=0,timer=null;
+  function stop(){clearInterval(timer);timer=null;bPlay.textContent='▶ 播放';}
+  function show(){
+    const s=st.steps[idx],pv=st.steps[idx-1];
+    codeEl.querySelectorAll('.ln').forEach(el=>el.classList.toggle('cur',+el.dataset.l===s.line));
+    note.textContent=s.note||'\u00a0';
+    dl.innerHTML=Object.entries(s.vars).map(([k,v])=>`<div class="${pv&&pv.vars[k]!==v?'chg':''}"><dt>${esc(k)}</dt><dd>${v===undefined?'?':esc(String(v))}</dd></div>`).join('');
+    outEl.textContent=s.out;outEl.scrollTop=outEl.scrollHeight;
+    count.textContent=`第 ${idx+1} / ${st.steps.length} 步`;range.value=idx;
+    bPrev.disabled=bReset.disabled=idx===0;bNext.disabled=bEnd.disabled=idx===st.steps.length-1;
+    const cur=codeEl.querySelector('.ln.cur');
+    if(cur){const t=cur.offsetTop,h=codeEl.clientHeight;if(t<codeEl.scrollTop+4||t>codeEl.scrollTop+h-30)codeEl.scrollTop=t-h/2;}
+    if(cfg.onStep)cfg.onStep(s);
+  }
+  function build(){
+    stop();const p=cfg.params?cfg.params():{};
+    const lines=typeof cfg.lines==='function'?cfg.lines(p):cfg.lines;
+    codeEl.innerHTML=lines.map((l,i)=>`<div class="ln" data-l="${i}"><span class="no">${i+1}</span><span class="tx">${hl(l)||' '}</span></div>`).join('');
+    st=record(cfg.run,p,cfg.limit||500);range.max=st.steps.length-1;idx=0;show();
+  }
+  bNext.onclick=()=>{stop();if(idx<st.steps.length-1){idx++;show();}};
+  bPrev.onclick=()=>{stop();if(idx>0){idx--;show();}};
+  bReset.onclick=()=>{stop();idx=0;show();};
+  bEnd.onclick=()=>{stop();idx=st.steps.length-1;show();};
+  range.oninput=()=>{stop();idx=+range.value;show();};
+  bPlay.onclick=()=>{if(timer){stop();return;}if(idx>=st.steps.length-1)idx=0;bPlay.textContent='❚❚ 暫停';
+    timer=setInterval(()=>{if(idx>=st.steps.length-1){stop();return;}idx++;show();},cfg.speed||900);};
+  build();return{build};
+}
 
-        <!-- Slide 8: cout Basic Output -->
-        <section class="slide" id="slide-8">
-            <h2 class="text-2xl md:text-3xl font-bold text-indigo-400 mb-4 flex items-center gap-3">
-                <i class="fas fa-desktop"></i> 輸出基本操作 (cout)
-            </h2>
-            <div class="bg-slate-800 border border-slate-700 rounded-2xl p-4 mb-4 text-xs">
-                <div class="font-mono text-emerald-400 text-sm mb-1">cout &lt;&lt; 運算式1 &lt;&lt; 運算式2 &lt;&lt; ... &lt;&lt; 運算式n;</div>
-                <div class="text-slate-300">使用 <code class="text-indigo-300">&lt;&lt;</code> (串流插入運算子) 可將多個字串、變數或算式串接輸出。</div>
-            </div>
-            <div class="bg-slate-950 p-4 rounded-xl font-mono text-xs text-slate-200 space-y-1">
-                <div><span class="text-indigo-400">cout</span>&nbsp;&lt;&lt;&nbsp;<span class="text-emerald-300">"num1 = "</span>&nbsp;&lt;&lt;&nbsp;num1&nbsp;&lt;&lt;&nbsp;<span class="text-indigo-400">endl</span>;</div>
-                <div><span class="text-indigo-400">cout</span>&nbsp;&lt;&lt;&nbsp;num1 + num2&nbsp;&lt;&lt;&nbsp;<span class="text-indigo-400">endl</span>;&nbsp;<span class="text-slate-500">// 加法</span></div>
-                <div><span class="text-indigo-400">cout</span>&nbsp;&lt;&lt;&nbsp;num1 - num2&nbsp;&lt;&lt;&nbsp;<span class="text-indigo-400">endl</span>;&nbsp;<span class="text-slate-500">// 減法</span></div>
-                <div><span class="text-indigo-400">cout</span>&nbsp;&lt;&lt;&nbsp;num1 * num2&nbsp;&lt;&lt;&nbsp;<span class="text-indigo-400">endl</span>;&nbsp;<span class="text-slate-500">// 乘法</span></div>
-                <div><span class="text-indigo-400">cout</span>&nbsp;&lt;&lt;&nbsp;num1 / num2&nbsp;&lt;&lt;&nbsp;<span class="text-indigo-400">endl</span>;&nbsp;<span class="text-slate-500">// 除法</span></div>
-            </div>
-        </section>
+/* ---------- shared data ---------- */
+const TYPES={bool:[1,'布林','true / false'],char:[1,'字元','-128 ～ 127（一個字元）'],short:[2,'整數','-2¹⁵ ～ 2¹⁵-1'],int:[4,'整數','-2³¹ ～ 2³¹-1'],'long long':[8,'整數','-2⁶³ ～ 2⁶³-1'],float:[4,'小數','精確位數 7～8 位'],double:[8,'小數','精確位數 16～17 位']};
+const KW=['alignas','alignof','and','and_eq','asm','auto','bitand','bitor','bool','break','case','catch','char','class','compl','const','constexpr','continue','default','delete','do','double','else','enum','explicit','export','extern','false','float','for','friend','goto','if','inline','int','long','mutable','namespace','new','not','not_eq','nullptr','operator','or','or_eq','private','protected','public','register','return','short','signed','sizeof','static','struct','switch','template','this','throw','true','try','typedef','typename','union','unsigned','using','virtual','void','volatile','while','xor','xor_eq'];
+function checkName(n){
+  const r=[];
+  r.push([n.length>0,'不能是空的']);
+  const bad=[...n].filter(c=>!/[A-Za-z0-9_$]/.test(c));
+  r.push([bad.length===0,bad.length?`含有不允許的字元：${[...new Set(bad)].map(c=>c===' '?'空白':c).join(' ')}`:'只用英文字母、數字、底線']);
+  r.push([!/^[0-9]/.test(n),/^[0-9]/.test(n)?'以數字開頭':'不以數字開頭']);
+  const kw=KW.includes(n);r.push([!kw,kw?`「${n}」是關鍵字`:'不是關鍵字']);
+  r.push([n.length<=255,`長度 ${n.length} 個字元（不超過 255）`]);
+  const dollar=n.includes('$');
+  return{ok:r.every(x=>x[0]),rules:r,dollar};}
 
-        <!-- Slide 9: Escape Characters -->
-        <section class="slide" id="slide-9">
-            <h2 class="text-2xl md:text-3xl font-bold text-indigo-400 mb-4 flex items-center gap-3">
-                <i class="fas fa-terminal"></i> 跳脫字元 (Escape Characters)
-            </h2>
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs font-mono">
-                <div class="bg-slate-800 p-2.5 rounded-lg border border-slate-700"><span class="text-amber-300 font-bold">\a</span> : 警告音</div>
-                <div class="bg-slate-800 p-2.5 rounded-lg border border-slate-700"><span class="text-amber-300 font-bold">\b</span> : BackSpace</div>
-                <div class="bg-slate-800 p-2.5 rounded-lg border border-slate-700"><span class="text-amber-300 font-bold">\t</span> : 水平 tab</div>
-                <div class="bg-slate-800 p-2.5 rounded-lg border border-slate-700"><span class="text-amber-300 font-bold">\v</span> : 垂直 tab</div>
-                <div class="bg-slate-800 p-2.5 rounded-lg border border-slate-700"><span class="text-amber-300 font-bold">\n</span> : 換行</div>
-                <div class="bg-slate-800 p-2.5 rounded-lg border border-slate-700"><span class="text-amber-300 font-bold">\f</span> : 換頁</div>
-                <div class="bg-slate-800 p-2.5 rounded-lg border border-slate-700"><span class="text-amber-300 font-bold">\r</span> : Return</div>
-                <div class="bg-slate-800 p-2.5 rounded-lg border border-slate-700"><span class="text-amber-300 font-bold">\\</span> : 反斜線 \</div>
-                <div class="bg-slate-800 p-2.5 rounded-lg border border-slate-700"><span class="text-amber-300 font-bold">\'</span> : 單引號 '</div>
-                <div class="bg-slate-800 p-2.5 rounded-lg border border-slate-700"><span class="text-amber-300 font-bold">\"</span> : 雙引號 "</div>
-                <div class="bg-slate-800 p-2.5 rounded-lg border border-slate-700"><span class="text-amber-300 font-bold">\?</span> : 問號 ?</div>
-                <div class="bg-slate-800 p-2.5 rounded-lg border border-slate-700"><span class="text-amber-300 font-bold">\000</span> : 8進制碼</div>
-            </div>
-        </section>
+/* ---------- 2.1 memory ---------- */
+const MEM=32;let decl=[];
+function mmRender(){
+  const cells=[];let p=0;const owner=new Array(MEM).fill(null);
+  decl.forEach(d=>{for(let i=0;i<d.size;i++)owner[d.at+i]=d;});
+  $('mm').innerHTML=owner.map((o,i)=>`<div class="cell${o?' used':''}${o&&o.at===i?' first':''}" ${o&&o.at===i?`data-n="${esc(o.name)}"`:''} title="${o?esc(o.type+' '+o.name):'未使用'}"><span class="adr">${(0x60+i).toString(16)}</span></div>`).join('');
+  $('mm-box').innerHTML=decl.length?decl.map(d=>`<div class="vbox"><span class="ty">${esc(d.type)}</span><span class="nm">${esc(d.name)}</span><span class="vl">?</span><span class="sz">${d.size} Byte${d.size>1?'s':''}，位址 0x${(0x60+d.at).toString(16)}</span></div>`).join(''):'<span class="small muted">還沒有宣告任何變數</span>';}
+function mmAdd(){const t=$('mm-t').value,n=$('mm-n').value.trim(),msg=$('mm-msg');const c=checkName(n);
+  if(!c.ok){msg.className='small status bad';msg.textContent=`「${n}」不能當變數名稱：${c.rules.find(x=>!x[0])[1]}。`;return;}
+  if(decl.some(d=>d.name===n)){msg.className='small status bad';msg.textContent=`「${n}」已經宣告過了，同一個名稱不能重複宣告。`;return;}
+  const size=TYPES[t][0];const used=decl.reduce((s,d)=>Math.max(s,d.at+d.size),0);
+  if(used+size>MEM){msg.className='small status bad';msg.textContent='這塊示意記憶體放不下了，按「清空」再試。';return;}
+  decl.push({type:t,name:n,size,at:used});msg.className='small status ok';msg.textContent=`${t} ${n}; 佔用 ${size} 個 Byte。宣告後還沒給值，盒子裡是不確定的內容（?）。`;mmRender();
+  const s=['a','b','total','avg','ch','ok','x','y','count','price'];$('mm-n').value=s[decl.length%s.length]+(decl.length>=s.length?decl.length:'');}
+$('mm-add').onclick=mmAdd;$('mm-n').addEventListener('keydown',e=>{if(e.key==='Enter')mmAdd();});
+$('mm-clr').onclick=()=>{decl=[];$('mm-msg').textContent='';mmRender();};
+decl=[{type:'int',name:'num1',size:4,at:0},{type:'char',name:'ch',size:1,at:4},{type:'double',name:'avg',size:8,at:5}];mmRender();
 
-        <!-- Slide 10: setprecision -->
-        <section class="slide" id="slide-10">
-            <h2 class="text-2xl md:text-3xl font-bold text-indigo-400 mb-4 flex items-center gap-3">
-                <i class="fas fa-sliders-h"></i> 浮點數的輸出位數控制
-            </h2>
-            <div class="bg-slate-800 border border-slate-700 rounded-2xl p-5 space-y-3 text-xs">
-                <div>1. 需引入 <code class="text-pink-300 font-mono">#include &lt;iomanip&gt;</code> 標頭檔。</div>
-                <div>2. 使用 <code class="text-amber-300 font-mono">setprecision(int i)</code> 控制輸出位數。</div>
-                <div>3. 若要<strong>只控制小數點以下的位數</strong>，再加上 <code class="text-amber-300 font-mono">fixed</code> 格式控制。</div>
-                <div class="bg-slate-950 p-4 rounded-xl font-mono text-emerald-400 text-sm mt-2">
-                    <span class="text-indigo-400">cout</span>&nbsp;&lt;&lt;&nbsp;<span class="text-pink-400">fixed</span>&nbsp;&lt;&lt;&nbsp;<span class="text-amber-300">setprecision</span>(2)&nbsp;&lt;&lt;&nbsp;3.14159;
-                    <div class="text-slate-500 text-xs mt-1">// 輸出結果：3.14</div>
-                </div>
-            </div>
-        </section>
+/* ---------- 2.2 types ---------- */
+$('ty-tbl').innerHTML='<tr><th>類型</th><th>型態</th><th>佔用記憶體</th><th>可儲存數值範圍</th></tr>'+['bool','short','int','long long','float','double','char'].map(t=>{const[s,k,r]=TYPES[t];return `<tr><td>${k}</td><td class="m">${t}</td><td><span class="bytes" title="${s} Bytes">${'<i style="width:12px"></i>'.repeat(s)}</span> ${s} 位元組</td><td class="m">${r}</td></tr>`;}).join('');
+const RANGES=[['short',-(2n**15n),2n**15n-1n],['int',-(2n**31n),2n**31n-1n],['long long',-(2n**63n),2n**63n-1n]];
+function fit(){const s=$('fit-v').value.trim();let v;
+  try{if(!/^-?\d+$/.test(s))throw 0;v=BigInt(s);}catch(e){$('fit-out').innerHTML='<p class="small status bad">請輸入整數（不含逗號或小數點）。</p>';return;}
+  $('fit-out').innerHTML=RANGES.map(([t,lo,hi])=>{const ok=v>=lo&&v<=hi;return `<div class="rule ${ok?'ok':'bad'}"><span class="ic">${ok?'✓':'✗'}</span><span><code>${t}</code>：${ok?'放得下':'放不下，會溢位（overflow），存進去的值會變得亂七八糟'}</span></div>`;}).join('');}
+$('fit-v').oninput=fit;fit();
 
-        <!-- Slide 11: Reassign Variable Value -->
-        <section class="slide" id="slide-11">
-            <h2 class="text-2xl md:text-3xl font-bold text-indigo-400 mb-4 flex items-center gap-3">
-                <i class="fas fa-sync-alt"></i> 改變變數的值
-            </h2>
-            <div class="grid md:grid-cols-2 gap-6 items-center">
-                <div class="bg-slate-950 p-4 rounded-xl font-mono text-xs leading-relaxed">
-                    num1 = 3;<br>
-                    <span class="text-indigo-400">cout</span>&nbsp;&lt;&lt;&nbsp;<span class="text-emerald-300">"變數num1的值是"</span>&nbsp;&lt;&lt;&nbsp;num1&nbsp;&lt;&lt;&nbsp;<span class="text-indigo-400">endl</span>;<br><br>
-                    num1 = 5;<br>
-                    <span class="text-indigo-400">cout</span>&nbsp;&lt;&lt;&nbsp;<span class="text-emerald-300">"變數num1更新後的值是"</span>&nbsp;&lt;&lt;&nbsp;num1&nbsp;&lt;&lt;&nbsp;<span class="text-indigo-400">endl</span>;
-                </div>
-                <div class="bg-slate-800 border border-slate-700 p-4 rounded-2xl text-xs space-y-2">
-                    <div class="font-bold text-emerald-400">執行結果：</div>
-                    <div class="bg-black/50 p-3 rounded-lg font-mono text-slate-200">
-                        變數num1的值是3。<br>
-                        變數num1更新後的值是5。
-                    </div>
-                    <p class="text-slate-400 text-[11px] pt-1">當賦予變數新數值時，舊有記憶體中的數值會被直接覆蓋。</p>
-                </div>
-            </div>
-        </section>
+/* ---------- 2.3 names ---------- */
+const NP=['score','2ndPlace','my_score','my-score','int','Int','_count','total sum','PI','price$','x1'];
+chips($('nm-pre'),NP,(i,t)=>{$('nm-in').value=t;nm();});
+function nm(){const n=$('nm-in').value;const c=checkName(n);
+  const v=$('nm-v');
+  if(c.ok&&c.dollar){v.className='verdict-big warn';v.textContent=`「${n}」：GCC 可以編譯，但含 $ 不建議使用`;}
+  else{v.className='verdict-big '+(c.ok?'ok':'bad');v.textContent=c.ok?`「${n}」可以當變數名稱`:`「${n}」不能當變數名稱`;}
+  let extra='';
+  if(c.ok&&KW.includes(n.toLowerCase())&&!KW.includes(n))extra=`<div class="rule ok"><span class="ic">i</span><span>大小寫有區別：「${esc(n)}」不等於關鍵字「${esc(n.toLowerCase())}」，所以可以用（但容易混淆）。</span></div>`;
+  $('nm-rules').innerHTML=c.rules.map(([ok,t])=>`<div class="rule ${ok?'ok':'bad'}"><span class="ic">${ok?'✓':'✗'}</span><span>${esc(t)}</span></div>`).join('')+extra;}
+$('nm-in').oninput=nm;nm();
 
-        <!-- Slide 12: cin Input -->
-        <section class="slide" id="slide-12">
-            <h2 class="text-2xl md:text-3xl font-bold text-indigo-400 mb-4 flex items-center gap-3">
-                <i class="fas fa-keyboard"></i> 輸入基本操作 (cin)
-            </h2>
-            <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 mb-4">
-                <div class="text-sm text-slate-400 mb-2">cin 輸入語法格式：</div>
-                <div class="bg-slate-950 p-4 rounded-xl font-mono text-lg text-emerald-400 border border-slate-800 mb-3">
-                    cin &gt;&gt; 運算式1 &gt;&gt; 運算式2 &gt;&gt; ... &gt;&gt; 運算式n;
-                </div>
-                <p class="text-xs text-slate-300 leading-relaxed">
-                    使用 <code class="text-indigo-300">&gt;&gt;</code> (串流擷取運算子) 可以從鍵盤讀取使用者輸入的值，並依序儲存至指定變數中。
-                </p>
-            </div>
-            <div class="bg-slate-950 p-4 rounded-xl font-mono text-xs text-indigo-300">
-                <span class="text-indigo-400">cin</span>&nbsp;&gt;&gt;&nbsp;num1&nbsp;&gt;&gt;&nbsp;num2;
-            </div>
-        </section>
+/* ---------- 2.4 init ---------- */
+mountTracer($('tr-init'),{title:'宣告並初始化',
+  lines:['int num1 = 3;','float num2 = 3.14;',"char ch = 'A';",'char ch2 = 65;','bool check = true;','cout << num1 << " " << num2 << endl;','cout << ch << " " << ch2 << endl;','cout << check << endl;'],
+  run(T){const v={};v.num1=3;T.at(0,v,'把 3 指定給 num1');v.num2=3.14;T.at(1,v);v.ch="'A'";T.at(2,v,"字元用單引號");v.ch2="'A'";T.at(3,v,'65 是 A 的 ASCII 碼，所以 ch2 也是 A');v.check='true';T.at(4,v);
+    T.print('3 3.14\n');T.at(5,v);T.print('A A\n');T.at(6,v,'char 輸出時顯示字元，不是數字');T.print('1\n');T.at(7,v,'bool 的 true 用 cout 輸出時顯示為 1');}});
+const asGrid=$('as-grid');
+for(let i=32;i<=126;i++){const b=document.createElement('button');b.innerHTML=`${i===32?'␣':esc(String.fromCharCode(i))}<small>${i}</small>`;b.dataset.c=i;b.onclick=()=>asSet(i);asGrid.appendChild(b);}
+function asSet(n){n=Math.max(32,Math.min(126,n|0));$('as-n').value=n;$('as-c').value=String.fromCharCode(n);
+  asGrid.querySelectorAll('button').forEach(b=>b.classList.toggle('on',+b.dataset.c===n));
+  const c=String.fromCharCode(n);let tip='';
+  if(/[A-Z]/.test(c))tip=`大寫字母；對應的小寫 '${c.toLowerCase()}' 是 ${n+32}（差 32）。`;
+  else if(/[a-z]/.test(c))tip=`小寫字母；對應的大寫 '${c.toUpperCase()}' 是 ${n-32}（差 32）。`;
+  else if(/[0-9]/.test(c))tip=`注意：字元 '${c}' 的碼是 ${n}，不是數字 ${c}。'${c}' - '0' 才會得到 ${c}。`;
+  else if(n===32)tip='空白字元。';
+  $('as-info').innerHTML=`<code>'${esc(c)}'</code> 的 ASCII 碼是 <b>${n}</b>，二進位 <code>${n.toString(2).padStart(8,'0')}</code>。${tip}`;}
+$('as-c').oninput=()=>{const c=$('as-c').value;if(c)asSet(c.charCodeAt(0));};
+$('as-n').oninput=()=>asSet(+$('as-n').value);asSet(65);
 
-    </main>
+/* ---------- 2.5 const ---------- */
+const trConst=mountTracer($('tr-const'),{title:'const 常數',
+  params:()=>({ch:$('ck-change').checked}),
+  lines:p=>p.ch?['const int num = 35;','num = 40;          // ✗ 編譯錯誤','cout << num << endl;']:['const int num = 35;','cout << num << endl;'],
+  run(T,p){if(p.ch){T.at(1,{},"編譯錯誤：assignment of read-only variable 'num'。const 變數不能被改變，程式根本無法執行。");return;}
+    T.at(0,{num:35},'宣告常數 num，值固定為 35');T.print('35\n');T.at(1,{num:35});}});
+$('ck-change').addEventListener('input',()=>trConst.build());
+function df(){const r=+$('df-r').value||0,semi=$('df-semi').checked,P='3.14159'+(semi?';':'');
+  const src=['#define PI '+P,'','double r = '+r+';','double area = PI * r * r;','cout << area;'];
+  const dst=['','','double r = '+r+';','double area = '+P+' * r * r;','cout << area;'];
+  $('df-src').innerHTML=src.map(hl).join('\n').replace(/\bPI\b(?![^<]*>)/g,'<mark>PI</mark>');
+  $('df-dst').innerHTML=dst.map(hl).join('\n').replace(/3\.14159;?/,m=>`<mark>${m}</mark>`);
+  $('df-out').innerHTML=semi?'<span class="status bad">取代後變成 <code>3.14159; * r * r;</code>，分號讓敘述提早結束，<code>* r * r;</code> 變成語法錯誤，無法編譯。所以 #define 後面不能加分號。</span>':`輸出：<b class="mono">${+(3.14159*r*r).toPrecision(6)}</b>　（cout 預設顯示 6 位有效數字）`;}
+['df-r','df-semi'].forEach(id=>$(id).addEventListener('input',df));df();
 
-    <!-- Footer Controls -->
-    <footer class="bg-slate-800/80 backdrop-blur border-t border-slate-700 px-6 py-4 flex justify-between items-center">
-        <button onclick="prevSlide()" id="btn-prev" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 disabled:opacity-40 disabled:cursor-not-allowed rounded-lg text-sm font-medium transition flex items-center space-x-2">
-            <i class="fas fa-chevron-left"></i>
-            <span>上一頁</span>
-        </button>
+/* ---------- 2.6 cout ---------- */
+function cppNum(v,isF){if(!isF)return String(v);return String(+v.toPrecision(6));}
+const trCout=mountTracer($('tr-cout'),{title:'輸出運算結果',
+  params:()=>{const t1=$('co-t1').value,t2=$('co-t2').value;let a=+$('co-1').value||0,b=+$('co-2').value||0;if(t1==='int')a=Math.trunc(a);if(t2==='int')b=Math.trunc(b);return{t1,t2,a,b};},
+  lines:p=>[`${p.t1} num1 = ${p.a};`,`${p.t2} num2 = ${p.b};`,'cout << "num1 = " << num1 << endl;','cout << num1 + num2 << endl;','cout << num1 - num2 << endl;','cout << num1 * num2 << endl;','cout << num1 / num2 << endl;'],
+  run(T,p){const{a,b}=p,f=p.t1==='float'||p.t2==='float';const v={num1:a,num2:b};T.at(0,v);T.at(1,v);
+    T.print(`num1 = ${a}\n`);T.at(2,v,'雙引號內的文字原樣輸出，num1 輸出它的值');
+    T.print(cppNum(a+b,f)+'\n');T.at(3,v);T.print(cppNum(a-b,f)+'\n');T.at(4,v);T.print(cppNum(a*b,f)+'\n');T.at(5,v);
+    if(b===0){T.at(6,v,f?'除以 0.0 會得到 inf':'整數除以 0：程式會當掉');T.print(f?'inf\n':'');return;}
+    T.print(cppNum(f?a/b:Math.trunc(a/b),f)+'\n');T.at(6,v,f?'有一邊是 float，結果保留小數':`兩個都是 int：${a} / ${b} 只留整數部分`);}});
+function coNote(){const t1=$('co-t1').value,t2=$('co-t2').value;$('co-note').textContent=t1==='int'&&t2==='int'?'兩個都是 int 時，num1 / num2 是整數除法，小數會被捨去。把其中一個改成 float 看看。':'有 float 參與運算，除法結果會保留小數。';trCout.build();}
+['co-t1','co-t2','co-1','co-2'].forEach(id=>$(id).addEventListener('input',coNote));coNote();
 
-        <div class="flex space-x-1.5 overflow-x-auto px-2" id="dots-container"></div>
+/* ---------- 2.7 escape ---------- */
+const ESC=[['\\a','警告音','\x07'],['\\b','BackSpace（倒退一格）','\b'],['\\t','水平 tab','\t'],['\\v','垂直 tab','\v'],['\\n','換行','\n'],['\\f','換頁','\f'],['\\r','return（回到行首）','\r'],['\\\\','\\','\\'],["\\'","'","'"],['\\"','"','"'],['\\?','?','?'],['\\ooo','8 進位 ooo 字元碼（o 為 0～7），如 \\101 是 A',''],['\\xhh','16 進位 hh 字元碼（h 為 0～9、A～F），如 \\x41 是 A','']];
+$('es-tbl').innerHTML='<tr><th>跳脫字元</th><th>說明</th></tr>'+ESC.map(([e,d],i)=>`<tr><td><button data-i="${i}" title="插入到右邊的字串">${esc(e)}</button></td><td>${esc(d)}</td></tr>`).join('');
+$('es-tbl').querySelectorAll('button').forEach(b=>b.onclick=()=>{const e=ESC[+b.dataset.i][0];const ins=e==='\\ooo'?'\\101':e==='\\xhh'?'\\x41':e;const el=$('es-in');const p=el.selectionStart??el.value.length;el.value=el.value.slice(0,p)+ins+el.value.slice(el.selectionEnd??p);el.focus();el.selectionStart=el.selectionEnd=p+ins.length;es();});
+function es(){const s=$('es-in').value;let lines=[''],col=0,notes=new Set(),err='';
+  const put=c=>{let L=lines[lines.length-1];L=L.padEnd(col,' ');lines[lines.length-1]=L.slice(0,col)+c+L.slice(col+1);col++;};
+  for(let i=0;i<s.length;i++){const c=s[i];
+    if(c==='"'){err='字串中間出現沒有反斜線的 "，字串會在這裡提早結束，造成編譯錯誤。要印出 " 請寫 \\"';break;}
+    if(c!=='\\'){put(c);continue;}
+    const n=s[++i];if(n===undefined){err='字串結尾只有一個 \\，請寫成 \\\\ 才能印出反斜線';break;}
+    if(n==='n'){lines.push('');col=0;}
+    else if(n==='t'){const nc=(Math.floor(col/8)+1)*8;while(col<nc)put(' ');notes.add('\\t 會跳到下一個定位點（每 8 格一個），常用來對齊');}
+    else if(n==='r'){col=0;notes.add('\\r 回到這一行開頭，後面的字會覆蓋前面的字');}
+    else if(n==='b'){col=Math.max(0,col-1);notes.add('\\b 讓游標倒退一格，下一個字會蓋掉前一個字');}
+    else if(n==='a'){notes.add('\\a 會讓電腦發出「嗶」一聲，畫面上看不到');}
+    else if(n==='v'||n==='f'){lines.push(' '.repeat(col));notes.add(`\\${n} 在一般主控台的效果因系統而異`);}
+    else if(n==='\\'||n==="'"||n==='"'||n==='?')put(n);
+    else if(/[0-7]/.test(n)){let d=n;while(d.length<3&&/[0-7]/.test(s[i+1]||''))d+=s[++i];put(String.fromCharCode(parseInt(d,8)));notes.add(`\\${d}：8 進位 ${d} = 10 進位 ${parseInt(d,8)}`);}
+    else if(n==='x'){let d='';while(/[0-9a-fA-F]/.test(s[i+1]||''))d+=s[++i];if(!d){err='\\x 後面要接 16 進位數字';break;}put(String.fromCharCode(parseInt(d,16)));notes.add(`\\x${d}：16 進位 ${d} = 10 進位 ${parseInt(d,16)}`);}
+    else{put(n);notes.add(`\\${n} 不是有效的跳脫字元，編譯器會發出警告`);}
+  }
+  $('es-out').textContent=lines.join('\n');
+  $('es-note').innerHTML=err?`<span class="status bad">${esc(err)}</span>`:[...notes].map(esc).join('<br>');}
+$('es-in').oninput=es;es();
 
-        <button onclick="nextSlide()" id="btn-next" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 disabled:cursor-not-allowed rounded-lg text-sm font-medium transition flex items-center space-x-2">
-            <span>下一頁</span>
-            <i class="fas fa-chevron-right"></i>
-        </button>
-    </footer>
+/* ---------- 2.8 precision ---------- */
+function cppG(v,p){if(p===0)p=1;if(!isFinite(v))return String(v);if(v===0)return '0';
+  const e=Math.floor(Math.log10(Math.abs(+v.toPrecision(p))));
+  if(e<-4||e>=p){let s=v.toExponential(p-1);let[m,x]=s.split('e');if(m.includes('.'))m=m.replace(/0+$/,'').replace(/\.$/,'');const sign=x[0]==='-'?'-':'+';x=x.replace(/^[+-]/,'').padStart(2,'0');return m+'e'+sign+x;}
+  let s=v.toPrecision(p);if(s.includes('e'))s=Number(s).toString();if(s.includes('.'))s=s.replace(/0+$/,'').replace(/\.$/,'');return s;}
+function pc(){const v=+$('pc-v').value||0,n=+$('pc-n').value,f=$('pc-f').checked;$('pc-nv').textContent=n;
+  $('pc-code').innerHTML=hl(`cout << ${f?'fixed << ':''}setprecision(${n}) << ${$('pc-v').value||0};`);
+  const out=f?v.toFixed(n):cppG(v,n);$('pc-out').textContent=out;
+  $('pc-note').textContent=f?`fixed：小數點後固定 ${n} 位${n===0?'（不顯示小數點）':''}，第 ${n+1} 位四捨五入。`:`沒有 fixed：全部只顯示 ${n||1} 位有效數字${n===0?'（0 會當作 1）':''}，而且尾端的 0 會被省略。數字太大或太小時會改用科學記號。`;}
+['pc-v','pc-n','pc-f'].forEach(id=>$(id).addEventListener('input',pc));pc();
 
-    <!-- Interactive Script -->
-    <script>
-        let currentSlide = 1;
-        const totalSlides = 12;
+/* ---------- 2.9 change ---------- */
+mountTracer($('tr-change'),{title:'改變變數的值',
+  lines:['int num1;','num1 = 3;','cout << "變數num1的值是" << num1 << endl;','num1 = 5;','cout << "變數num1更新後的值是" << num1 << endl;'],
+  run(T){let num1;T.at(0,{num1},'宣告但還沒給值');num1=3;T.at(1,{num1},'把 3 放進 num1');T.print('變數num1的值是3\n');T.at(2,{num1});num1=5;T.at(3,{num1},'放入 5，舊值 3 被蓋掉');T.print('變數num1更新後的值是5\n');T.at(4,{num1});},
+  onStep:s=>{const v=s.vars.num1;$('ch-box').innerHTML=`<div class="vbox"><span class="ty">int</span><span class="nm">num1</span><span class="vl">${v===undefined?'?':v}</span></div><pre class="screen" style="flex:1;min-width:160px">${esc(s.out)}</pre>`;}});
 
-        function updateSlide() {
-            document.querySelectorAll('.slide').forEach((el, idx) => {
-                el.classList.toggle('active', idx + 1 === currentSlide);
-            });
+/* ---------- 2.10 cin ---------- */
+function ci(){const raw=$('ci-in').value;const parts=raw.split(/(\s+)/).filter(x=>x!=='');
+  let pos=0;const vals=[];let fail='';let html='';
+  // simulate cin >> int twice on character stream
+  let s=raw,i=0;
+  function readInt(){while(i<s.length&&/\s/.test(s[i]))i++;const st=i;if(s[i]==='-'||s[i]==='+')i++;const ds=i;while(i<s.length&&/\d/.test(s[i]))i++;if(i===ds){i=st;return null;}return{v:parseInt(s.slice(st,i)),from:st,to:i};}
+  const a=readInt();const b=a?readInt():null;
+  // token bar: show raw chars grouped
+  const segs=[];let k=0;
+  const mark=[];if(a)mark.push(['num1',a]);if(b)mark.push(['num2',b]);
+  while(k<s.length){const m=mark.find(([n,r])=>r.from===k);
+    if(m){segs.push(`<span class="tok used" title="讀進 ${m[0]}">${esc(s.slice(m[1].from,m[1].to))} → ${m[0]}</span>`);k=m[1].to;continue;}
+    if(/\s/.test(s[k])){let j=k;while(j<s.length&&/\s/.test(s[j]))j++;const w=s.slice(k,j);segs.push(`<span class="tok sp" title="分隔符號，略過">${w.includes('\n')?'↵':'␣'}${w.length>1?'×'+w.length:''}</span>`);k=j;continue;}
+    let j=k;while(j<s.length&&!/\s/.test(s[j])&&!mark.some(([n,r])=>r.from===j))j++;segs.push(`<span class="tok left" title="還留在輸入緩衝區，沒有被讀走">${esc(s.slice(k,j))}</span>`);k=j;}
+  $('ci-tok').innerHTML=segs.join('')||'<span class="small muted">（沒有輸入）</span>';
+  const n1=a?a.v:0,n2=b?b.v:0;
+  $('ci-box').innerHTML=[['num1',a],['num2',b]].map(([n,r])=>`<div class="vbox"><span class="ty">int</span><span class="nm">${n}</span><span class="vl">${r?r.v:(n==='num2'&&a?0:'?')}</span></div>`).join('');
+  let note='';
+  if(!a){note='<span class="status bad">第一個資料不是整數，cin 讀取失敗，num1 被設為 0，之後的讀取也全部失敗。</span>';$('ci-out').textContent='0';$('ci-box').innerHTML=`<div class="vbox"><span class="ty">int</span><span class="nm">num1</span><span class="vl">0</span></div><div class="vbox"><span class="ty">int</span><span class="nm">num2</span><span class="vl">?</span></div>`;$('ci-note').innerHTML=note;return;}
+  if(!b){const rest=s.slice(a.to).trim();note=rest?`<span class="status bad">num1 讀到 ${a.v} 後，接下來的「${esc(rest.slice(0,10))}」不是整數，num2 讀取失敗被設為 0。</span>`:'<span class="status bad">只輸入了一個數，程式會停在這裡等你輸入第二個數。</span>';$('ci-out').textContent=rest?String(n1):'（等待輸入…）';$('ci-note').innerHTML=note;return;}
+  $('ci-out').textContent=String(n1+n2);
+  const left=s.slice(b.to).trim();
+  if(/^\d+\.\d/.test(s.slice(a.from).trim())||s.slice(a.to,a.to+1)==='.')note=`int 讀到小數點就停下來：num1 只拿到 ${a.v}，「.」之後的內容留給下一次讀取。`;
+  else note=`num1 = ${n1}、num2 = ${n2}，空白和換行只是分隔符號。`;
+  if(left)note+=`<br><span class="muted">「${esc(left.slice(0,20))}」還留在輸入緩衝區，等下一個 cin 來讀。</span>`;
+  $('ci-note').innerHTML=note;}
+$('ci-in').oninput=ci;ci();
 
-            document.getElementById('slide-indicator').textContent = `頁次 ${currentSlide} / ${totalSlides}`;
-            document.getElementById('btn-prev').disabled = currentSlide === 1;
-            document.getElementById('btn-next').disabled = currentSlide === totalSlides;
+/* ---------- quiz ---------- */
+const Q=[
+ {tag:'命名規則',q:'下列哪一個<b>可以</b>作為 C++ 的變數名稱？',opts:['2score','my-score','_score2','return'],ans:2,code_opts:true,
+  exp:'_score2 以底線開頭，只含字母、數字、底線，合法。2score 以數字開頭；my-score 含減號（會被當成 my 減 score）；return 是關鍵字。'},
+ {tag:'初始化',q:'下列哪一行宣告是<b>錯誤</b>的？',opts:["char ch = 'A';",'char ch = 65;','char ch = "A";','bool check = 1;'],ans:2,code_opts:true,
+  exp:'雙引號 "A" 是字串，char 只能存一個字元，要用單引號 \'A\'。char ch = 65; 存的是 ASCII 碼 65，也就是 A；bool 可以用 1 代表 true。'},
+ {tag:'型態',q:'哪一種型態最適合存放「全台灣人口數」（約 23,400,000）且佔用記憶體最少？',opts:['short','int','long long','char'],ans:1,
+  exp:'short 最多只到 2¹⁵-1 = 32767，放不下；int 最多約 21 億，放得下且只佔 4 Bytes；long long 也放得下，但要 8 Bytes。'},
+ {tag:'const',q:'執行下列程式片段會發生什麼事？',code:'const int num = 35;\nnum = num + 1;\ncout << num;',opts:['輸出 35','輸出 36','編譯錯誤','輸出 0'],ans:2,
+  exp:'num 是 const 常數，宣告後不能再被指定或改變，num = num + 1; 會讓程式無法通過編譯。'},
+ {tag:'setprecision',q:'執行下列程式片段的輸出為何？',code:'cout << fixed << setprecision(3) << 2.71828;',opts:['2.71','2.718','2.72','2.7183'],ans:1,
+  exp:'加上 fixed 後，setprecision(3) 代表小數點以下 3 位，第 4 位 2 捨去，得到 2.718。若沒有 fixed，3 代表全部的有效位數，會輸出 2.72。'},
+ {tag:'cout',q:'執行下列程式片段，螢幕上會看到什麼？',code:'int a = 7, b = 2;\ncout << "a/b=" << a / b << "\\n";',opts:['a/b=3.5','a/b=3','7/2=3','a/b=3\\n'],ans:1,
+  exp:'雙引號內的 a/b= 原樣輸出；a / b 是兩個 int 相除，結果是 3（小數捨去）；"\\n" 是換行字元，不會顯示出來。'}
+];
+const quizEl=$('quiz');const answered={};
+function renderQuiz(){
+  quizEl.innerHTML='';
+  Q.forEach((q,qi)=>{
+    const card=document.createElement('article');card.className='q';
+    card.innerHTML=`<div class="stack"><div><div class="q-tag">課堂練習 ${qi+1} · ${esc(q.tag)}</div><p class="q-text">${q.q}</p></div>${q.code?`<pre class="snip">${q.code.split('\n').map(hl).join('\n')}</pre>`:''}</div>
+      <div><div class="opts">${q.opts.map((o,i)=>`<button class="opt" data-i="${i}"><span class="L">(${'ABCD'[i]})</span><span class="v">${esc(o)}</span></button>`).join('')}</div><div class="exp" hidden></div></div>`;
+    const exp=card.querySelector('.exp');let tries=0;
+    card.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{
+      const pick=+b.dataset.i;tries++;
+      if(!(qi in answered))answered[qi]=pick===q.ans;
+      if(pick!==q.ans){b.classList.add('wrong');b.disabled=true;exp.hidden=false;
+        exp.innerHTML=`<div class="verdict bad">✗ (${'ABCD'[pick]}) 不對，再選一次看看</div>`;score();return;}
+      card.querySelectorAll('.opt').forEach(x=>{x.disabled=true;});b.classList.add('right');
+      exp.hidden=false;
+      exp.innerHTML=`<div class="verdict ok">✓ 答對了${tries>1?`（第 ${tries} 次作答）`:''}</div><p>${q.exp}</p>`;
+      score();
+    });
+    quizEl.appendChild(card);
+  });
+  score();
+}
+function score(){const v=Object.values(answered);$('sc-done').textContent=v.length;$('sc-ok').textContent=v.filter(Boolean).length;$('sc-total').textContent=Q.length;}
+$('sc-reset').onclick=()=>{for(const k in answered)delete answered[k];renderQuiz();};
+renderQuiz();
+</script>
 
-            updateDots();
-        }
-
-        function nextSlide() {
-            if (currentSlide < totalSlides) {
-                currentSlide++;
-                updateSlide();
-            }
-        }
-
-        function prevSlide() {
-            if (currentSlide > 1) {
-                currentSlide--;
-                updateSlide();
-            }
-        }
-
-        function goToSlide(n) {
-            currentSlide = n;
-            updateSlide();
-        }
-
-        function updateDots() {
-            const container = document.getElementById('dots-container');
-            container.innerHTML = '';
-            for (let i = 1; i <= totalSlides; i++) {
-                const dot = document.createElement('button');
-                dot.className = `w-2 h-2 rounded-full transition-all ${i === currentSlide ? 'bg-indigo-400 w-5' : 'bg-slate-600 hover:bg-slate-500'}`;
-                dot.onclick = () => goToSlide(i);
-                container.appendChild(dot);
-            }
-        }
-
-        // Keyboard Navigation
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowRight' || e.key === 'Space') nextSlide();
-            if (e.key === 'ArrowLeft') prevSlide();
-        });
-
-        // Initialize
-        updateSlide();
-    </script>
-</body>
-</html>
+</body></html>

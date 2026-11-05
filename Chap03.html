@@ -1,495 +1,842 @@
-<!DOCTYPE html>
-<html lang="zh-TW">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>第三章 運算式和運算子</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&family=Fira+Code:wght@400;600&display=swap');
-        body {
-            font-family: 'Noto Sans TC', sans-serif;
-        }
-        code, pre {
-            font-family: 'Fira Code', monospace;
-        }
-        .slide {
-            display: none;
-            opacity: 0;
-            transition: opacity 0.3s ease-in-out;
-        }
-        .slide.active {
-            display: block;
-            opacity: 1;
-        }
-    </style>
-</head>
-<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col justify-between selection:bg-indigo-500 selection:text-white">
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>運算子互動講義</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=LXGW+WenKai+TC:wght@400;700&family=Noto+Sans+TC:wght@400;500;700&display=swap">
+<style>
+/* Layout: chapter handout — concept text on the left, a live code tracer or flowchart on the right, quiz at the end */
+:root{
+  --bg:#F2F4F0; --surface:#FFFFFF; --ink:#1C251F; --muted:#5B6860; --line:#D3DBD2;
+  --accent:#2E6A3E; --accent-soft:#E1EDE2; --on-accent:#FFFFFF;
+  --code-bg:#18211B; --code-fg:#DCE6DD; --code-dim:#6E7E72; --cur:#3D4A2A; --cur-bar:#F1C94A;
+  --seg:#F1C94A; --seg-ink:#18211B;
+  --t-k:#8FD3A4; --t-f:#7FC4E8; --t-s:#F0B97A; --t-n:#E8A0C8; --t-c:#7D8E81;
+  --ok:#2C7A4B; --ok-soft:#DDEFE3; --bad:#B23E2C; --bad-soft:#F6E0DB; --warn:#9A6A00;
+  --g-a:#2E6A3E; --g-b:#5E9A4C; --g-c:#C9A227; --g-d:#C9772F; --g-f:#B23E2C;
+  --f-display:"LXGW WenKai TC","Kaiti TC","STKaiti","KaiTi",serif;
+  --f-body:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
+  --f-code:"JetBrains Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#111612; --surface:#19201B; --ink:#E2EAE3; --muted:#97A59B; --line:#2B352E;
+  --accent:#86C796; --accent-soft:#223228; --on-accent:#0F1611;
+  --code-bg:#0C110D; --code-fg:#DCE6DD; --code-dim:#5E6E62; --cur:#36401F; --cur-bar:#F1C94A;
+  --ok:#7FCB98; --ok-soft:#1E3326; --bad:#F0907C; --bad-soft:#3A2420; --warn:#E5B95A;
+  --g-a:#5FA872; --g-b:#8DBF6E; --g-c:#D9B648; --g-d:#DB9050; --g-f:#D96A55;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#111612; --surface:#19201B; --ink:#E2EAE3; --muted:#97A59B; --line:#2B352E;
+  --accent:#86C796; --accent-soft:#223228; --on-accent:#0F1611;
+  --code-bg:#0C110D; --code-fg:#DCE6DD; --code-dim:#5E6E62; --cur:#36401F; --cur-bar:#F1C94A;
+  --ok:#7FCB98; --ok-soft:#1E3326; --bad:#F0907C; --bad-soft:#3A2420; --warn:#E5B95A;
+  --g-a:#5FA872; --g-b:#8DBF6E; --g-c:#D9B648; --g-d:#DB9050; --g-f:#D96A55;
+  color-scheme:dark}
 
-    <!-- Header Navigation -->
-    <header class="bg-slate-800/80 backdrop-blur border-b border-slate-700 sticky top-0 z-50 px-6 py-4 flex justify-between items-center">
-        <div class="flex items-center space-x-3">
-            <span class="bg-indigo-600 text-white font-bold px-3 py-1 rounded-lg text-sm">C++ 課程</span>
-            <h1 class="text-xl font-bold tracking-wide text-white">第三章：運算式與運算子</h1>
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.75}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.wrap{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;line-height:1.25;margin:0}
+p{margin:0}
+code,.mono{font-family:var(--f-code);font-size:.9em}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+header{padding-block:40px 20px}
+.kicker{font-size:13px;letter-spacing:.12em;color:var(--muted);text-transform:uppercase}
+h1{font-size:clamp(34px,6vw,54px);font-weight:700;margin-top:6px}
+h1 em{font-style:normal;color:var(--accent)}
+.lede{max-width:62ch;color:var(--muted);margin-top:10px}
+.legend{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:16px;font-size:14px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.sw{width:14px;height:14px;border-radius:3px;display:inline-block}
+
+nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;gap:6px;overflow-x:auto;padding-block:10px;scrollbar-width:none}
+nav a{flex:none;text-decoration:none;color:var(--ink);font-size:14px;padding:5px 12px;border-radius:999px;border:1px solid var(--line);background:var(--surface);white-space:nowrap}
+nav a:hover{border-color:var(--accent);color:var(--accent)}
+
+section{padding-block:44px 8px;scroll-margin-top:64px}
+.sec-head{display:flex;align-items:baseline;gap:12px;margin-bottom:18px;flex-wrap:wrap}
+.sec-no{font-family:var(--f-code);font-size:14px;color:var(--accent);font-weight:600}
+h2{font-size:clamp(26px,4vw,34px)}
+h3{font-size:21px;margin-bottom:6px}
+.grid2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:28px;align-items:start}
+.grid-even{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;align-items:start}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+@media (max-width:880px){.grid2,.grid-even{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:700px){.grid3{grid-template-columns:minmax(0,1fr)}}
+.stack{display:flex;flex-direction:column;gap:14px;min-width:0}
+.note{border-left:3px solid var(--warn);padding:6px 12px;background:var(--surface);font-size:15px}
+.muted{color:var(--muted)}
+.small{font-size:14px}
+ul.plain{margin:0;padding-left:1.2em}
+ul.plain li{margin:3px 0}
+
+pre.snip{margin:0;background:var(--code-bg);color:var(--code-fg);font-family:var(--f-code);font-size:14px;line-height:1.65;padding:12px 14px;border-radius:8px;overflow-x:auto}
+.t-k{color:var(--t-k);font-weight:600}.t-f{color:var(--t-f)}.t-s{color:var(--t-s)}.t-n{color:var(--t-n)}.t-c{color:var(--t-c);font-style:italic}
+
+/* flowcharts */
+svg.fc{width:100%;height:auto;display:block;max-width:420px;margin:0 auto}
+.fc .n{fill:var(--surface);stroke:var(--ink);stroke-width:1.4;transition:fill .2s,stroke .2s}
+.fc .d{fill:var(--accent-soft);stroke:var(--accent);stroke-width:1.5}
+.fc .e{stroke:var(--muted);stroke-width:1.5;fill:none;transition:stroke .2s}
+.fc text{fill:var(--ink);font-size:13px;text-anchor:middle;font-family:var(--f-body)}
+.fc text.lb{fill:var(--muted);font-size:12px;font-family:var(--f-code);text-anchor:start}
+.fc .ah{fill:var(--muted)}
+.fc .on .n,.fc .n.on{fill:var(--cur-bar);stroke:var(--ink)}
+.fc .on text{fill:#18211B}
+.fc .e.on{stroke:var(--cur-bar);stroke-width:3}
+.fc .dim{opacity:.35}
+.fig{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px;min-width:0}
+.fig figcaption{font-size:14px;color:var(--muted);text-align:center;margin-top:6px}
+figure{margin:0}
+
+/* symbol table */
+.sym{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+@media (max-width:700px){.sym{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.sym button{font:inherit;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:10px 8px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px}
+.sym button:hover,.sym button.on{border-color:var(--accent)}
+.sym button.on{background:var(--accent-soft)}
+.sym svg{width:90px;height:44px}
+.sym svg *{fill:none;stroke:var(--ink);stroke-width:1.5}
+.sym b{font-size:14px}
+.sym-info{min-height:2.5em}
+
+/* tracer */
+.tracer{background:var(--code-bg);color:var(--code-fg);border-radius:10px;overflow:hidden;min-width:0;display:flex;flex-direction:column}
+.tr-head{display:flex;justify-content:space-between;gap:10px;align-items:baseline;padding:10px 14px 4px;font-size:13px;flex-wrap:wrap}
+.tr-title{font-weight:700;color:var(--code-fg)}
+.tr-count{font-family:var(--f-code);color:var(--code-dim);font-variant-numeric:tabular-nums}
+.tr-code{position:relative;font-family:var(--f-code);font-size:14px;line-height:1.7;max-height:340px;overflow:auto;padding:4px 0}
+.ln{display:flex;white-space:pre;border-left:3px solid transparent;padding-right:14px;min-width:max-content}
+.ln .no{width:38px;flex:none;text-align:right;padding-right:12px;color:var(--code-dim);user-select:none}
+.ln.cur{background:var(--cur);border-left-color:var(--cur-bar)}
+.seg{border-radius:3px}
+.seg.on{background:var(--seg);color:var(--seg-ink)}
+.seg.on span{color:var(--seg-ink)}
+.tr-note{min-height:2.2em;padding:6px 14px;font-size:14px;color:var(--cur-bar);border-top:1px solid #ffffff14}
+.tr-io{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);border-top:1px solid #ffffff14}
+@media (max-width:480px){.tr-io{grid-template-columns:minmax(0,1fr)}}
+.tr-vars,.tr-out{padding:8px 14px 10px;min-width:0}
+.tr-out{border-left:1px solid #ffffff14}
+.cap{font-size:11px;letter-spacing:.14em;color:var(--code-dim);margin-bottom:4px}
+.panel .cap,.stack>.cap{color:var(--muted)}
+.tr-vars dl{margin:0;display:flex;flex-wrap:wrap;gap:6px}
+.tr-vars dl div{display:flex;gap:6px;font-family:var(--f-code);font-size:14px;background:#ffffff0d;border-radius:5px;padding:2px 8px;font-variant-numeric:tabular-nums}
+.tr-vars dl div.chg{background:#F1C94A33;box-shadow:inset 0 0 0 1px #F1C94A88}
+.tr-vars dt{color:var(--t-f)}.tr-vars dd{margin:0}
+.tr-vars dt::after{content:" ="}
+.tr-out pre{margin:0;font-family:var(--f-code);font-size:14px;line-height:1.5;max-height:150px;overflow:auto;white-space:pre-wrap;word-break:break-all;color:#E9F2EA}
+.tr-out pre:empty::before{content:"（尚無輸出）";color:var(--code-dim)}
+.tr-ctrl{display:flex;gap:6px;align-items:center;flex-wrap:wrap;padding:10px 14px;background:#ffffff08;border-top:1px solid #ffffff14}
+.tr-ctrl button{font:inherit;font-size:13px;border:1px solid #ffffff2a;background:transparent;color:var(--code-fg);border-radius:6px;padding:4px 10px;cursor:pointer}
+.tr-ctrl button:hover:not(:disabled){background:#ffffff14}
+.tr-ctrl button:disabled{opacity:.35;cursor:default}
+.tr-ctrl button.primary{background:var(--cur-bar);color:#18211B;border-color:var(--cur-bar);font-weight:700;min-width:76px}
+.tr-ctrl input[type=range]{flex:1 1 120px;accent-color:var(--cur-bar);min-width:100px}
+
+/* controls */
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px;min-width:0}
+.ctl-row{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center}
+label.chk{display:inline-flex;gap:8px;align-items:center;cursor:pointer;font-size:15px}
+input[type=number],input[type=text],select{font:inherit;font-family:var(--f-code);font-size:15px;background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:6px;padding:4px 8px}
+input[type=number]{width:5.2em}
+input[type=range]{accent-color:var(--accent)}
+.btn{font:inherit;font-size:14px;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:4px 12px;cursor:pointer}
+.btn:hover{border-color:var(--accent);color:var(--accent)}
+.btn.on{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
+.btn.primary{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
+.console{margin:0;background:var(--code-bg);color:#E9F2EA;font-family:var(--f-code);font-size:14px;line-height:1.5;padding:10px 12px;border-radius:8px;overflow-x:auto;white-space:pre}
+.console .in{color:var(--t-f)}
+.status{font-size:15px;font-weight:500}
+.status.ok{color:var(--ok)}.status.bad{color:var(--bad)}
+
+/* data tables */
+.tbl{overflow-x:auto}
+table.dt{border-collapse:collapse;width:100%;font-size:15px;font-variant-numeric:tabular-nums}
+table.dt th{font-weight:600;text-align:left;font-size:13px;color:var(--muted);border-bottom:1.5px solid var(--ink);padding:6px 10px}
+table.dt td{border-bottom:1px solid var(--line);padding:6px 10px}
+table.dt td.m{font-family:var(--f-code)}
+table.dt tr.hit td{background:var(--accent-soft)}
+.rv{font:inherit;font-family:var(--f-code);font-size:14px;min-width:84px;border:1px dashed var(--line);background:var(--bg);color:var(--ink);border-radius:6px;padding:2px 8px;cursor:pointer}
+.rv.shown{border-style:solid}
+.rv.t{color:var(--ok);border-color:var(--ok)}
+.rv.f{color:var(--bad);border-color:var(--bad)}
+.tog{font:inherit;font-family:var(--f-code);font-weight:700;font-size:16px;min-width:64px;border-radius:8px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);padding:6px 10px;cursor:pointer}
+.tog[aria-pressed="true"]{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
+.expr{display:flex;flex-direction:column;gap:6px}
+.expr-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg)}
+.expr-row code{font-size:15px}
+.expr-row .steps{font-family:var(--f-code);font-size:14px;color:var(--muted)}
+.expr-row .res{font-family:var(--f-code);font-weight:700}
+.big-eval{font-family:var(--f-code);font-size:16px;line-height:1.9}
+.big-eval .r{font-weight:700;color:var(--accent)}
+
+/* grade bar */
+.gbar{position:relative;display:flex;height:34px;border-radius:6px;overflow:hidden;font-family:var(--f-code);font-size:13px;color:#fff}
+.gbar div{display:grid;place-items:center;font-weight:700}
+.gmark{position:relative;height:16px}
+.gmark span{position:absolute;top:0;transform:translateX(-50%);font-family:var(--f-code);font-size:12px;color:var(--ink);transition:left .15s}
+.gmark span::after{content:"▼";display:block;text-align:center;line-height:1}
+.gaxis{position:relative;height:18px;font-family:var(--f-code);font-size:12px;color:var(--muted)}
+.gaxis span{position:absolute;top:0;transform:translateX(-50%)}
+
+/* setw cells */
+.cells{display:flex;gap:3px;flex-wrap:wrap}
+.cells span{width:30px;height:34px;display:grid;place-items:center;font-family:var(--f-code);font-size:17px;border:1px solid var(--line);border-radius:4px;background:var(--surface)}
+.cells span.pad{background:var(--accent-soft);color:var(--accent)}
+.cells span.sp{color:var(--muted)}
+
+/* quiz */
+.score{display:flex;gap:14px;align-items:center;flex-wrap:wrap;font-size:15px}
+.score b{font-family:var(--f-code);font-variant-numeric:tabular-nums}
+.quiz{display:flex;flex-direction:column;gap:22px;margin-top:16px}
+.q{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px}
+@media (max-width:880px){.q{grid-template-columns:minmax(0,1fr)}}
+.q-tag{font-family:var(--f-code);font-size:12px;color:var(--accent);letter-spacing:.06em}
+.q-text{font-size:16px;margin:4px 0 12px}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{display:flex;gap:10px;align-items:flex-start;text-align:left;font:inherit;font-size:15px;background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:8px 12px;cursor:pointer}
+.opt:hover:not(:disabled){border-color:var(--accent)}
+.opt:disabled{cursor:default}
+.opt .L{font-family:var(--f-code);font-weight:600;flex:none}
+.opt .v{font-family:var(--f-code);white-space:pre-wrap;font-size:14px}
+.opt.right{background:var(--ok-soft);border-color:var(--ok)}
+.opt.wrong{background:var(--bad-soft);border-color:var(--bad)}
+.exp{margin-top:12px;font-size:15px;display:flex;flex-direction:column;gap:10px}
+.exp .verdict{font-weight:700}
+.exp .verdict.ok{color:var(--ok)}.exp .verdict.bad{color:var(--bad)}
+table.mini{border-collapse:collapse;font-size:14px;width:100%}
+table.mini th,table.mini td{border-bottom:1px solid var(--line);padding:4px 8px;text-align:left;vertical-align:top}
+table.mini td.bad{color:var(--bad);font-weight:700}
+.sgrid{display:grid;grid-template-columns:repeat(11,minmax(0,1fr));gap:2px;font-family:var(--f-code);font-size:11px}
+.sgrid span{text-align:center;padding:2px 0;border-radius:3px;background:var(--bg)}
+.sgrid span.bad{background:var(--bad);color:#fff;font-weight:700}
+details.trace summary{cursor:pointer;color:var(--accent);font-size:14px;font-weight:500;margin-top:10px}
+details.trace[open] summary{margin-bottom:8px}
+footer{padding-block:40px 56px;color:var(--muted);font-size:14px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+<style>
+/* chapter 3 additions */
+.anat{display:flex;flex-wrap:wrap;gap:4px 10px;font-family:var(--f-code);font-size:clamp(26px,6vw,44px);font-weight:600;padding:18px 10px;justify-content:center}
+.anat span{padding:2px 8px;border-radius:6px;border-bottom:3px solid transparent;transition:background .15s}
+.anat.m-opd span[data-r~="opd"],.anat.m-opr span[data-r~="opr"],.anat.m-exp span[data-r~="exp"],.anat.m-stm span[data-r~="stm"]{background:var(--seg);color:var(--seg-ink)}
+.chiprow{display:flex;flex-wrap:wrap;gap:6px}
+mark{background:var(--seg);color:var(--seg-ink);border-radius:3px;padding:0 2px}
+.deriv{display:flex;flex-direction:column;gap:2px;font-family:var(--f-code);font-size:15px}
+.deriv .row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,auto);gap:12px;padding:6px 10px;border-radius:6px;align-items:baseline}
+.deriv .row:nth-child(odd){background:var(--bg)}
+.deriv .row .why{font-family:var(--f-body);font-size:13px;color:var(--muted);text-align:right}
+.deriv .row.final{font-weight:700;color:var(--accent)}
+.deriv .err{color:var(--bad);font-family:var(--f-body)}
+@media (max-width:520px){.deriv .row{grid-template-columns:minmax(0,1fr)}.deriv .row .why{text-align:left}}
+.bytes{display:flex;gap:3px}
+.bytes i{width:22px;height:18px;border-radius:3px;background:var(--accent);opacity:.85}
+.bin{font-family:var(--f-code);letter-spacing:.08em}
+.bin b{color:var(--accent)}
+.prec td:first-child{font-family:var(--f-code);color:var(--muted);width:3em}
+.prec td.ops{font-family:var(--f-code)}
+.prec tr.hit td{background:var(--accent-soft)}
+.typ{font-size:12px;color:var(--muted);font-family:var(--f-body);margin-left:4px}
+</style>
+
+<header class="wrap">
+  <div class="kicker">C/C++ 程式設計 · 第三章</div>
+  <h1>運算式和運算子 <em>互動講義</em></h1>
+  <p class="lede">輸入自己的數字，看運算式一步一步怎麼算出結果、變數怎麼改變。程式範例都能逐行追蹤，最後有 3 題 APCS 觀念題可以練習。</p>
+  <div class="legend">
+    <span><i class="sw" style="background:#F1C94A"></i>正在執行的那一行／這一步要計算的部分</span>
+    <span><i class="sw" style="background:#F1C94A55;box-shadow:inset 0 0 0 1px #F1C94A"></i>這一步剛改變的變數</span>
+  </div>
+</header>
+
+<nav aria-label="章節"><div class="wrap">
+  <a href="#expr">運算式與敘述</a><a href="#kinds">運算子分類</a><a href="#assign">指定</a><a href="#arith">算術</a><a href="#comp">複合指定</a><a href="#inc">遞增／遞減</a><a href="#comma">逗號</a><a href="#rel">關係／邏輯</a><a href="#size">sizeof</a><a href="#prec">優先權</a><a href="#cast">型態轉換</a><a href="#apcs">APCS 觀念題</a>
+</div></nav>
+
+<main class="wrap">
+
+<!-- 3.1 -->
+<section id="expr">
+  <div class="sec-head"><span class="sec-no">3.1</span><h2>運算式與敘述</h2></div>
+  <div class="grid2">
+    <div class="stack">
+      <p><b>運算式</b>由<b>運算元</b>和<b>運算子</b>組成。<b>敘述</b>則是在運算式後面加上<b>分號</b>。</p>
+      <ul class="plain">
+        <li>運算元：被運算的對象，例如變數 <code>sum</code>、<code>i</code> 或常數 <code>5</code>。</li>
+        <li>運算子：運算的符號，例如 <code>=</code>、<code>+</code>。</li>
+      </ul>
+      <p class="small muted">點右邊的按鈕，看各部分是哪些。</p>
+    </div>
+    <div class="panel stack">
+      <div class="chiprow" id="an-btns"></div>
+      <div class="anat m-opd" id="anat">
+        <span data-r="opd exp stm">sum</span><span data-r="opr exp stm">=</span><span data-r="opd exp stm">sum</span><span data-r="opr exp stm">+</span><span data-r="opd exp stm">i</span><span data-r="stm" style="margin-left:-10px">;</span>
+      </div>
+      <p class="small" id="an-info" aria-live="polite"></p>
+    </div>
+  </div>
+</section>
+
+<!-- 3.2 -->
+<section id="kinds">
+  <div class="sec-head"><span class="sec-no">3.2</span><h2>運算子分類</h2></div>
+  <div class="grid-even">
+    <div class="stack">
+      <h3>依運算元個數</h3>
+      <div class="tbl"><table class="dt">
+        <tr><th>種類</th><th>需要幾個運算元</th><th>例子</th></tr>
+        <tr><td>一元運算子</td><td>1 個</td><td class="m">x = <mark>-</mark>1;　（負號）</td></tr>
+        <tr><td>二元運算子</td><td>2 個</td><td class="m">x = y <mark>+</mark> z;　（加號）</td></tr>
+        <tr><td>三元運算子</td><td>3 個</td><td class="m">max = x &gt; y <mark>?</mark> x <mark>:</mark> y;</td></tr>
+      </table></div>
+      <p class="small muted"><code>?:</code> 是 C/C++ 唯一的三元運算子，等同於 <code>if (x &gt; y) max = x; else max = y;</code></p>
+
+      <h3 style="margin-top:10px">結合性</h3>
+      <p class="small">同一級的運算子連在一起時，決定先算哪一邊。</p>
+      <div class="tbl"><table class="dt">
+        <tr><th>結合性</th><th>例子</th><th>計算順序</th></tr>
+        <tr><td>左結合（由左至右）</td><td class="m">2 + 3 + 4</td><td class="m">(2 + 3) + 4 → 5 + 4 → 9</td></tr>
+        <tr><td>右結合（由右至左）</td><td class="m">a = b = 5</td><td class="m">a = (b = 5) → b 先得到 5，a 再得到 5</td></tr>
+      </table></div>
+    </div>
+    <div class="stack">
+      <h3>依功能分類</h3>
+      <div class="tbl"><table class="dt">
+        <tr><th>分類</th><th>運算子</th></tr>
+        <tr><td><a href="#assign">指定運算子</a></td><td class="m">=</td></tr>
+        <tr><td><a href="#arith">算術運算子</a></td><td class="m">+ - * / %</td></tr>
+        <tr><td><a href="#comp">複合指定運算子</a></td><td class="m">+= -= *= /= %= &gt;&gt;= &lt;&lt;= &amp;= |= ^=</td></tr>
+        <tr><td><a href="#inc">遞增／遞減運算子</a></td><td class="m">++ --</td></tr>
+        <tr><td><a href="#rel">關係運算子</a></td><td class="m">== != &gt; &lt; &gt;= &lt;=</td></tr>
+        <tr><td><a href="#rel">邏輯運算子</a></td><td class="m">&amp;&amp; || !</td></tr>
+        <tr><td>位元運算子</td><td class="m">&gt;&gt; &lt;&lt; &amp; | ~ ^</td></tr>
+        <tr><td>條件運算子</td><td class="m">? :</td></tr>
+        <tr><td><a href="#comma">逗號運算子</a></td><td class="m">,</td></tr>
+        <tr><td><a href="#size">資料大小運算子</a></td><td class="m">sizeof</td></tr>
+        <tr><td>位址運算子</td><td class="m">&amp;</td></tr>
+      </table></div>
+    </div>
+  </div>
+</section>
+
+<!-- 3.3 -->
+<section id="assign">
+  <div class="sec-head"><span class="sec-no">3.3</span><h2>指定運算子 =</h2></div>
+  <div class="grid2">
+    <div class="stack">
+      <p class="big-eval"><b>變數</b> = 運算式（常數、變數）</p>
+      <p>先算出右邊的值，再把它<b>放進</b>左邊的變數，舊的值就被蓋掉。所以 <code>a = a + 1</code> 在數學上不成立，在程式裡卻很常見：取出 a 的值加 1，再放回 a。</p>
+      <p class="small muted">先想想每一行執行完 a、b 各是多少，再按「下一步」核對。</p>
+    </div>
+    <div id="tr-asg"></div>
+  </div>
+
+  <div class="grid2" style="margin-top:28px">
+    <div class="stack">
+      <h3>兩數交換</h3>
+      <p>想把 <code>a = 3, b = 5</code> 變成 <code>a = 5, b = 3</code>，該怎麼寫？選一種寫法試試：</p>
+      <div class="chiprow" id="sw-btns"></div>
+      <p class="small" id="sw-info"></p>
+    </div>
+    <div id="tr-swap"></div>
+  </div>
+</section>
+
+<!-- 3.4 -->
+<section id="arith">
+  <div class="sec-head"><span class="sec-no">3.4</span><h2>算術運算子</h2></div>
+  <div class="grid2">
+    <div class="stack">
+      <div class="tbl"><table class="dt">
+        <tr><th>運算子</th><th>意義</th></tr>
+        <tr><td class="m">+</td><td>加法</td></tr><tr><td class="m">-</td><td>減法</td></tr><tr><td class="m">*</td><td>乘法</td></tr>
+        <tr><td class="m">/</td><td>除法（兩個整數相除，結果只留整數部分）</td></tr><tr><td class="m">%</td><td>餘數</td></tr>
+      </table></div>
+      <p>運算優先權：<b>正負號 → 乘除餘 * / % → 加減 + - → 指定 =</b></p>
+    </div>
+    <div id="tr-ar"></div>
+  </div>
+  <div class="panel" style="margin-top:20px">
+    <div class="grid2">
+      <div class="stack">
+        <h3>整數計算機</h3>
+        <p class="small">a、b 都是 <code>int</code>。特別注意 <code>/</code> 和 <code>%</code>：</p>
+        <div class="ctl-row">
+          <label for="ca-a">a</label><input type="number" id="ca-a" value="17">
+          <label for="ca-b">b</label><input type="number" id="ca-b" value="5">
         </div>
-        <div class="flex items-center space-x-4">
-            <span id="slide-indicator" class="text-sm font-medium text-slate-400">頁次 1 / 7</span>
+        <p class="small muted" id="ca-note"></p>
+      </div>
+      <div class="tbl"><table class="dt" id="ca-tbl"></table></div>
+    </div>
+  </div>
+</section>
+
+<!-- 3.5 -->
+<section id="comp">
+  <div class="sec-head"><span class="sec-no">3.5</span><h2>複合指定運算子</h2></div>
+  <div class="grid2">
+    <div class="stack">
+      <p>指定運算子和算術或位元運算子結合在一起，寫起來更短：</p>
+      <p class="big-eval">a = a + b; <span class="muted">⇔</span> <span class="r">a += b;</span></p>
+      <div class="tbl"><table class="dt">
+        <tr><th>運算子</th><th>說明</th></tr>
+        <tr><td class="m">+=</td><td>加法後指定給變數</td></tr><tr><td class="m">-=</td><td>減法後指定給變數</td></tr>
+        <tr><td class="m">*=</td><td>乘法後指定給變數</td></tr><tr><td class="m">/=</td><td>除法後指定給變數</td></tr>
+        <tr><td class="m">%=</td><td>求餘後指定給變數</td></tr><tr><td class="m">&amp;=</td><td>位元 AND 後指定給變數</td></tr>
+        <tr><td class="m">^=</td><td>位元 XOR 後指定給變數</td></tr><tr><td class="m">|=</td><td>位元 OR 後指定給變數</td></tr>
+        <tr><td class="m">&lt;&lt;=</td><td>位元左移後指定給變數</td></tr><tr><td class="m">&gt;&gt;=</td><td>位元右移後指定給變數</td></tr>
+      </table></div>
+    </div>
+    <div class="panel stack">
+      <h3>試試看</h3>
+      <div class="ctl-row mono" style="font-size:15px">
+        <span>int x =</span><input type="number" id="cp-x" value="12" aria-label="x 的初始值"><span>;</span>
+      </div>
+      <div class="ctl-row mono" style="font-size:15px">
+        <span>x</span>
+        <select id="cp-op" aria-label="複合指定運算子"><option>+=</option><option>-=</option><option>*=</option><option>/=</option><option>%=</option><option>&amp;=</option><option>^=</option><option>|=</option><option>&lt;&lt;=</option><option>&gt;&gt;=</option></select>
+        <input type="number" id="cp-v" value="5" aria-label="右邊的值"><span>;</span>
+      </div>
+      <div class="big-eval" id="cp-out"></div>
+      <div id="cp-bin" class="small"></div>
+      <button class="btn" id="cp-again" style="align-self:flex-start">把結果當作新的 x，再做一次</button>
+    </div>
+  </div>
+</section>
+
+<!-- 3.6 -->
+<section id="inc">
+  <div class="sec-head"><span class="sec-no">3.6</span><h2>遞增／遞減運算子 ++ --</h2></div>
+  <div class="grid2">
+    <div class="stack">
+      <p><b>遞增運算子</b>讓變數的值加 1，下面三種寫法效果相同：</p>
+      <pre class="snip" data-hl>a++;
+a = a + 1;
+a += 1;</pre>
+      <p><b>遞減運算子</b>則相反：<code>a--;</code>、<code>a = a - 1;</code>、<code>a -= 1;</code></p>
+    </div>
+    <div id="tr-inc"></div>
+  </div>
+  <div class="grid2" style="margin-top:28px">
+    <div class="stack">
+      <h3>延伸：前置與後置</h3>
+      <p class="small">單獨一行時 <code>a++</code> 和 <code>++a</code> 一樣。但放在運算式裡就不同了：</p>
+      <ul class="plain small">
+        <li><b>後置</b> <code>b = a++;</code>：先把 a 的<b>舊值</b>給 b，a 再加 1。</li>
+        <li><b>前置</b> <code>b = ++a;</code>：a 先加 1，再把<b>新值</b>給 b。</li>
+      </ul>
+      <div class="chiprow" id="pp-btns"></div>
+    </div>
+    <div id="tr-pp"></div>
+  </div>
+</section>
+
+<!-- 3.7 -->
+<section id="comma">
+  <div class="sec-head"><span class="sec-no">3.7</span><h2>逗號運算子 ,</h2></div>
+  <div class="grid2">
+    <div class="stack">
+      <p>用來<b>分隔敘述</b>，由左而右依序執行。它的運算優先權<b>最低</b>。</p>
+      <p class="small muted">常見於宣告多個變數，或 for 迴圈中同時更新兩個變數：<code>for (i = 0, j = 10; i &lt; j; i++, j--)</code></p>
+    </div>
+    <div id="tr-cm"></div>
+  </div>
+</section>
+
+<!-- 3.8 -->
+<section id="rel">
+  <div class="sec-head"><span class="sec-no">3.8</span><h2>關係運算子與邏輯運算子</h2></div>
+  <div class="grid2">
+    <div class="stack">
+      <p><b>關係運算子</b>比較兩個運算式的大小關係，條件成立為真（True），不成立為偽（False）。</p>
+      <div class="ctl-row">
+        <label for="rl-a">左邊</label><input type="number" id="rl-a" value="2">
+        <label for="rl-b">右邊</label><input type="number" id="rl-b" value="1">
+        <button class="btn" id="rl-all">全部顯示</button>
+      </div>
+      <p class="small muted">先想想結果，再點「?」檢查。</p>
+    </div>
+    <div class="tbl"><table class="dt" id="rl-tbl"></table></div>
+  </div>
+  <div class="grid2" style="margin-top:28px">
+    <div class="stack">
+      <p><b>邏輯運算子</b>結合多個關係運算式。C++ 通常寫成 <code>&amp;&amp;</code>、<code>||</code>、<code>!</code>，也接受 <code>and</code>、<code>or</code>、<code>not</code> 這種英文寫法。</p>
+      <div class="tbl"><table class="dt">
+        <tr><th>運算子</th><th>意義</th><th>規則</th></tr>
+        <tr><td class="m">and（&amp;&amp;）</td><td>且</td><td>兩邊都 True 才是 True</td></tr>
+        <tr><td class="m">or（||）</td><td>或</td><td>任一邊 True 就是 True</td></tr>
+        <tr><td class="m">not（!）</td><td>反相</td><td>True 變 False，False 變 True</td></tr>
+      </table></div>
+    </div>
+    <div class="panel stack">
+      <h3>組合看看</h3>
+      <div class="ctl-row mono">
+        <button class="tog" id="lg-not" aria-pressed="false">　</button>
+        <span>(</span>
+        <select id="lg-l" aria-label="左邊的關係運算式"><option>5&gt;3</option><option>5&lt;3</option></select>
+        <span>)</span>
+        <select id="lg-op" aria-label="邏輯運算子"><option>and</option><option>or</option></select>
+        <span>(</span>
+        <select id="lg-r" aria-label="右邊的關係運算式"><option>3&gt;2</option><option>3&lt;2</option></select>
+        <span>)</span>
+      </div>
+      <p class="small muted">左邊的按鈕可切換是否在最前面加上 not（整體反相）。</p>
+      <div class="big-eval" id="lg-out"></div>
+    </div>
+  </div>
+</section>
+
+<!-- 3.9 -->
+<section id="size">
+  <div class="sec-head"><span class="sec-no">3.9</span><h2>資料大小運算子 sizeof</h2></div>
+  <div class="grid2">
+    <div class="stack">
+      <p><code>sizeof(型態)</code> 或 <code>sizeof(變數)</code> 會得到它佔用的記憶體大小，單位是 Byte（1 Byte = 8 bits）。</p>
+<pre class="snip" data-hl>cout << "char\t為 "   << sizeof(char)   << " Bytes" << endl
+     << "int\t為 "    << sizeof(int)    << " Bytes" << endl
+     << "long\t為 "   << sizeof(long)   << " Bytes" << endl
+     << "float\t為 "  << sizeof(float)  << " Bytes" << endl
+     << "double\t為 " << sizeof(double) << " Bytes" << endl
+     << "bool\t為 "   << sizeof(bool)   << " Bytes" << endl;</pre>
+      <p class="small muted">大小會因編譯器與作業系統而不同。例如 long 在 Windows 是 4 Bytes，在 64 位元的 Linux、macOS 是 8 Bytes。</p>
+    </div>
+    <div class="tbl"><table class="dt">
+      <tr><th>型態</th><th>sizeof</th><th>每格 1 Byte</th><th>可存的範圍或內容</th></tr>
+      <tr><td class="m">char</td><td class="m">1</td><td><span class="bytes"><i></i></span></td><td>一個字元，如 'A'</td></tr>
+      <tr><td class="m">int</td><td class="m">4</td><td><span class="bytes"><i></i><i></i><i></i><i></i></span></td><td class="m">-2147483648 ～ 2147483647</td></tr>
+      <tr><td class="m">long</td><td class="m">4</td><td><span class="bytes"><i></i><i></i><i></i><i></i></span></td><td>Windows 上與 int 相同</td></tr>
+      <tr><td class="m">float</td><td class="m">4</td><td><span class="bytes"><i></i><i></i><i></i><i></i></span></td><td>小數，約 7 位有效數字</td></tr>
+      <tr><td class="m">double</td><td class="m">8</td><td><span class="bytes"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span></td><td>小數，約 15 位有效數字</td></tr>
+      <tr><td class="m">bool</td><td class="m">1</td><td><span class="bytes"><i></i></span></td><td>true 或 false</td></tr>
+    </table></div>
+  </div>
+</section>
+
+<!-- 3.10 -->
+<section id="prec">
+  <div class="sec-head"><span class="sec-no">3.10</span><h2>運算子的優先權與結合性</h2></div>
+  <div class="grid2">
+    <div class="tbl"><table class="dt prec" id="pr-tbl"></table></div>
+    <div class="panel stack">
+      <h3>運算式計算機</h3>
+      <p class="small">輸入只含整數、變數 a～e、<code>+ - * / %</code> 和括號的運算式，看它一步一步怎麼算（整數運算）。</p>
+      <div class="chiprow" id="ev-pre"></div>
+      <input type="text" id="ev-in" value="20 - c * 2" spellcheck="false" aria-label="運算式" style="width:100%">
+      <div class="ctl-row small">
+        <label for="ev-a">a</label><input type="number" id="ev-a" value="10">
+        <label for="ev-b">b</label><input type="number" id="ev-b" value="14">
+        <label for="ev-c">c</label><input type="number" id="ev-c" value="9">
+        <label for="ev-d">d</label><input type="number" id="ev-d" value="2">
+        <label for="ev-e">e</label><input type="number" id="ev-e" value="3">
+      </div>
+      <div class="deriv" id="ev-out"></div>
+    </div>
+  </div>
+</section>
+
+<!-- 3.11 -->
+<section id="cast">
+  <div class="sec-head"><span class="sec-no">3.11</span><h2>型態轉換</h2></div>
+  <div class="grid-even">
+    <div class="panel stack">
+      <h3>自動轉換：提升（少指定給多）</h3>
+      <pre class="snip" id="pm-code"></pre>
+      <div class="ctl-row"><label for="pm-n">n =</label><input type="number" id="pm-n" value="2"></div>
+      <p class="big-eval" id="pm-out"></p>
+    </div>
+    <div class="panel stack">
+      <h3>自動轉換：截斷（多指定給少）</h3>
+      <pre class="snip" id="tc-code"></pre>
+      <div class="ctl-row"><label for="tc-m">m =</label><input type="number" id="tc-m" value="2.5" step="0.1"></div>
+      <p class="big-eval" id="tc-out"></p>
+      <p class="small muted">截斷是直接捨去小數，不是四捨五入；負數也是往 0 的方向捨去（-2.7 變成 -2）。</p>
+    </div>
+  </div>
+  <div class="panel" style="margin-top:20px">
+    <div class="grid2">
+      <div class="stack">
+        <h3>強制轉換</h3>
+        <p class="big-eval"><span class="r">(型態)</span>變數　或　<span class="r">型態(</span>變數<span class="r">)</span></p>
+        <p class="small">a、b 是 <code>int</code>，x、y 是 <code>double</code>。注意轉換放在哪裡，結果會不一樣：</p>
+        <div class="ctl-row small">
+          <label for="ct-a">int a</label><input type="number" id="ct-a" value="7">
+          <label for="ct-b">int b</label><input type="number" id="ct-b" value="2">
+          <label for="ct-x">double x</label><input type="number" id="ct-x" value="2.7" step="0.1">
+          <label for="ct-y">double y</label><input type="number" id="ct-y" value="1.6" step="0.1">
         </div>
-    </header>
+      </div>
+      <div class="tbl"><table class="dt" id="ct-tbl"></table></div>
+    </div>
+  </div>
+</section>
 
-    <!-- Main Slide Content Container -->
-    <main class="flex-1 max-w-5xl w-full mx-auto p-6 md:p-10 flex flex-col justify-center">
+<!-- APCS -->
+<section id="apcs">
+  <div class="sec-head"><span class="sec-no">3.12</span><h2>APCS 觀念題</h2></div>
+  <div class="score">
+    <span>已作答 <b id="sc-done">0</b> / <b id="sc-total">3</b></span>
+    <span>一次就答對 <b id="sc-ok">0</b></span>
+    <button class="btn" id="sc-reset">全部重做</button>
+  </div>
+  <div class="quiz" id="quiz"></div>
+</section>
+</main>
 
-        <!-- Slide 1: Cover & Intro -->
-        <section class="slide active" id="slide-1">
-            <div class="text-center py-10 space-y-6">
-                <div class="inline-block p-4 bg-indigo-500/10 rounded-full border border-indigo-500/20 mb-2">
-                    <i class="fas fa-calculator text-5xl text-indigo-400"></i>
-                </div>
-                <h2 class="text-4xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-cyan-400 to-teal-300">
-                    第三章 運算式和運算子
-                </h2>
-                <p class="text-lg text-slate-400 max-w-2xl mx-auto leading-relaxed">
-                    運算式是程式處理計算與邏輯判斷的核心。本章將探討算術、關係、邏輯與位元運算子，並深入介紹優先權、結合性以及型態轉換觀念。
-                </p>
+<footer class="wrap">第三章 運算式和運算子 · 依課堂投影片內容製作。追蹤器與計算機的結果依 C/C++ 的整數運算規則模擬。</footer>
 
-                <!-- Expression vs Statement Concept -->
-                <div class="max-w-xl mx-auto bg-slate-800 border border-slate-700 p-5 rounded-2xl text-left shadow-lg">
-                    <div class="text-xs font-bold text-indigo-400 uppercase tracking-wider mb-2">核心觀念解構</div>
-                    <div class="text-center font-mono text-lg bg-slate-950 py-3 rounded-xl border border-slate-800 text-slate-200">
-                        <span class="text-emerald-400">sum</span> = <span class="text-emerald-400">sum</span> <span class="text-pink-400">+</span> <span class="text-emerald-400">i</span><span class="text-amber-400 font-bold font-sans text-xl">;</span>
-                    </div>
-                    <div class="grid grid-cols-3 gap-2 mt-3 text-center text-xs">
-                        <div class="bg-emerald-950/40 border border-emerald-800/50 p-2 rounded-lg text-emerald-300">
-                            <strong>運算元 (Operand)</strong><br>sum, i
-                        </div>
-                        <div class="bg-pink-950/40 border border-pink-800/50 p-2 rounded-lg text-pink-300">
-                            <strong>運算子 (Operator)</strong><br>=, +
-                        </div>
-                        <div class="bg-amber-950/40 border border-amber-800/50 p-2 rounded-lg text-amber-300">
-                            <strong>敘述 (Statement)</strong><br>加上末尾分號 ;
-                        </div>
-                    </div>
-                </div>
+<script>
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const RE=/(\/\/.*$)|("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')|\b(int|char|bool|long|float|double|sizeof|while|do|for|if|else|switch|case|default|break|return|void|true|false|and|or|not)\b|\b(cout|cin|endl|printf)\b|(\b\d+(?:\.\d+)?\b)/g;
+function hl(s){let o='',last=0;s.replace(RE,(m,cm,st,kw,io,num,idx)=>{o+=esc(s.slice(last,idx));const c=cm?'c':st?'s':kw?'k':io?'f':'n';o+=`<span class="t-${c}">${esc(m)}</span>`;last=idx+m.length;return m;});return o+esc(s.slice(last));}
+function renderLine(s){return hl(s);}
+document.querySelectorAll('[data-hl]').forEach(el=>{el.innerHTML=el.textContent.split('\n').map(hl).join('\n');});
+const $=id=>document.getElementById(id);
+const TF=v=>v?'True':'False';
+const I=v=>Math.trunc(+v||0);
 
-                <div class="pt-4 flex justify-center">
-                    <button onclick="nextSlide()" class="px-6 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-xl shadow-lg shadow-indigo-500/30 transition flex items-center space-x-2">
-                        <span>開始學習</span>
-                        <i class="fas fa-arrow-right"></i>
-                    </button>
-                </div>
-            </div>
-        </section>
+/* ---------- tracer ---------- */
+function record(run,p,limit){const steps=[];let out='';const STOP={};
+  const T={at(line,vars,note=''){steps.push({line,vars:{...vars},out,note});if(steps.length>=limit)throw STOP;},print(s){out+=s;}};
+  try{run(T,p)}catch(e){if(e!==STOP)throw e;}return{steps};}
+function mountTracer(root,cfg){
+  root.className='tracer';
+  root.innerHTML=`<div class="tr-head"><span class="tr-title"></span><span class="tr-count"></span></div>
+  <div class="tr-code"></div><p class="tr-note" aria-live="polite"></p>
+  <div class="tr-io"><div class="tr-vars"><div class="cap">變數</div><dl></dl></div><div class="tr-out"><div class="cap">輸出</div><pre></pre></div></div>
+  <div class="tr-ctrl"><button data-a="reset" aria-label="回到開頭">⏮</button><button data-a="prev">上一步</button><button data-a="play" class="primary">▶ 播放</button><button data-a="next">下一步</button><button data-a="end" aria-label="跳到最後">⏭</button><input type="range" min="0" value="0" aria-label="拖曳到任一步"></div>`;
+  const q=s=>root.querySelector(s);
+  const codeEl=q('.tr-code'),note=q('.tr-note'),dl=q('.tr-vars dl'),outEl=q('.tr-out pre'),count=q('.tr-count'),range=q('input[type=range]');
+  const bPrev=q('[data-a=prev]'),bNext=q('[data-a=next]'),bPlay=q('[data-a=play]'),bReset=q('[data-a=reset]'),bEnd=q('[data-a=end]');
+  q('.tr-title').textContent=cfg.title||'';
+  let st,idx=0,timer=null;
+  function stop(){clearInterval(timer);timer=null;bPlay.textContent='▶ 播放';}
+  function show(){
+    const s=st.steps[idx],pv=st.steps[idx-1];
+    codeEl.querySelectorAll('.ln').forEach(el=>el.classList.toggle('cur',+el.dataset.l===s.line));
+    note.textContent=s.note||' ';
+    dl.innerHTML=Object.entries(s.vars).map(([k,v])=>`<div class="${pv&&pv.vars[k]!==v?'chg':''}"><dt>${esc(k)}</dt><dd>${v===undefined?'?':esc(String(v))}</dd></div>`).join('');
+    outEl.textContent=s.out;outEl.scrollTop=outEl.scrollHeight;
+    count.textContent=`第 ${idx+1} / ${st.steps.length} 步`;range.value=idx;
+    bPrev.disabled=bReset.disabled=idx===0;bNext.disabled=bEnd.disabled=idx===st.steps.length-1;
+    const cur=codeEl.querySelector('.ln.cur');
+    if(cur){const t=cur.offsetTop,h=codeEl.clientHeight;if(t<codeEl.scrollTop+4||t>codeEl.scrollTop+h-30)codeEl.scrollTop=t-h/2;}
+  }
+  function build(){
+    stop();const p=cfg.params?cfg.params():{};
+    const lines=typeof cfg.lines==='function'?cfg.lines(p):cfg.lines;
+    codeEl.innerHTML=lines.map((l,i)=>`<div class="ln" data-l="${i}"><span class="no">${i+1}</span><span class="tx">${renderLine(l)||' '}</span></div>`).join('');
+    st=record(cfg.run,p,cfg.limit||500);range.max=st.steps.length-1;idx=0;show();
+  }
+  bNext.onclick=()=>{stop();if(idx<st.steps.length-1){idx++;show();}};
+  bPrev.onclick=()=>{stop();if(idx>0){idx--;show();}};
+  bReset.onclick=()=>{stop();idx=0;show();};
+  bEnd.onclick=()=>{stop();idx=st.steps.length-1;show();};
+  range.oninput=()=>{stop();idx=+range.value;show();};
+  bPlay.onclick=()=>{if(timer){stop();return;}if(idx>=st.steps.length-1)idx=0;bPlay.textContent='❚❚ 暫停';
+    timer=setInterval(()=>{if(idx>=st.steps.length-1){stop();return;}idx++;show();},cfg.speed||800);};
+  build();return{build};
+}
+function chips(el,items,onPick,start=0){items.forEach((t,i)=>{const b=document.createElement('button');b.className='btn';b.textContent=t;b.onclick=()=>{el.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));onPick(i);};el.appendChild(b);});el.children[start].classList.add('on');}
 
-        <!-- Slide 2: Classification and Associativity -->
-        <section class="slide" id="slide-2">
-            <h2 class="text-2xl md:text-3xl font-bold text-indigo-400 mb-6 flex items-center gap-3">
-                <i class="fas fa-sitemap"></i> 運算子的分類與結合性
-            </h2>
-            
-            <div class="grid md:grid-cols-2 gap-6">
-                <!-- By Operands Count -->
-                <div class="bg-slate-800 border border-slate-700 rounded-2xl p-5">
-                    <h3 class="text-lg font-bold text-white mb-3 flex items-center gap-2">
-                        <i class="fas fa-cubes text-indigo-400"></i> 依運算元個數分類
-                    </h3>
-                    <ul class="space-y-3 text-sm text-slate-300">
-                        <li class="bg-slate-900/80 p-3 rounded-xl border border-slate-700">
-                            <span class="text-indigo-300 font-bold">一元運算子 (Unary)：</span> 需要 1 個運算元<br>
-                            <code class="text-emerald-400 text-xs">x = -1;  // 正負號、遞增遞減 ++ / --</code>
-                        </li>
-                        <li class="bg-slate-900/80 p-3 rounded-xl border border-slate-700">
-                            <span class="text-indigo-300 font-bold">二元運算子 (Binary)：</span> 需要 2 個運算元<br>
-                            <code class="text-emerald-400 text-xs">x = y + z;  // 加減乘除、比較、邏輯</code>
-                        </li>
-                        <li class="bg-slate-900/80 p-3 rounded-xl border border-slate-700">
-                            <span class="text-indigo-300 font-bold">三元運算子 (Ternary)：</span> 需要 3 個運算元<br>
-                            <code class="text-emerald-400 text-xs">max = (x > y) ? x : y; // 唯一的三元運算子</code>
-                        </li>
-                    </ul>
-                </div>
+/* ---------- expression evaluator ---------- */
+function parseExpr(src,vars){
+  const t=src.match(/\d+|[A-Za-z_]\w*|[-+*/%()]|\S/g)||[];let i=0;
+  const peek=()=>t[i],next=()=>t[i++];
+  function prim(){const x=next();
+    if(x===undefined)throw '運算式還沒寫完';
+    if(x==='('){const e=add();if(next()!==')')throw '少了右括號 )';e.paren=true;return e;}
+    if(x==='-')return{u:'-',a:prim()};
+    if(x==='+')return prim();
+    if(/^\d+$/.test(x))return{v:+x};
+    if(/^[A-Za-z_]/.test(x)){if(!(x in vars))throw `只能用變數 a～e，不認得「${x}」`;return{v:vars[x],name:x};}
+    throw `看不懂「${x}」`;}
+  function mul(){let l=prim();while(['*','/','%'].includes(peek())){const op=next();l={op,l,r:prim()};}return l;}
+  function add(){let l=mul();while(['+','-'].includes(peek())){const op=next();l={op,l,r:mul()};}return l;}
+  const e=add();if(i<t.length)throw `多了「${t[i]}」`;return e;}
+const isV=n=>'v' in n;
+function R(n,hi,names){let s;
+  if(isV(n))s=(names&&n.name)?n.name:(n.v<0?`(${n.v})`:String(n.v));
+  else if(n.u)s='-'+R(n.a,hi,names);
+  else s=R(n.l,hi,names)+' '+n.op+' '+R(n.r,hi,names);
+  if(n===hi)s=`<mark>${s}</mark>`;
+  if(n.paren&&!isV(n))s='('+s+')';
+  return s;}
+function findRed(n){if(isV(n))return null;if(n.u)return isV(n.a)?n:findRed(n.a);return findRed(n.l)||findRed(n.r)||(isV(n.l)&&isV(n.r)?n:null);}
+function evalSteps(src,vars){
+  const rows=[];let root;
+  try{root=parseExpr(src,vars);}catch(e){return `<div class="err">${esc(e)}</div>`;}
+  const hasNames=src.match(/[A-Za-z_]/);
+  if(hasNames)rows.push([R(root,null,true),'原式']);
+  let guard=0;
+  while(!isV(root)&&guard++<60){
+    const n=findRed(root);let res,why;
+    if(n.u){res=-n.a.v;why='正負號優先權最高';}
+    else{const a=n.l.v,b=n.r.v;
+      if((n.op==='/'||n.op==='%')&&b===0){rows.push([R(root,n,false),'']);return rows.map(rw).join('')+`<div class="err">除以 0：程式執行時會出錯</div>`;}
+      res=n.op==='+'?a+b:n.op==='-'?a-b:n.op==='*'?a*b:n.op==='/'?Math.trunc(a/b):a%b;
+      why=n.paren?'括號內先算':['*','/','%'].includes(n.op)?(n.op==='/'?'整數除法，捨去小數':n.op==='%'?'取餘數':'乘除餘優先於加減'):'加減，同級由左而右';}
+    rows.push([R(root,n,false),why]);
+    const p=n.paren;Object.keys(n).forEach(k=>delete n[k]);n.v=res;if(p)n.paren=p;
+  }
+  rows.push([String(root.v),'結果','final']);
+  return rows.map(rw).join('');}
+function rw([e,why,cls]){return `<div class="row ${cls||''}"><span>${e}</span><span class="why">${esc(why)}</span></div>`;}
 
-                <!-- Associativity -->
-                <div class="bg-slate-800 border border-slate-700 rounded-2xl p-5 flex flex-col justify-between">
-                    <div>
-                        <h3 class="text-lg font-bold text-white mb-3 flex items-center gap-2">
-                            <i class="fas fa-arrows-left-right text-indigo-400"></i> 運算子的結合性 (Associativity)
-                        </h3>
-                        <p class="text-slate-300 text-xs leading-relaxed mb-4">
-                            當連續多個「同優先權」的運算子出現時，決定計算順序方向。
-                        </p>
-                        
-                        <div class="space-y-3">
-                            <div class="bg-slate-900/80 p-3 rounded-xl border border-slate-700">
-                                <span class="text-cyan-400 font-bold text-xs">左結合性 (Left-to-Right)</span>
-                                <div class="text-xs font-mono text-slate-300 mt-1">
-                                    a + b + c  &nbsp;<i class="fas fa-arrow-right text-indigo-400"></i>&nbsp;  (a + b) + c
-                                </div>
-                            </div>
-                            <div class="bg-slate-900/80 p-3 rounded-xl border border-slate-700">
-                                <span class="text-pink-400 font-bold text-xs">右結合性 (Right-to-Left)</span>
-                                <div class="text-xs font-mono text-slate-300 mt-1">
-                                    a = b = 5  &nbsp;<i class="fas fa-arrow-right text-pink-400"></i>&nbsp;  a = (b = 5)
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+/* ---------- 3.1 anatomy ---------- */
+const AN=[['運算元','opd','運算元是被運算的對象：sum、sum、i（共 3 個）。'],['運算子','opr','運算子是運算的符號：= 和 +（共 2 個）。'],['運算式','exp','運算式 = 運算元 + 運算子：sum = sum + i（還沒有分號）。'],['敘述','stm','運算式後面加上分號，就成為一個敘述：sum = sum + i;']];
+chips($('an-btns'),AN.map(a=>a[0]),i=>{$('anat').className='anat m-'+AN[i][1];$('an-info').textContent=AN[i][2];});
+$('an-info').textContent=AN[0][2];
 
-                    <div class="mt-4 bg-indigo-950/40 border border-indigo-800/50 p-3 rounded-xl text-xs text-indigo-200">
-                        <i class="fas fa-lightbulb text-amber-400 mr-1"></i> 指定運算子 <code>=</code> 與單目運算子為典型的<strong>右結合性</strong>。
-                    </div>
-                </div>
-            </div>
-        </section>
+/* ---------- 3.3 assign ---------- */
+mountTracer($('tr-asg'),{title:'指定運算子',
+  lines:['int a = 1, b = 1;','a = 10;','b = 5;','a = b + 3;','a = a + 1;'],
+  run(T){let a=1,b=1;T.at(0,{a,b},'宣告並設定初始值');a=10;T.at(1,{a,b},'把 10 放進 a，舊值 1 被蓋掉');b=5;T.at(2,{a,b});
+    a=b+3;T.at(3,{a,b},'右邊先算：b + 3 = 5 + 3 = 8，再放進 a');a=a+1;T.at(4,{a,b},'右邊先算：a + 1 = 8 + 1 = 9，再放回 a');}});
+const SW=[
+ {n:'直接互相指定（錯誤）',info:'a = b 之後，a 原本的 3 就被蓋掉了，b = a 只能拿到 5。結果兩個都是 5。',
+  lines:['int a = 3, b = 5;','a = b;','b = a;'],run(T){let a=3,b=5;T.at(0,{a,b});a=b;T.at(1,{a,b},'a 的舊值 3 不見了！');b=a;T.at(2,{a,b},'b 拿到的是 5，交換失敗');}},
+ {n:'用暫存變數 temp',info:'先把 a 的值存到 temp，等 a 被蓋掉後再從 temp 取回。這是最常用、最安全的做法。',
+  lines:['int a = 3, b = 5, temp;','temp = a;','a = b;','b = temp;'],run(T){let a=3,b=5,temp;T.at(0,{a,b,temp});temp=a;T.at(1,{a,b,temp},'先把 a 的值存起來');a=b;T.at(2,{a,b,temp},'a 被蓋掉沒關係，temp 還記得 3');b=temp;T.at(3,{a,b,temp},'交換成功！');}},
+ {n:'用加減法',info:'不用額外變數也能交換，但只適用於數字，而且數字太大可能溢位，了解原理即可。',
+  lines:['int a = 3, b = 5;','a = a + b;','b = a - b;','a = a - b;'],run(T){let a=3,b=5;T.at(0,{a,b});a=a+b;T.at(1,{a,b},'a 存兩數的和 8');b=a-b;T.at(2,{a,b},'8 - 5 = 3，b 拿到原本的 a');a=a-b;T.at(3,{a,b},'8 - 3 = 5，a 拿到原本的 b，交換成功');}}];
+let swI=1;
+const trSwap=mountTracer($('tr-swap'),{title:'兩數交換',params:()=>SW[swI],lines:p=>p.lines,run:(T,p)=>p.run(T)});
+chips($('sw-btns'),SW.map(s=>s.n),i=>{swI=i;$('sw-info').textContent=SW[i].info;trSwap.build();},1);
+$('sw-info').textContent=SW[1].info;
 
-        <!-- Slide 3: Arithmetic, Compound, Increment -->
-        <section class="slide" id="slide-3">
-            <h2 class="text-2xl md:text-3xl font-bold text-indigo-400 mb-6 flex items-center gap-3">
-                <i class="fas fa-square-root-variable"></i> 算術、複合指定與遞增遞減
-            </h2>
+/* ---------- 3.4 arith ---------- */
+mountTracer($('tr-ar'),{title:'算術運算子範例',
+  lines:['int a, b, c, d, e, f;','a = 10;','b = a + 4;','c = b - 5;','d = 20 - c * 2;','e = a / 4;','f = c % 4;','cout << "a = " << a << endl;','cout << "b = " << b << endl;','cout << "c = " << c << endl;','cout << "d = " << d << endl;','cout << "e = " << e << endl;','cout << "f = " << f << endl;'],
+  run(T){let a,b,c,d,e,f;const V=()=>({a,b,c,d,e,f});T.at(0,V(),'宣告 6 個整數變數');a=10;T.at(1,V());b=a+4;T.at(2,V(),'10 + 4 = 14');c=b-5;T.at(3,V(),'14 - 5 = 9');
+    d=20-c*2;T.at(4,V(),'先乘後減：c * 2 = 18，20 - 18 = 2');e=Math.trunc(a/4);T.at(5,V(),'10 / 4 = 2.5，整數相除只留 2');f=c%4;T.at(6,V(),'9 ÷ 4 = 2 餘 1，所以 9 % 4 = 1');
+    [['a',a],['b',b],['c',c],['d',d],['e',e],['f',f]].forEach(([k,v],i)=>{T.print(`${k} = ${v}\n`);T.at(7+i,V());});}});
+function ca(){const a=I($('ca-a').value),b=I($('ca-b').value);
+  const r=[['a + b',a+b],['a - b',a-b],['a * b',a*b],['a / b',b?Math.trunc(a/b):'除以 0 錯誤'],['a % b',b?a%b:'除以 0 錯誤']];
+  $('ca-tbl').innerHTML='<tr><th>運算式</th><th>代入</th><th>結果</th></tr>'+r.map(([e,v])=>`<tr><td class="m">${e}</td><td class="m">${e.replace('a',a<0?`(${a})`:a).replace('b',b<0?`(${b})`:b)}</td><td class="m"><b>${v}</b></td></tr>`).join('');
+  $('ca-note').textContent=b?`${a} ÷ ${b} = ${(a/b).toFixed(3).replace(/\.?0+$/,'')}，整數除法捨去小數得 ${Math.trunc(a/b)}；餘數 ${a%b}。檢查：${Math.trunc(a/b)} × ${b} + ${a%b} = ${a}。`:'b 是 0：整數除以 0 會讓程式當掉。';}
+['ca-a','ca-b'].forEach(id=>$(id).oninput=ca);ca();
 
-            <div class="grid md:grid-cols-3 gap-4">
-                <!-- Arithmetic -->
-                <div class="bg-slate-800 border border-slate-700 rounded-2xl p-5">
-                    <span class="text-xs font-bold bg-blue-500/20 text-blue-300 px-2.5 py-1 rounded-full mb-3 inline-block">算術運算子</span>
-                    <h3 class="text-lg font-bold text-white mb-2">+ - * / %</h3>
-                    <p class="text-slate-400 text-xs mb-3">注意：<code>/</code> 作用於整數時為整數除法（無條件捨去小數）；<code>%</code> 為求餘數。</p>
-                    <div class="text-xs font-mono text-slate-300 bg-slate-900 p-2.5 rounded-lg space-y-1">
-                        <div>7 / 2 = <span class="text-emerald-400">3</span> (整數除法)</div>
-                        <div>7 % 2 = <span class="text-emerald-400">1</span> (取餘數)</div>
-                    </div>
-                </div>
+/* ---------- 3.5 compound ---------- */
+function bin(v){return (v>>>0).toString(2).slice(-8).padStart(8,'0');}
+function cp(){const x=I($('cp-x').value),v=I($('cp-v').value),op=$('cp-op').value,o=op.slice(0,-1);
+  let r,err='';
+  switch(o){case'+':r=x+v;break;case'-':r=x-v;break;case'*':r=x*v;break;case'/':if(!v)err='除以 0';else r=Math.trunc(x/v);break;case'%':if(!v)err='除以 0';else r=x%v;break;
+    case'&':r=x&v;break;case'^':r=x^v;break;case'|':r=x|v;break;case'<<':r=x<<v;break;case'>>':r=x>>v;break;}
+  $('cp-out').innerHTML=`x ${esc(op)} ${v};<br><span class="muted">⇔ x = x ${esc(o)} ${v};</span><br>x = ${x} ${esc(o)} ${v} = <span class="r">${err||r}</span>`;
+  $('cp-again').dataset.r=err?'':r;
+  const bit=['&','^','|','<<','>>'].includes(o)&&!err&&x>=0&&x<256&&v>=0&&r<256;
+  $('cp-bin').innerHTML=bit?(['<<','>>'].includes(o)?`<span class="bin">${bin(x)}</span> ${esc(o)} ${v} → <span class="bin"><b>${bin(r)}</b></span>　（二進位，左移 1 位等於 ×2，右移 1 位等於 ÷2）`:`<div class="bin">　${bin(x)}　（${x}）<br>${esc(o)} ${bin(v)}　（${v}）<br>= <b>${bin(r)}</b>　（${r}）</div><span class="muted">位元運算是把兩數寫成二進位，逐位元做 ${o==='&'?'AND（都是 1 才是 1）':o==='|'?'OR（有 1 就是 1）':'XOR（不同才是 1）'}。</span>`):'';}
+['cp-x','cp-v','cp-op'].forEach(id=>$(id).addEventListener('input',cp));
+$('cp-again').onclick=()=>{if($('cp-again').dataset.r!==''){$('cp-x').value=$('cp-again').dataset.r;cp();}};cp();
 
-                <!-- Compound Assign -->
-                <div class="bg-slate-800 border border-slate-700 rounded-2xl p-5">
-                    <span class="text-xs font-bold bg-purple-500/20 text-purple-300 px-2.5 py-1 rounded-full mb-3 inline-block">複合指定運算子</span>
-                    <h3 class="text-lg font-bold text-white mb-2">+= -= *= /= %=</h3>
-                    <p class="text-slate-400 text-xs mb-3">將運算與賦值簡寫，精簡程式碼寫法。</p>
-                    <div class="text-xs font-mono text-slate-300 bg-slate-900 p-2.5 rounded-lg space-y-1">
-                        <div>a += b <span class="text-slate-500">&hArr;</span> a = a + b</div>
-                        <div>a *= 3 <span class="text-slate-500">&hArr;</span> a = a * 3</div>
-                    </div>
-                </div>
+/* ---------- 3.6 ++ ---------- */
+mountTracer($('tr-inc'),{title:'遞增',lines:['int a = 0;','a++;','cout << a;'],
+  run(T){let a=0;T.at(0,{a});a++;T.at(1,{a},'a 的值加 1');T.print(String(a));T.at(2,{a});}});
+let ppI=0;
+const PP=[['後置 b = a++',p=>['int a = 5, b;','b = a++;','cout << "a = " << a << ", b = " << b;'],T=>{let a=5,b;T.at(0,{a,b});b=a;T.at(1,{a,b},'① 先把 a 的舊值 5 給 b');a++;T.at(1,{a,b},'② 再把 a 加 1');T.print(`a = ${a}, b = ${b}`);T.at(2,{a,b});}],
+ ['前置 b = ++a',p=>['int a = 5, b;','b = ++a;','cout << "a = " << a << ", b = " << b;'],T=>{let a=5,b;T.at(0,{a,b});a++;T.at(1,{a,b},'① a 先加 1 變成 6');b=a;T.at(1,{a,b},'② 再把新值 6 給 b');T.print(`a = ${a}, b = ${b}`);T.at(2,{a,b});}]];
+const trPP=mountTracer($('tr-pp'),{title:'前置與後置',params:()=>({}),lines:p=>PP[ppI][1](p),run:T=>PP[ppI][2](T)});
+chips($('pp-btns'),PP.map(x=>x[0]),i=>{ppI=i;trPP.build();});
 
-                <!-- Increment / Decrement -->
-                <div class="bg-slate-800 border border-slate-700 rounded-2xl p-5">
-                    <span class="text-xs font-bold bg-emerald-500/20 text-emerald-300 px-2.5 py-1 rounded-full mb-3 inline-block">遞增 / 遞減</span>
-                    <h3 class="text-lg font-bold text-white mb-2">++a vs a++</h3>
-                    <p class="text-slate-400 text-xs mb-3">前置 (Pre) 與後置 (Post) 在運算時機上有細微差別：</p>
-                    <div class="text-xs font-mono text-slate-300 bg-slate-900 p-2.5 rounded-lg space-y-1">
-                        <div>b = ++a; <span class="text-slate-500">// 先加1再給b</span></div>
-                        <div>b = a++; <span class="text-slate-500">// 先給b再加1</span></div>
-                    </div>
-                </div>
-            </div>
+/* ---------- 3.7 comma ---------- */
+mountTracer($('tr-cm'),{title:'逗號運算子',lines:['int i = 1, j = 2;','++i, ++j;','cout << i << " " << j;'],
+  run(T){let i=1,j=2;T.at(0,{i,j},'用逗號一次宣告兩個變數');i++;T.at(1,{i,j},'先做逗號左邊的 ++i');j++;T.at(1,{i,j},'再做逗號右邊的 ++j');T.print(`${i} ${j}`);T.at(2,{i,j});}});
 
-            <!-- Two Numbers Swap Technique -->
-            <div class="mt-6 bg-slate-800 border border-slate-700 rounded-2xl p-5">
-                <h4 class="text-md font-bold text-white mb-2 flex items-center gap-2">
-                    <i class="fas fa-right-left text-amber-400"></i> 經典應用：兩變數數值交換 (Swap)
-                </h4>
-                <div class="grid md:grid-cols-2 gap-4 text-xs font-mono bg-slate-950 p-3 rounded-xl border border-slate-800">
-                    <div>
-                        <span class="text-slate-500">// 方法一：使用暫存變數 temp</span><br>
-                        <span class="text-blue-400">int</span> temp = a;<br>
-                        a = b;<br>
-                        b = temp;
-                    </div>
-                    <div>
-                        <span class="text-slate-500">// 方法二：加減演算法 (無須第三變數)</span><br>
-                        a = a + b;<br>
-                        b = a - b;<br>
-                        a = a - b;
-                    </div>
-                </div>
-            </div>
-        </section>
+/* ---------- 3.8 relational / logical ---------- */
+const OPS=[['==','=','等於',(a,b)=>a==b],['!=','≠','不等於',(a,b)=>a!=b],['>','>','大於',(a,b)=>a>b],['<','<','小於',(a,b)=>a<b],['>=','≥','大於等於',(a,b)=>a>=b],['<=','≤','小於等於',(a,b)=>a<=b]];
+function rl(){const a=+$('rl-a').value,b=+$('rl-b').value;
+  $('rl-tbl').innerHTML='<tr><th>運算子</th><th>數學式</th><th>意義</th><th>運算式</th><th>結果</th></tr>'+OPS.map(([o,m,d,f])=>`<tr><td class="m">${esc(o)}</td><td>${m}</td><td>${d}</td><td class="m">(${a} ${esc(o)} ${b})</td><td><button class="rv" data-r="${f(a,b)?1:0}">?</button></td></tr>`).join('');
+  $('rl-tbl').querySelectorAll('.rv').forEach(b=>b.onclick=()=>rev(b));}
+function rev(b){const r=b.dataset.r==='1';b.textContent=r?'True（1）':'False（0）';b.className='rv shown '+(r?'t':'f');}
+['rl-a','rl-b'].forEach(id=>$(id).oninput=rl);$('rl-all').onclick=()=>$('rl-tbl').querySelectorAll('.rv').forEach(rev);rl();
+const lgNot=$('lg-not');
+function lg(){const L=$('lg-l').value,Rr=$('lg-r').value,op=$('lg-op').value,n=lgNot.getAttribute('aria-pressed')==='true';
+  lgNot.textContent=n?'not':'　';
+  const lv=L==='5>3',rv=Rr==='3>2',inner=op==='and'?lv&&rv:lv||rv,res=n?!inner:inner;
+  const cpp=`${n?'!(':''}(${L}) ${op==='and'?'&&':'||'} (${Rr})${n?')':''}`;
+  $('lg-out').innerHTML=`${n?'not ':''}(${esc(L)}) ${op} (${esc(Rr)})<br>→ ${n?'not ':''}${n?'(':''}${TF(lv)} ${op} ${TF(rv)}${n?')':''}${n?`<br>→ not ${TF(inner)}`:''}<br>→ <span class="r">${TF(res)}</span><br><span class="small muted">C++ 寫法：${esc(cpp)}</span>`;}
+['lg-l','lg-r','lg-op'].forEach(id=>$(id).oninput=lg);lgNot.onclick=()=>{lgNot.setAttribute('aria-pressed',lgNot.getAttribute('aria-pressed')!=='true');lg();};lg();
 
-        <!-- Slide 4: Relational & Logical Operators -->
-        <section class="slide" id="slide-4">
-            <h2 class="text-2xl md:text-3xl font-bold text-indigo-400 mb-6 flex items-center gap-3">
-                <i class="fas fa-code-compare"></i> 關係運算子與邏輯運算子
-            </h2>
+/* ---------- 3.10 precedence ---------- */
+const PR=[['() [] -> .　++（後置） --（後置）','由左而右'],['!　~　++（前置） --（前置）　+ -（正負號）　(type)　sizeof','由右而左'],['*　/　%','由左而右'],['+　-','由左而右'],['<<　>>','由左而右'],['<　<=　>　>=','由左而右'],['==　!=','由左而右'],['&','由左而右'],['^','由左而右'],['|','由左而右'],['&&','由左而右'],['||','由左而右'],['?:','由右而左'],['=　+=　-=　*=　/=　%=　&=　^=　|=　<<=　>>=','由右而左'],[',','由左而右']];
+$('pr-tbl').innerHTML='<tr><th>順序</th><th>運算子</th><th>結合性</th></tr>'+PR.map(([o,a],i)=>`<tr data-k="${i}"><td>${i===0?'1 高':i===PR.length-1?(i+1)+' 低':i+1}</td><td class="ops">${esc(o)}</td><td>${a}</td></tr>`).join('');
+const EVP=['20 - c * 2','2 + 3 + 4','a + b * c - e','(a + b) * (c - e)','a / 4','c % 4','-a + b % (d + 1)','b / a + c / b + d / b'];
+const evIn=$('ev-in');
+chips($('ev-pre'),EVP,i=>{evIn.value=EVP[i];ev();});
+function ev(){const vars={};'abcde'.split('').forEach(k=>vars[k]=I($('ev-'+k).value));$('ev-out').innerHTML=evalSteps(evIn.value,vars);
+  const t=evIn.value;$('pr-tbl').querySelectorAll('tr[data-k]').forEach(tr=>{const k=+tr.dataset.k;tr.classList.toggle('hit',(k===2&&/[*/%]/.test(t))||(k===3&&/[+]|\w\s*-|\)\s*-/.test(t))||(k===0&&/\(/.test(t))||(k===1&&/(^|[(*/%+\-]\s*)-\s*\w/.test(t)));});}
+evIn.oninput=ev;'abcde'.split('').forEach(k=>$('ev-'+k).oninput=ev);ev();
 
-            <div class="grid md:grid-cols-2 gap-6">
-                <!-- Relational -->
-                <div class="bg-slate-800 border border-slate-700 rounded-2xl p-5">
-                    <h3 class="text-lg font-bold text-white mb-3 flex items-center gap-2">
-                        <i class="fas fa-equals text-cyan-400"></i> 關係運算子 (Relational)
-                    </h3>
-                    <p class="text-slate-300 text-xs mb-3">比較兩數大小，結果為真 (1 / true) 或偽 (0 / false)。</p>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-xs text-left text-slate-300">
-                            <thead class="bg-slate-900 text-slate-400 border-b border-slate-700">
-                                <tr>
-                                    <th class="p-2">運算子</th>
-                                    <th class="p-2">意義</th>
-                                    <th class="p-2">範例</th>
-                                    <th class="p-2">結果</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-slate-700/50 font-mono">
-                                <tr><td class="p-2 text-indigo-300">==</td><td class="p-2">等於</td><td class="p-2">(2 == 1)</td><td class="p-2 text-rose-400">false (0)</td></tr>
-                                <tr><td class="p-2 text-indigo-300">!=</td><td class="p-2">不等於</td><td class="p-2">(2 != 1)</td><td class="p-2 text-emerald-400">true (1)</td></tr>
-                                <tr><td class="p-2 text-indigo-300">&gt; / &lt;</td><td class="p-2">大於 / 小於</td><td class="p-2">(2 &gt; 1)</td><td class="p-2 text-emerald-400">true (1)</td></tr>
-                                <tr><td class="p-2 text-indigo-300">&gt;= / &lt;=</td><td class="p-2">大於等於 / 小於等於</td><td class="p-2">(2 &lt;= 1)</td><td class="p-2 text-rose-400">false (0)</td></tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+/* ---------- 3.11 cast ---------- */
+const fmtD=v=>Number.isInteger(v)?v.toFixed(1):String(+v.toFixed(6));
+function pm(){const n=I($('pm-n').value);$('pm-code').innerHTML=['int n = '+n+';','double m;','m = n;'].map(hl).join('\n');
+  $('pm-out').innerHTML=`m = <span class="r">${n.toFixed(1)}</span><span class="typ">double</span><br><span class="small muted">int 的 ${n} 放進 double，自動變成 ${n.toFixed(1)}，不會遺失資料。</span>`;}
+function tc(){const m=+$('tc-m').value||0;$('tc-code').innerHTML=['int n;','float m = '+m+';','n = m;'].map(hl).join('\n');
+  $('tc-out').innerHTML=`n = <span class="r">${Math.trunc(m)}</span><span class="typ">int</span><br><span class="small muted">小數部分 ${m-Math.trunc(m)?String(+(m-Math.trunc(m)).toFixed(6)):'0'} 被捨去。</span>`;}
+$('pm-n').oninput=pm;$('tc-m').oninput=tc;pm();tc();
+function ct(){const a=I($('ct-a').value),b=I($('ct-b').value),x=+$('ct-x').value||0,y=+$('ct-y').value||0;
+  const dz='除以 0 錯誤';
+  const rows=[['a / b',b?Math.trunc(a/b):dz,'int','兩個 int 相除，結果是 int'],
+   ['(float)a / b',b?fmtD(a/b):dz,'float','a 先轉成 float，再除，保留小數'],
+   ['double(a) / b',b?fmtD(a/b):dz,'double','另一種寫法，效果相同'],
+   ['(float)(a / b)',b?fmtD(Math.trunc(a/b)):dz,'float','括號內先做整數除法，小數已經不見，才轉 float'],
+   ['(int)(x + y)',Math.trunc(x+y),'int',`先加：${fmtD(x+y)}，再轉 int`],
+   ['(int)x + (int)y',Math.trunc(x)+Math.trunc(y),'int',`各自先轉：${Math.trunc(x)} + ${Math.trunc(y)}`]];
+  $('ct-tbl').innerHTML='<tr><th>運算式</th><th>結果</th><th>說明</th></tr>'+rows.map(([e,v,t,d])=>`<tr><td class="m">${esc(e)}</td><td class="m"><b>${v}</b>${v===dz?'':`<span class="typ">${t}</span>`}</td><td class="small">${esc(d)}</td></tr>`).join('');}
+['ct-a','ct-b','ct-x','ct-y'].forEach(id=>$(id).oninput=ct);ct();
 
-                <!-- Logical -->
-                <div class="bg-slate-800 border border-slate-700 rounded-2xl p-5">
-                    <h3 class="text-lg font-bold text-white mb-3 flex items-center gap-2">
-                        <i class="fas fa-diagram-project text-pink-400"></i> 邏輯運算子 (Logical)
-                    </h3>
-                    <p class="text-slate-300 text-xs mb-3">用於組合多個條件判斷式。</p>
-                    <div class="space-y-3">
-                        <div class="bg-slate-900 p-3 rounded-xl border border-slate-700 text-xs font-mono">
-                            <span class="text-pink-400 font-bold">&& (AND 且)：</span> 兩者皆真才為真<br>
-                            <span class="text-slate-400">(5 &gt; 3) && (3 &gt; 2)</span> &rArr; <span class="text-emerald-400">true</span>
-                        </div>
-                        <div class="bg-slate-900 p-3 rounded-xl border border-slate-700 text-xs font-mono">
-                            <span class="text-pink-400 font-bold">|| (OR 或)：</span> 任一為真即為真<br>
-                            <span class="text-slate-400">(5 &gt; 3) || (3 &lt; 2)</span> &rArr; <span class="text-emerald-400">true</span>
-                        </div>
-                        <div class="bg-slate-900 p-3 rounded-xl border border-slate-700 text-xs font-mono">
-                            <span class="text-pink-400 font-bold">! (NOT 反相)：</span> 真偽翻轉<br>
-                            <span class="text-slate-400">!(5 &gt; 3)</span> &rArr; <span class="text-rose-400">false</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
+/* ---------- APCS ---------- */
+function change(total,paid){const L=['int Total, Paid, Change;','Change = Paid - Total;','printf("500 : %d pieces\\n", (Change-Change%500)/500);','Change = Change % 500;','printf("100 : %d coins\\n", (Change-Change%100)/100);','Change = Change % 100;','// A 區','printf("50 : %d coins\\n", (Change-Change%50)/50);','Change = Change % 50;','// B 區','printf("10 : %d coins\\n", (Change-Change%10)/10);','Change = Change % 10;','// C 區','printf("5 : %d coins\\n", (Change-Change%5)/5);','Change = Change % 5;','// D 區','printf("1 : %d coins\\n", (Change-Change%1)/1);','Change = Change % 1;'];return L;}
+const Q=[
+ {tag:'運算式 · 25',q:'若 a, b, c, d, e 均為整數變數，下列哪個算式計算結果與 <code>a+b*c-e</code> 計算結果相同？',
+  opts:['(((a+b)*c)-e)','((a+b)*(c-e))','((a+(b*c))-e)','(a+((b*c)-e))'],ans:2,code_opts:true,
+  exp:'依優先權與結合性：先算 b*c，再算 a + (b*c)，最後減 e，所以原式等同於 ((a+(b*c))-e)。(A)(B) 改變了乘法的對象，結果不同。(D) 在一般數值下結果也相同，但它先減 e 再加 a，與原式的計算順序不同，數值很大造成溢位時可能出現差異，因此標準答案是 (C)。用 a=10、b=14、c=9、e=3 驗算：',
+  extra:()=>{const v={a:10,b:14,c:9,d:2,e:3};return `<div class="tbl"><table class="mini"><tr><th>選項</th><th>計算</th></tr>${['a+b*c-e','(((a+b)*c)-e)','((a+b)*(c-e))','((a+(b*c))-e)','(a+((b*c)-e))'].map((s,i)=>{const r=evalVal(s,v);return `<tr><td class="mono">${i?'('+'ABCD'[i-1]+')':'原式'}</td><td class="mono">${esc(s)} = <b>${r}</b></td></tr>`;}).join('')}</table></div>`;}},
+ {tag:'運算式 · 4',q:'下列程式碼執行後輸出結果為何？',
+  code:'int a=2, b=3;\nint c=4, d=5;\nint val;\n\nval = b/a + c/b + d/b;\nprintf("%d\\n", val);',
+  opts:['3','4','5','6'],ans:0,
+  exp:'全部都是 int，所以每個除法都是整數除法，小數直接捨去：3/2 = 1、4/3 = 1、5/3 = 1，加起來是 <b>3</b>。若用一般數學計算 1.5 + 1.33 + 1.67 = 4.5，就會誤選。',
+  extra:()=>`<div class="deriv">${evalSteps('b/a + c/b + d/b',{a:2,b:3,c:4,d:5,e:0})}</div>`},
+ {tag:'運算式 · 19',q:'下列程式碼是自動計算找零程式的一部分，三個主要變數分別為 Total（購買總額）、Paid（實際支付金額）、Change（找零金額）。但此程式片段有冗餘的程式碼，請找出冗餘程式碼的區塊。',
+  code:change().join('\n'),
+  opts:['冗餘程式碼在 A 區','冗餘程式碼在 B 區','冗餘程式碼在 C 區','冗餘程式碼在 D 區'],ans:3,
+  exp:'任何整數 % 1 都是 0，所以 D 區的 (Change - Change%1)/1 就等於 Change，<code>Change = Change % 1</code> 只是把 Change 設成 0，之後也沒有再用到。D 區可以簡化成直接印出 Change。A、B、C 區分別算出 50、10、5 元的個數並更新剩餘金額，缺一不可。下面可以輸入金額逐行追蹤：',
+  extra:()=>`<div class="ctl-row small"><label for="q19t">Total</label><input type="number" id="q19t" value="1234"><label for="q19p">Paid</label><input type="number" id="q19p" value="2000"></div><div id="q19tr"></div>`,
+  after:()=>{const t=mountTracer($('q19tr'),{title:'找零追蹤',speed:600,params:()=>({t:I($('q19t').value),p:I($('q19p').value)}),lines:()=>change(),
+    run(T,p){let Total=p.t,Paid=p.p,Change;const V=()=>({Total,Paid,Change});T.at(0,V());Change=Paid-Total;T.at(1,V(),`${Paid} - ${Total} = ${Change}`);
+      [[500,'pieces',2],[100,'coins',4],[50,'coins',7],[10,'coins',10],[5,'coins',13],[1,'coins',16]].forEach(([u,w,l])=>{if(l>4)T.at(l-1,V());const n=(Change-Change%u)/u;T.print(`${u} : ${n} ${w}\n`);T.at(l,V(),`(${Change} - ${Change%u}) / ${u} = ${n}${u===1?'　← Change % 1 永遠是 0，這行等於直接印 Change':''}`);Change=Change%u;T.at(l+1,V(),u===1?'Change % 1 = 0，之後沒再用到：冗餘':`剩下 ${Change} 元`);});}});
+    ['q19t','q19p'].forEach(id=>$(id).oninput=()=>t.build());}}
+];
+function evalVal(s,v){const html=evalSteps(s,v);const m=html.match(/class="row final"><span>(-?\d+)/);return m?m[1]:'?';}
+const quizEl=$('quiz');const answered={};
+function renderQuiz(){
+  quizEl.innerHTML='';
+  Q.forEach((q,qi)=>{
+    const card=document.createElement('article');card.className='q';
+    card.innerHTML=`<div class="stack"><div><div class="q-tag">APCS 觀念題 · ${esc(q.tag)}</div><p class="q-text">${q.q}</p></div>${q.code?`<pre class="snip">${q.code.split('\n').map(hl).join('\n')}</pre>`:''}</div>
+      <div><div class="opts">${q.opts.map((o,i)=>`<button class="opt" data-i="${i}"><span class="L">(${'ABCD'[i]})</span><span class="${q.code_opts||/^\d+$/.test(o)?'v':''}">${esc(o)}</span></button>`).join('')}</div><div class="exp" hidden></div></div>`;
+    const exp=card.querySelector('.exp');let tries=0;
+    card.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{
+      const pick=+b.dataset.i;tries++;
+      if(!(qi in answered))answered[qi]=pick===q.ans;
+      if(pick!==q.ans){b.classList.add('wrong');b.disabled=true;exp.hidden=false;
+        exp.innerHTML=`<div class="verdict bad">✗ (${'ABCD'[pick]}) 不對，再選一次看看</div>`;score();return;}
+      card.querySelectorAll('.opt').forEach(x=>{x.disabled=true;});b.classList.add('right');
+      exp.hidden=false;
+      exp.innerHTML=`<div class="verdict ok">✓ 答對了${tries>1?`（第 ${tries} 次作答）`:''}</div><p>${q.exp}</p>${q.extra?q.extra():''}`;
+      if(q.after)q.after();
+      score();
+    });
+    quizEl.appendChild(card);
+  });
+  score();
+}
+function score(){const v=Object.values(answered);$('sc-done').textContent=v.length;$('sc-ok').textContent=v.filter(Boolean).length;$('sc-total').textContent=Q.length;}
+$('sc-reset').onclick=()=>{for(const k in answered)delete answered[k];renderQuiz();};
+renderQuiz();
+</script>
 
-        <!-- Slide 5: sizeof & Type Casting -->
-        <section class="slide" id="slide-5">
-            <h2 class="text-2xl md:text-3xl font-bold text-indigo-400 mb-6 flex items-center gap-3">
-                <i class="fas fa-weight-hanging"></i> sizeof() 與 型態轉換
-            </h2>
-
-            <div class="grid md:grid-cols-2 gap-6">
-                <!-- sizeof Operator -->
-                <div class="bg-slate-800 border border-slate-700 rounded-2xl p-5">
-                    <h3 class="text-lg font-bold text-white mb-3 flex items-center gap-2">
-                        <i class="fas fa-microchip text-indigo-400"></i> 資料大小運算子 sizeof()
-                    </h3>
-                    <p class="text-slate-300 text-xs mb-3">回傳資料型態或變數在記憶體中所佔用的位元組 (Bytes)。</p>
-                    <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 font-mono text-xs space-y-1.5 text-slate-300">
-                        <div>sizeof(char) &nbsp;&rArr; <span class="text-emerald-400">1 Byte</span></div>
-                        <div>sizeof(bool) &nbsp;&rArr; <span class="text-emerald-400">1 Byte</span></div>
-                        <div>sizeof(int) &nbsp;&nbsp;&rArr; <span class="text-emerald-400">4 Bytes</span></div>
-                        <div>sizeof(float) &rArr; <span class="text-emerald-400">4 Bytes</span></div>
-                        <div>sizeof(double)&rArr; <span class="text-emerald-400">8 Bytes</span></div>
-                    </div>
-                </div>
-
-                <!-- Type Conversion -->
-                <div class="bg-slate-800 border border-slate-700 rounded-2xl p-5">
-                    <h3 class="text-lg font-bold text-white mb-3 flex items-center gap-2">
-                        <i class="fas fa-right-left text-indigo-400"></i> 型態轉換 (Type Casting)
-                    </h3>
-                    <div class="space-y-3 text-xs">
-                        <div class="bg-slate-900 p-3 rounded-xl border border-slate-700">
-                            <span class="text-cyan-400 font-bold">1. 自動隱式轉換 (Implicit)</span>
-                            <p class="text-slate-400 mt-1">• 提升 (Promotion)：少位元組指定給多位元組（無損）</p>
-                            <code class="text-emerald-300 block mt-1">double m = 2; // m 變為 2.0</code>
-                            <p class="text-slate-400 mt-1">• 截斷 (Truncation)：多位元組指定給少位元組（截去小數）</p>
-                            <code class="text-rose-300 block mt-1">int n = 2.9; // n 截斷為 2</code>
-                        </div>
-                        <div class="bg-slate-900 p-3 rounded-xl border border-slate-700">
-                            <span class="text-pink-400 font-bold">2. 強制顯式轉換 (Explicit)</span>
-                            <code class="text-amber-300 block mt-1">(float)a / b &nbsp; 或 &nbsp; double(a)</code>
-                            <p class="text-slate-400 mt-1">手動強制改變運算時的型態以保留精度。</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Slide 6: Code Walkthrough -->
-        <section class="slide" id="slide-6">
-            <h2 class="text-2xl md:text-3xl font-bold text-indigo-400 mb-4 flex items-center gap-3">
-                <i class="fas fa-terminal"></i> 運算子綜合實戰剖析
-            </h2>
-            <p class="text-slate-300 text-sm mb-4">點擊程式碼各行敘述，觀察變數與運算結果變化：</p>
-
-            <div class="grid md:grid-cols-12 gap-6 items-start">
-                <div class="md:col-span-7 bg-slate-950 border border-slate-800 rounded-2xl p-4 font-mono text-sm leading-relaxed shadow-inner">
-                    <div class="flex items-center space-x-2 border-b border-slate-800 pb-3 mb-3">
-                        <div class="w-3 h-3 bg-red-500 rounded-full"></div>
-                        <div class="w-3 h-3 bg-yellow-500 rounded-full"></div>
-                        <div class="w-3 h-3 bg-green-500 rounded-full"></div>
-                        <span class="text-xs text-slate-500 ml-2">operators_demo.cpp</span>
-                    </div>
-                    <div class="space-y-1 text-xs md:text-sm">
-                        <div onclick="explainCode(1)" class="cursor-pointer hover:bg-slate-800/80 p-1.5 rounded transition">
-                            <span class="text-blue-400">int</span> a = <span class="text-amber-300">10</span>, b, c, d, e, f;
-                        </div>
-                        <div onclick="explainCode(2)" class="cursor-pointer hover:bg-slate-800/80 p-1.5 rounded transition">
-                            b = a + <span class="text-amber-300">4</span>; <span class="text-slate-500">// b = 14</span>
-                        </div>
-                        <div onclick="explainCode(3)" class="cursor-pointer hover:bg-slate-800/80 p-1.5 rounded transition">
-                            c = b - <span class="text-amber-300">5</span>; <span class="text-slate-500">// c = 9</span>
-                        </div>
-                        <div onclick="explainCode(4)" class="cursor-pointer hover:bg-slate-800/80 p-1.5 rounded transition">
-                            d = <span class="text-amber-300">20</span> - c * <span class="text-amber-300">2</span>; <span class="text-slate-500">// 先乘除後加減</span>
-                        </div>
-                        <div onclick="explainCode(5)" class="cursor-pointer hover:bg-slate-800/80 p-1.5 rounded transition">
-                            e = a / <span class="text-amber-300">4</span>; <span class="text-slate-500">// 整數除法</span>
-                        </div>
-                        <div onclick="explainCode(6)" class="cursor-pointer hover:bg-slate-800/80 p-1.5 rounded transition">
-                            f = c % <span class="text-amber-300">4</span>; <span class="text-slate-500">// 取餘數</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="md:col-span-5 bg-slate-800 border border-slate-700 rounded-2xl p-5 min-h-[260px] flex flex-col justify-center">
-                    <div id="code-explanation-title" class="text-lg font-bold text-indigo-400 mb-2">
-                        點擊左側程式碼敘述
-                    </div>
-                    <div id="code-explanation-body" class="text-sm text-slate-300 leading-relaxed">
-                        點擊左側任何一行運算程式碼，了解算術優先權與運算子計算歷程。
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Slide 7: APCS Quiz & Practice -->
-        <section class="slide" id="slide-7">
-            <h2 class="text-2xl md:text-3xl font-bold text-indigo-400 mb-6 flex items-center gap-3">
-                <i class="fas fa-graduation-cap"></i> APCS 觀念檢測與隨堂小考
-            </h2>
-
-            <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 space-y-6">
-                <!-- Question 1 -->
-                <div>
-                    <h3 class="text-sm md:text-base font-semibold text-white mb-3">
-                        1. (APCS) 若 a, b, c, d, e 均為整數變數，下列哪個算式計算結果與 <code>a + b * c - e</code> 計算結果相同？
-                    </h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3" id="q1-options">
-                        <button onclick="checkAnswer(1, false, this)" class="p-3 bg-slate-700/60 hover:bg-slate-700 rounded-xl text-left text-xs md:text-sm transition">(A) (((a + b) * c) - e)</button>
-                        <button onclick="checkAnswer(1, false, this)" class="p-3 bg-slate-700/60 hover:bg-slate-700 rounded-xl text-left text-xs md:text-sm transition">(B) ((a + b) * (c - e))</button>
-                        <button onclick="checkAnswer(1, true, this)" class="p-3 bg-slate-700/60 hover:bg-slate-700 rounded-xl text-left text-xs md:text-sm transition">(C) ((a + (b * c)) - e)</button>
-                        <button onclick="checkAnswer(1, false, this)" class="p-3 bg-slate-700/60 hover:bg-slate-700 rounded-xl text-left text-xs md:text-sm transition">(D) (a + ((b * c) - e))</button>
-                    </div>
-                </div>
-
-                <!-- Question 2 -->
-                <div class="pt-4 border-t border-slate-700">
-                    <h3 class="text-sm md:text-base font-semibold text-white mb-3">
-                        2. (APCS) 執行以下程式碼後 <code>val</code> 的值為何？<br>
-                        <code class="text-xs text-indigo-300">int a=2, b=3, c=4, d=5; val = b/a + c/b + d/b;</code>
-                    </h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3" id="q2-options">
-                        <button onclick="checkAnswer(2, true, this)" class="p-3 bg-slate-700/60 hover:bg-slate-700 rounded-xl text-left text-xs md:text-sm transition">(A) 3 (因 3/2 + 4/3 + 5/3 = 1+1+1)</button>
-                        <button onclick="checkAnswer(2, false, this)" class="p-3 bg-slate-700/60 hover:bg-slate-700 rounded-xl text-left text-xs md:text-sm transition">(B) 4</button>
-                        <button onclick="checkAnswer(2, false, this)" class="p-3 bg-slate-700/60 hover:bg-slate-700 rounded-xl text-left text-xs md:text-sm transition">(C) 5</button>
-                        <button onclick="checkAnswer(2, false, this)" class="p-3 bg-slate-700/60 hover:bg-slate-700 rounded-xl text-left text-xs md:text-sm transition">(D) 6</button>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-    </main>
-
-    <!-- Footer Controls -->
-    <footer class="bg-slate-800/80 backdrop-blur border-t border-slate-700 px-6 py-4 flex justify-between items-center">
-        <button onclick="prevSlide()" id="btn-prev" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 disabled:opacity-40 disabled:cursor-not-allowed rounded-lg text-sm font-medium transition flex items-center space-x-2">
-            <i class="fas fa-chevron-left"></i>
-            <span>上一頁</span>
-        </button>
-
-        <div class="flex space-x-2" id="dots-container"></div>
-
-        <button onclick="nextSlide()" id="btn-next" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 disabled:cursor-not-allowed rounded-lg text-sm font-medium transition flex items-center space-x-2">
-            <span>下一頁</span>
-            <i class="fas fa-chevron-right"></i>
-        </button>
-    </footer>
-
-    <!-- Interactive Script -->
-    <script>
-        let currentSlide = 1;
-        const totalSlides = 7;
-
-        function updateSlide() {
-            document.querySelectorAll('.slide').forEach((el, idx) => {
-                el.classList.toggle('active', idx + 1 === currentSlide);
-            });
-
-            document.getElementById('slide-indicator').textContent = `頁次 ${currentSlide} / ${totalSlides}`;
-            document.getElementById('btn-prev').disabled = currentSlide === 1;
-            document.getElementById('btn-next').disabled = currentSlide === totalSlides;
-
-            updateDots();
-        }
-
-        function nextSlide() {
-            if (currentSlide < totalSlides) {
-                currentSlide++;
-                updateSlide();
-            }
-        }
-
-        function prevSlide() {
-            if (currentSlide > 1) {
-                currentSlide--;
-                updateSlide();
-            }
-        }
-
-        function goToSlide(n) {
-            currentSlide = n;
-            updateSlide();
-        }
-
-        function updateDots() {
-            const container = document.getElementById('dots-container');
-            container.innerHTML = '';
-            for (let i = 1; i <= totalSlides; i++) {
-                const dot = document.createElement('button');
-                dot.className = `w-2.5 h-2.5 rounded-full transition-all ${i === currentSlide ? 'bg-indigo-400 w-6' : 'bg-slate-600 hover:bg-slate-500'}`;
-                dot.onclick = () => goToSlide(i);
-                container.appendChild(dot);
-            }
-        }
-
-        const codeExplanations = {
-            1: { title: "變數宣告與初始化", body: "宣告多個整數變數，並將 a 賦予初始值 10。" },
-            2: { title: "加法運算 (a + 4)", body: "10 + 4 計算結果為 14，將 14 指定給變數 b。" },
-            3: { title: "減法運算 (b - 5)", body: "14 - 5 計算結果為 9，將 9 指定給變數 c。" },
-            4: { title: "優先權判斷 (20 - c * 2)", body: "乘法 * 優先權高於減法 -。先算 c * 2 (9 * 2 = 18)，再算 20 - 18，最終 d = 2。" },
-            5: { title: "整數除法 (a / 4)", body: "a 為 10，10 / 4 在整數除法中會自動捨去小數點，故 e 的結果為 2。" },
-            6: { title: "取餘數運算 (c % 4)", body: "c 為 9，9 除以 4 的餘數為 1，故 f 的結果為 1。" }
-        };
-
-        function explainCode(line) {
-            const exp = codeExplanations[line];
-            if (exp) {
-                document.getElementById('code-explanation-title').textContent = exp.title;
-                document.getElementById('code-explanation-body').textContent = exp.body;
-            }
-        }
-
-        function checkAnswer(qNum, isCorrect, btn) {
-            const container = document.getElementById(`q${qNum}-options`);
-            const buttons = container.querySelectorAll('button');
-            buttons.forEach(b => {
-                b.disabled = true;
-                b.classList.remove('bg-slate-700/60', 'hover:bg-slate-700');
-            });
-
-            if (isCorrect) {
-                btn.classList.add('bg-emerald-600', 'text-white');
-            } else {
-                btn.classList.add('bg-rose-600', 'text-white');
-            }
-        }
-
-        // Initialize
-        updateSlide();
-    </script>
-</body>
-</html>
+</body></html>

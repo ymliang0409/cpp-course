@@ -1,405 +1,772 @@
-<!DOCTYPE html>
-<html lang="zh-TW">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>第一章 程式語言簡介</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=Fira+Code:wght@400;600&display=swap');
-        body {
-            font-family: 'Noto Sans TC', sans-serif;
-        }
-        code, pre {
-            font-family: 'Fira Code', monospace;
-        }
-        .slide {
-            display: none;
-            opacity: 0;
-            transition: opacity 0.3s ease-in-out;
-        }
-        .slide.active {
-            display: block;
-            opacity: 1;
-        }
-    </style>
-</head>
-<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col justify-between selection:bg-indigo-500 selection:text-white">
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>程式語言簡介互動講義</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=LXGW+WenKai+TC:wght@400;700&family=Noto+Sans+TC:wght@400;500;700&display=swap">
+<style>
+/* Layout: chapter handout — concept text on the left, a live code tracer or flowchart on the right, quiz at the end */
+:root{
+  --bg:#F2F4F0; --surface:#FFFFFF; --ink:#1C251F; --muted:#5B6860; --line:#D3DBD2;
+  --accent:#2E6A3E; --accent-soft:#E1EDE2; --on-accent:#FFFFFF;
+  --code-bg:#18211B; --code-fg:#DCE6DD; --code-dim:#6E7E72; --cur:#3D4A2A; --cur-bar:#F1C94A;
+  --seg:#F1C94A; --seg-ink:#18211B;
+  --t-k:#8FD3A4; --t-f:#7FC4E8; --t-s:#F0B97A; --t-n:#E8A0C8; --t-c:#7D8E81;
+  --ok:#2C7A4B; --ok-soft:#DDEFE3; --bad:#B23E2C; --bad-soft:#F6E0DB; --warn:#9A6A00;
+  --g-a:#2E6A3E; --g-b:#5E9A4C; --g-c:#C9A227; --g-d:#C9772F; --g-f:#B23E2C;
+  --f-display:"LXGW WenKai TC","Kaiti TC","STKaiti","KaiTi",serif;
+  --f-body:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
+  --f-code:"JetBrains Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#111612; --surface:#19201B; --ink:#E2EAE3; --muted:#97A59B; --line:#2B352E;
+  --accent:#86C796; --accent-soft:#223228; --on-accent:#0F1611;
+  --code-bg:#0C110D; --code-fg:#DCE6DD; --code-dim:#5E6E62; --cur:#36401F; --cur-bar:#F1C94A;
+  --ok:#7FCB98; --ok-soft:#1E3326; --bad:#F0907C; --bad-soft:#3A2420; --warn:#E5B95A;
+  --g-a:#5FA872; --g-b:#8DBF6E; --g-c:#D9B648; --g-d:#DB9050; --g-f:#D96A55;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#111612; --surface:#19201B; --ink:#E2EAE3; --muted:#97A59B; --line:#2B352E;
+  --accent:#86C796; --accent-soft:#223228; --on-accent:#0F1611;
+  --code-bg:#0C110D; --code-fg:#DCE6DD; --code-dim:#5E6E62; --cur:#36401F; --cur-bar:#F1C94A;
+  --ok:#7FCB98; --ok-soft:#1E3326; --bad:#F0907C; --bad-soft:#3A2420; --warn:#E5B95A;
+  --g-a:#5FA872; --g-b:#8DBF6E; --g-c:#D9B648; --g-d:#DB9050; --g-f:#D96A55;
+  color-scheme:dark}
 
-    <!-- Header Navigation -->
-    <header class="bg-slate-800/80 backdrop-blur border-b border-slate-700 sticky top-0 z-50 px-6 py-4 flex justify-between items-center">
-        <div class="flex items-center space-x-3">
-            <span class="bg-indigo-600 text-white font-bold px-3 py-1 rounded-lg text-sm">C++ 課程</span>
-            <h1 class="text-xl font-bold tracking-wide text-white">第一章：程式語言簡介</h1>
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.75}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.wrap{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;line-height:1.25;margin:0}
+p{margin:0}
+code,.mono{font-family:var(--f-code);font-size:.9em}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+header{padding-block:40px 20px}
+.kicker{font-size:13px;letter-spacing:.12em;color:var(--muted);text-transform:uppercase}
+h1{font-size:clamp(34px,6vw,54px);font-weight:700;margin-top:6px}
+h1 em{font-style:normal;color:var(--accent)}
+.lede{max-width:62ch;color:var(--muted);margin-top:10px}
+.legend{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:16px;font-size:14px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.sw{width:14px;height:14px;border-radius:3px;display:inline-block}
+
+nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;gap:6px;overflow-x:auto;padding-block:10px;scrollbar-width:none}
+nav a{flex:none;text-decoration:none;color:var(--ink);font-size:14px;padding:5px 12px;border-radius:999px;border:1px solid var(--line);background:var(--surface);white-space:nowrap}
+nav a:hover{border-color:var(--accent);color:var(--accent)}
+
+section{padding-block:44px 8px;scroll-margin-top:64px}
+.sec-head{display:flex;align-items:baseline;gap:12px;margin-bottom:18px;flex-wrap:wrap}
+.sec-no{font-family:var(--f-code);font-size:14px;color:var(--accent);font-weight:600}
+h2{font-size:clamp(26px,4vw,34px)}
+h3{font-size:21px;margin-bottom:6px}
+.grid2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:28px;align-items:start}
+.grid-even{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;align-items:start}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+@media (max-width:880px){.grid2,.grid-even{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:700px){.grid3{grid-template-columns:minmax(0,1fr)}}
+.stack{display:flex;flex-direction:column;gap:14px;min-width:0}
+.note{border-left:3px solid var(--warn);padding:6px 12px;background:var(--surface);font-size:15px}
+.muted{color:var(--muted)}
+.small{font-size:14px}
+ul.plain{margin:0;padding-left:1.2em}
+ul.plain li{margin:3px 0}
+
+pre.snip{margin:0;background:var(--code-bg);color:var(--code-fg);font-family:var(--f-code);font-size:14px;line-height:1.65;padding:12px 14px;border-radius:8px;overflow-x:auto}
+.t-k{color:var(--t-k);font-weight:600}.t-f{color:var(--t-f)}.t-s{color:var(--t-s)}.t-n{color:var(--t-n)}.t-c{color:var(--t-c);font-style:italic}
+
+/* flowcharts */
+svg.fc{width:100%;height:auto;display:block;max-width:420px;margin:0 auto}
+.fc .n{fill:var(--surface);stroke:var(--ink);stroke-width:1.4;transition:fill .2s,stroke .2s}
+.fc .d{fill:var(--accent-soft);stroke:var(--accent);stroke-width:1.5}
+.fc .e{stroke:var(--muted);stroke-width:1.5;fill:none;transition:stroke .2s}
+.fc text{fill:var(--ink);font-size:13px;text-anchor:middle;font-family:var(--f-body)}
+.fc text.lb{fill:var(--muted);font-size:12px;font-family:var(--f-code);text-anchor:start}
+.fc .ah{fill:var(--muted)}
+.fc .on .n,.fc .n.on{fill:var(--cur-bar);stroke:var(--ink)}
+.fc .on text{fill:#18211B}
+.fc .e.on{stroke:var(--cur-bar);stroke-width:3}
+.fc .dim{opacity:.35}
+.fig{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px;min-width:0}
+.fig figcaption{font-size:14px;color:var(--muted);text-align:center;margin-top:6px}
+figure{margin:0}
+
+/* symbol table */
+.sym{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+@media (max-width:700px){.sym{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.sym button{font:inherit;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:10px 8px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px}
+.sym button:hover,.sym button.on{border-color:var(--accent)}
+.sym button.on{background:var(--accent-soft)}
+.sym svg{width:90px;height:44px}
+.sym svg *{fill:none;stroke:var(--ink);stroke-width:1.5}
+.sym b{font-size:14px}
+.sym-info{min-height:2.5em}
+
+/* tracer */
+.tracer{background:var(--code-bg);color:var(--code-fg);border-radius:10px;overflow:hidden;min-width:0;display:flex;flex-direction:column}
+.tr-head{display:flex;justify-content:space-between;gap:10px;align-items:baseline;padding:10px 14px 4px;font-size:13px;flex-wrap:wrap}
+.tr-title{font-weight:700;color:var(--code-fg)}
+.tr-count{font-family:var(--f-code);color:var(--code-dim);font-variant-numeric:tabular-nums}
+.tr-code{position:relative;font-family:var(--f-code);font-size:14px;line-height:1.7;max-height:340px;overflow:auto;padding:4px 0}
+.ln{display:flex;white-space:pre;border-left:3px solid transparent;padding-right:14px;min-width:max-content}
+.ln .no{width:38px;flex:none;text-align:right;padding-right:12px;color:var(--code-dim);user-select:none}
+.ln.cur{background:var(--cur);border-left-color:var(--cur-bar)}
+.seg{border-radius:3px}
+.seg.on{background:var(--seg);color:var(--seg-ink)}
+.seg.on span{color:var(--seg-ink)}
+.tr-note{min-height:2.2em;padding:6px 14px;font-size:14px;color:var(--cur-bar);border-top:1px solid #ffffff14}
+.tr-io{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);border-top:1px solid #ffffff14}
+@media (max-width:480px){.tr-io{grid-template-columns:minmax(0,1fr)}}
+.tr-vars,.tr-out{padding:8px 14px 10px;min-width:0}
+.tr-out{border-left:1px solid #ffffff14}
+.cap{font-size:11px;letter-spacing:.14em;color:var(--code-dim);margin-bottom:4px}
+.panel .cap,.stack>.cap{color:var(--muted)}
+.tr-vars dl{margin:0;display:flex;flex-wrap:wrap;gap:6px}
+.tr-vars dl div{display:flex;gap:6px;font-family:var(--f-code);font-size:14px;background:#ffffff0d;border-radius:5px;padding:2px 8px;font-variant-numeric:tabular-nums}
+.tr-vars dl div.chg{background:#F1C94A33;box-shadow:inset 0 0 0 1px #F1C94A88}
+.tr-vars dt{color:var(--t-f)}.tr-vars dd{margin:0}
+.tr-vars dt::after{content:" ="}
+.tr-out pre{margin:0;font-family:var(--f-code);font-size:14px;line-height:1.5;max-height:150px;overflow:auto;white-space:pre-wrap;word-break:break-all;color:#E9F2EA}
+.tr-out pre:empty::before{content:"（尚無輸出）";color:var(--code-dim)}
+.tr-ctrl{display:flex;gap:6px;align-items:center;flex-wrap:wrap;padding:10px 14px;background:#ffffff08;border-top:1px solid #ffffff14}
+.tr-ctrl button{font:inherit;font-size:13px;border:1px solid #ffffff2a;background:transparent;color:var(--code-fg);border-radius:6px;padding:4px 10px;cursor:pointer}
+.tr-ctrl button:hover:not(:disabled){background:#ffffff14}
+.tr-ctrl button:disabled{opacity:.35;cursor:default}
+.tr-ctrl button.primary{background:var(--cur-bar);color:#18211B;border-color:var(--cur-bar);font-weight:700;min-width:76px}
+.tr-ctrl input[type=range]{flex:1 1 120px;accent-color:var(--cur-bar);min-width:100px}
+
+/* controls */
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px;min-width:0}
+.ctl-row{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center}
+label.chk{display:inline-flex;gap:8px;align-items:center;cursor:pointer;font-size:15px}
+input[type=number],input[type=text],select{font:inherit;font-family:var(--f-code);font-size:15px;background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:6px;padding:4px 8px}
+input[type=number]{width:5.2em}
+input[type=range]{accent-color:var(--accent)}
+.btn{font:inherit;font-size:14px;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:4px 12px;cursor:pointer}
+.btn:hover{border-color:var(--accent);color:var(--accent)}
+.btn.on{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
+.btn.primary{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
+.console{margin:0;background:var(--code-bg);color:#E9F2EA;font-family:var(--f-code);font-size:14px;line-height:1.5;padding:10px 12px;border-radius:8px;overflow-x:auto;white-space:pre}
+.console .in{color:var(--t-f)}
+.status{font-size:15px;font-weight:500}
+.status.ok{color:var(--ok)}.status.bad{color:var(--bad)}
+
+/* data tables */
+.tbl{overflow-x:auto}
+table.dt{border-collapse:collapse;width:100%;font-size:15px;font-variant-numeric:tabular-nums}
+table.dt th{font-weight:600;text-align:left;font-size:13px;color:var(--muted);border-bottom:1.5px solid var(--ink);padding:6px 10px}
+table.dt td{border-bottom:1px solid var(--line);padding:6px 10px}
+table.dt td.m{font-family:var(--f-code)}
+table.dt tr.hit td{background:var(--accent-soft)}
+.rv{font:inherit;font-family:var(--f-code);font-size:14px;min-width:84px;border:1px dashed var(--line);background:var(--bg);color:var(--ink);border-radius:6px;padding:2px 8px;cursor:pointer}
+.rv.shown{border-style:solid}
+.rv.t{color:var(--ok);border-color:var(--ok)}
+.rv.f{color:var(--bad);border-color:var(--bad)}
+.tog{font:inherit;font-family:var(--f-code);font-weight:700;font-size:16px;min-width:64px;border-radius:8px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);padding:6px 10px;cursor:pointer}
+.tog[aria-pressed="true"]{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
+.expr{display:flex;flex-direction:column;gap:6px}
+.expr-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg)}
+.expr-row code{font-size:15px}
+.expr-row .steps{font-family:var(--f-code);font-size:14px;color:var(--muted)}
+.expr-row .res{font-family:var(--f-code);font-weight:700}
+.big-eval{font-family:var(--f-code);font-size:16px;line-height:1.9}
+.big-eval .r{font-weight:700;color:var(--accent)}
+
+/* grade bar */
+.gbar{position:relative;display:flex;height:34px;border-radius:6px;overflow:hidden;font-family:var(--f-code);font-size:13px;color:#fff}
+.gbar div{display:grid;place-items:center;font-weight:700}
+.gmark{position:relative;height:16px}
+.gmark span{position:absolute;top:0;transform:translateX(-50%);font-family:var(--f-code);font-size:12px;color:var(--ink);transition:left .15s}
+.gmark span::after{content:"▼";display:block;text-align:center;line-height:1}
+.gaxis{position:relative;height:18px;font-family:var(--f-code);font-size:12px;color:var(--muted)}
+.gaxis span{position:absolute;top:0;transform:translateX(-50%)}
+
+/* setw cells */
+.cells{display:flex;gap:3px;flex-wrap:wrap}
+.cells span{width:30px;height:34px;display:grid;place-items:center;font-family:var(--f-code);font-size:17px;border:1px solid var(--line);border-radius:4px;background:var(--surface)}
+.cells span.pad{background:var(--accent-soft);color:var(--accent)}
+.cells span.sp{color:var(--muted)}
+
+/* quiz */
+.score{display:flex;gap:14px;align-items:center;flex-wrap:wrap;font-size:15px}
+.score b{font-family:var(--f-code);font-variant-numeric:tabular-nums}
+.quiz{display:flex;flex-direction:column;gap:22px;margin-top:16px}
+.q{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px}
+@media (max-width:880px){.q{grid-template-columns:minmax(0,1fr)}}
+.q-tag{font-family:var(--f-code);font-size:12px;color:var(--accent);letter-spacing:.06em}
+.q-text{font-size:16px;margin:4px 0 12px}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{display:flex;gap:10px;align-items:flex-start;text-align:left;font:inherit;font-size:15px;background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:8px 12px;cursor:pointer}
+.opt:hover:not(:disabled){border-color:var(--accent)}
+.opt:disabled{cursor:default}
+.opt .L{font-family:var(--f-code);font-weight:600;flex:none}
+.opt .v{font-family:var(--f-code);white-space:pre-wrap;font-size:14px}
+.opt.right{background:var(--ok-soft);border-color:var(--ok)}
+.opt.wrong{background:var(--bad-soft);border-color:var(--bad)}
+.exp{margin-top:12px;font-size:15px;display:flex;flex-direction:column;gap:10px}
+.exp .verdict{font-weight:700}
+.exp .verdict.ok{color:var(--ok)}.exp .verdict.bad{color:var(--bad)}
+table.mini{border-collapse:collapse;font-size:14px;width:100%}
+table.mini th,table.mini td{border-bottom:1px solid var(--line);padding:4px 8px;text-align:left;vertical-align:top}
+table.mini td.bad{color:var(--bad);font-weight:700}
+.sgrid{display:grid;grid-template-columns:repeat(11,minmax(0,1fr));gap:2px;font-family:var(--f-code);font-size:11px}
+.sgrid span{text-align:center;padding:2px 0;border-radius:3px;background:var(--bg)}
+.sgrid span.bad{background:var(--bad);color:#fff;font-weight:700}
+details.trace summary{cursor:pointer;color:var(--accent);font-size:14px;font-weight:500;margin-top:10px}
+details.trace[open] summary{margin-bottom:8px}
+footer{padding-block:40px 56px;color:var(--muted);font-size:14px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+<style>
+/* chapter 1 additions */
+.chiprow{display:flex;flex-wrap:wrap;gap:6px}
+mark{background:var(--seg);color:var(--seg-ink);border-radius:3px;padding:0 2px}
+.screen{margin:0;background:var(--code-bg);color:#E9F2EA;font-family:var(--f-code);font-size:14px;line-height:1.5;padding:10px 12px;border-radius:8px;overflow:auto;white-space:pre;min-height:6em;max-height:260px}
+.screen .dim{color:var(--code-dim)}
+.screen .err{color:#FF9B83}
+.ladder{display:flex;flex-direction:column;gap:8px}
+.rung{display:grid;grid-template-columns:8.5em minmax(0,1fr);gap:12px;align-items:stretch}
+.rung .lv{display:flex;flex-direction:column;justify-content:center;padding:6px 10px;border-radius:8px;background:var(--accent-soft);font-size:14px}
+.rung .lv b{font-size:15px}
+.rung .lv small{color:var(--muted);font-size:12px}
+.rung pre{margin:0;background:var(--code-bg);color:var(--code-fg);font-family:var(--f-code);font-size:13px;line-height:1.55;padding:8px 12px;border-radius:8px;overflow-x:auto}
+@media (max-width:560px){.rung{grid-template-columns:minmax(0,1fr)}}
+.pipe{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.pipe .st{padding:6px 12px;border-radius:6px;border:1.5px solid var(--line);background:var(--surface);font-size:14px;transition:background .2s,border-color .2s}
+.pipe .st.proc{border-radius:999px;background:var(--accent-soft);border-color:var(--accent)}
+.pipe .st.on{background:var(--cur-bar);border-color:var(--ink);color:#18211B}
+.pipe .st.bad{background:var(--bad-soft);border-color:var(--bad);color:var(--bad)}
+.pipe .ar{color:var(--muted)}
+.lines-run{font-family:var(--f-code);font-size:14px;display:flex;flex-direction:column;gap:2px}
+.lines-run div{padding:3px 10px;border-radius:5px;border-left:3px solid transparent;background:var(--bg)}
+.lines-run div.done{border-left-color:var(--ok)}
+.lines-run div.cur{border-left-color:var(--cur-bar);background:var(--accent-soft)}
+.lines-run div.bad{border-left-color:var(--bad);background:var(--bad-soft);color:var(--bad)}
+.editor{width:100%;min-height:250px;font:inherit;font-family:var(--f-code);font-size:14px;line-height:1.6;background:var(--code-bg);color:var(--code-fg);border:1px solid var(--line);border-radius:8px;padding:10px 12px;resize:vertical;tab-size:4;white-space:pre;overflow:auto}
+.stages{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:14px}
+.stage{padding:4px 12px;border-radius:999px;border:1.5px solid var(--line);background:var(--surface)}
+.stage.ok{border-color:var(--ok);background:var(--ok-soft);color:var(--ok)}
+.stage.bad{border-color:var(--bad);background:var(--bad-soft);color:var(--bad);font-weight:700}
+.stage.skip{opacity:.4}
+.etype{font-size:17px;font-weight:700}
+.etype.ok{color:var(--ok)}.etype.bad{color:var(--bad)}.etype.warn{color:var(--warn)}
+.anno{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:18px;align-items:start}
+@media (max-width:880px){.anno{grid-template-columns:minmax(0,1fr)}}
+.anno-code{background:var(--code-bg);border-radius:10px;padding:8px 0;font-family:var(--f-code);font-size:15px;line-height:1.8;overflow-x:auto}
+.anno-code button{display:flex;width:100%;min-width:max-content;text-align:left;font:inherit;background:transparent;color:var(--code-fg);border:0;border-left:3px solid transparent;padding:0 14px 0 0;cursor:pointer;white-space:pre}
+.anno-code button .no{width:36px;flex:none;text-align:right;padding-right:12px;color:var(--code-dim)}
+.anno-code button:hover{background:#ffffff0d}
+.anno-code button.on{background:var(--cur);border-left-color:var(--cur-bar)}
+.anno-card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:8px;min-height:180px}
+.anno-card .tag{font-family:var(--f-code);font-size:12px;color:var(--accent);letter-spacing:.06em}
+.steps-ol{margin:0;padding-left:1.4em;display:flex;flex-direction:column;gap:6px}
+.kbd{font-family:var(--f-code);font-size:.85em;border:1px solid var(--line);border-bottom-width:2px;border-radius:4px;padding:0 5px;background:var(--surface)}
+</style>
+
+<header class="wrap">
+  <div class="kicker">C/C++ 程式設計 · 第一章</div>
+  <h1>程式語言簡介 <em>互動講義</em></h1>
+  <p class="lede">看程式碼怎麼一步步變成電腦能執行的檔案，親手在模擬器裡寫第一個程式、按下 Build and run，體驗編譯錯誤、連結錯誤、執行錯誤和邏輯錯誤的差別。</p>
+  <div class="legend">
+    <span><i class="sw" style="background:#F1C94A"></i>目前進行到的步驟</span>
+    <span><i class="sw" style="background:var(--bad)"></i>發生錯誤的地方</span>
+  </div>
+</header>
+
+<nav aria-label="章節"><div class="wrap">
+  <a href="#lang">程式語言</a><a href="#trans">編譯與直譯</a><a href="#flow">程式設計流程</a><a href="#errors">常見錯誤</a><a href="#ide">輸入程式碼</a><a href="#first">第一個程式</a><a href="#sim">Build and run</a><a href="#quiz-sec">觀念題</a>
+</div></nav>
+
+<main class="wrap">
+
+<!-- 1.1 -->
+<section id="lang">
+  <div class="sec-head"><span class="sec-no">1.1</span><h2>程式語言簡介</h2></div>
+  <div class="grid2">
+    <div class="stack">
+      <p>程式語言主要是用來<b>和電腦溝通</b>，讓電腦幫助我們完成想做的事情。依照和人類語言的接近程度，分成兩大類：</p>
+      <div class="tbl"><table class="dt">
+        <tr><th>種類</th><th>例子</th><th>特色</th></tr>
+        <tr><td>低階語言</td><td>機器語言、組合語言</td><td>接近電腦的語言，人類難讀，執行快</td></tr>
+        <tr><td>高階語言</td><td>C/C++、Pascal、Java、Cobol、Python、Visual Basic</td><td>接近人類的語言，容易讀寫，需要翻譯成機器語言</td></tr>
+      </table></div>
+      <p class="small muted">右邊是同一件事「a = b + c」在三個層級的寫法（組合語言與機器碼為示意）。</p>
+    </div>
+    <div class="ladder">
+      <div class="rung"><div class="lv"><b>高階語言</b><small>C++</small></div><pre data-hl>a = b + c;</pre></div>
+      <div class="rung"><div class="lv"><b>組合語言</b><small>低階・用英文縮寫代表指令</small></div><pre>mov  eax, [b]    ; 把 b 搬進暫存器
+add  eax, [c]    ; 加上 c
+mov  [a], eax    ; 結果存回 a</pre></div>
+      <div class="rung"><div class="lv"><b>機器語言</b><small>低階・電腦唯一看得懂的 0 與 1</small></div><pre>10001011 01000101 11111000
+00000011 01000101 11110100
+10001001 01000101 11111100</pre></div>
+    </div>
+  </div>
+</section>
+
+<!-- 1.2 -->
+<section id="trans">
+  <div class="sec-head"><span class="sec-no">1.2</span><h2>編譯式與直譯式語言</h2></div>
+  <p style="max-width:70ch">C/C++、Python 等是人類較易理解的高階語言，要透過<b>編譯器</b>或<b>直譯器</b>轉換成電腦能理解的機器語言。差別在於「一次全部翻譯」還是「一行一行邊翻邊做」。</p>
+  <div class="panel stack" style="margin-top:16px">
+    <div class="ctl-row">
+      <label class="chk"><input type="checkbox" id="tr-bug"> 讓第 3 行有語法錯誤</label>
+      <button class="btn primary" id="tr-go">▶ 兩種方式同時執行</button>
+    </div>
+    <div class="grid-even">
+      <div class="stack">
+        <h3>直譯式語言 <span class="small muted">例：Python</span></h3>
+        <div class="pipe" id="pi-i">
+          <span class="st" data-k="src">原始程式碼檔</span><span class="ar">→</span><span class="st proc" data-k="tr">直譯</span><span class="ar">→</span><span class="st" data-k="mc">一列機器語言</span><span class="ar">→</span><span class="st proc" data-k="run">執行</span><span class="ar">↺ 下一列</span>
         </div>
-        <div class="flex items-center space-x-4">
-            <span id="slide-indicator" class="text-sm font-medium text-slate-400">頁次 1 / 6</span>
-            <button onclick="toggleOverview()" class="p-2 hover:bg-slate-700 rounded-lg text-slate-300 hover:text-white transition" title="全頁總覽">
-                <i class="fas fa-th-large"></i>
-            </button>
+        <div class="lines-run" id="ln-i"></div>
+        <pre class="screen" id="out-i" style="min-height:4.5em"></pre>
+      </div>
+      <div class="stack">
+        <h3>編譯式語言 <span class="small muted">例：C/C++</span></h3>
+        <div class="pipe" id="pi-c">
+          <span class="st" data-k="src">原始程式碼檔</span><span class="ar">→</span><span class="st proc" data-k="cmp">編譯</span><span class="ar">→</span><span class="st" data-k="obj">目的碼檔</span><span class="ar">→</span><span class="st proc" data-k="lnk">連結 ＋ 函數庫</span><span class="ar">→</span><span class="st" data-k="exe">可執行檔</span>
         </div>
-    </header>
+        <div class="lines-run" id="ln-c"></div>
+        <pre class="screen" id="out-c" style="min-height:4.5em"></pre>
+      </div>
+    </div>
+    <p class="small" id="tr-note"></p>
+  </div>
+</section>
 
-    <!-- Main Slide Content Container -->
-    <main class="flex-1 max-w-5xl w-full mx-auto p-6 md:p-10 flex flex-col justify-center">
+<!-- 1.3 -->
+<section id="flow">
+  <div class="sec-head"><span class="sec-no">1.3</span><h2>程式設計流程圖</h2></div>
+  <div class="grid2">
+    <div class="stack">
+      <p>從想問題到程式成功執行，要經過下面這些步驟。任何一個檢查沒通過，都要<b>回到撰寫原始程式</b>修改，再重新編譯。</p>
+      <p class="small muted">選一種情況，看流程怎麼走：</p>
+      <div class="chiprow" id="fl-btns"></div>
+      <p class="small" id="fl-info" aria-live="polite"></p>
+      <div class="tbl"><table class="dt">
+        <tr><th>檔案</th><th>產生於</th><th>內容</th></tr>
+        <tr><td class="m">.cpp</td><td>撰寫程式</td><td>原始程式（人看得懂的文字）</td></tr>
+        <tr><td class="m">.o</td><td>編譯成功後</td><td>目的程式檔（機器碼，還不能執行）</td></tr>
+        <tr><td class="m">.exe</td><td>連結成功後</td><td>執行檔（可以直接執行）</td></tr>
+      </table></div>
+    </div>
+    <figure class="fig">
+      <svg class="fc" id="fc" viewBox="0 0 520 400" style="max-width:560px" role="img" aria-label="程式設計流程圖：分析問題、繪流程圖、撰寫原始程式、編譯、檢查編譯、產生目的檔、連結函式庫、檢查連結、產生執行檔、檢查執行、結束">
+        <defs><marker id="m1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" class="ah"/></marker></defs>
+        <g data-p="start"><rect class="n" x="70" y="6" width="100" height="30" rx="15"/><text x="120" y="26">開始</text></g>
+        <path data-p="e1" class="e" d="M120 36V53" marker-end="url(#m1)"/>
+        <g data-p="an"><rect class="n" x="35" y="55" width="170" height="34" rx="3"/><text x="120" y="77">分析問題</text></g>
+        <path data-p="e2" class="e" d="M120 89V103" marker-end="url(#m1)"/>
+        <g data-p="fc"><rect class="n" x="35" y="105" width="170" height="34" rx="3"/><text x="120" y="127">繪出問題的處理流程圖</text></g>
+        <path data-p="e3" class="e" d="M120 139V153" marker-end="url(#m1)"/>
+        <g data-p="src"><rect class="n" x="35" y="155" width="170" height="34" rx="3"/><text x="120" y="177">撰寫原始程式 (.cpp)</text></g>
+        <path data-p="e4" class="e" d="M120 189V203" marker-end="url(#m1)"/>
+        <g data-p="cmp"><rect class="n" x="35" y="205" width="170" height="34" rx="3"/><text x="120" y="227">編譯原始程式</text></g>
+        <path data-p="e5" class="e" d="M120 239V258" marker-end="url(#m1)"/>
+        <g data-p="cok"><polygon class="n d" points="120,260 190,290 120,320 50,290"/><text x="120" y="295">編譯正確？</text></g>
+        <path data-p="cn" class="e" d="M50 290H18V172H33" marker-end="url(#m1)"/><text class="lb" x="20" y="306">否</text>
+        <path data-p="cy" class="e" d="M120 320V342H262V40H390V53" marker-end="url(#m1)"/><text class="lb" x="126" y="337">是</text>
+        <g data-p="obj"><rect class="n" x="305" y="55" width="170" height="34" rx="3"/><text x="390" y="77">產生目的程式檔 (.o)</text></g>
+        <path data-p="e6" class="e" d="M390 89V103" marker-end="url(#m1)"/>
+        <g data-p="lnk"><rect class="n" x="305" y="105" width="170" height="34" rx="3"/><text x="390" y="127">連接相關的函式庫</text></g>
+        <path data-p="e7" class="e" d="M390 139V153" marker-end="url(#m1)"/>
+        <g data-p="lok"><polygon class="n d" points="390,155 460,185 390,215 320,185"/><text x="390" y="190">連結正確？</text></g>
+        <path data-p="ln" class="e" d="M320 185H232V166H207" marker-end="url(#m1)"/><text class="lb" x="298" y="178">否</text>
+        <path data-p="ly" class="e" d="M390 215V231" marker-end="url(#m1)"/><text class="lb" x="396" y="228">是</text>
+        <g data-p="exe"><rect class="n" x="305" y="233" width="170" height="34" rx="3"/><text x="390" y="255">產生執行檔 (.exe)</text></g>
+        <path data-p="e8" class="e" d="M390 267V283" marker-end="url(#m1)"/>
+        <g data-p="rok"><polygon class="n d" points="390,285 460,315 390,345 320,315"/><text x="390" y="320">執行正確？</text></g>
+        <path data-p="rn" class="e" d="M320 315H244V178H207" marker-end="url(#m1)"/><text class="lb" x="298" y="308">否</text>
+        <path data-p="ry" class="e" d="M390 345V358" marker-end="url(#m1)"/><text class="lb" x="396" y="356">是</text>
+        <g data-p="end"><rect class="n" x="340" y="360" width="100" height="30" rx="15"/><text x="390" y="380">結束</text></g>
+        <text class="lb" x="22" y="230" id="t-ce" style="fill:var(--bad)" opacity="0">編譯錯誤</text>
+        <text class="lb" x="236" y="200" id="t-le" style="fill:var(--bad)" opacity="0">連結錯誤</text>
+        <text class="lb" x="246" y="330" id="t-re" style="fill:var(--bad)" opacity="0">執行錯誤</text>
+      </svg>
+    </figure>
+  </div>
+</section>
 
-        <!-- Slide 1: Cover & Intro -->
-        <section class="slide active" id="slide-1">
-            <div class="text-center py-12 space-y-6">
-                <div class="inline-block p-4 bg-indigo-500/10 rounded-full border border-indigo-500/20 mb-4">
-                    <i class="fas fa-code text-5xl text-indigo-400"></i>
-                </div>
-                <h2 class="text-4xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-cyan-400">
-                    第一章 程式語言簡介
-                </h2>
-                <p class="text-lg text-slate-400 max-w-2xl mx-auto">
-                    程式語言是人類與電腦溝通的橋樑。本章將帶您瞭解程式語言的分類、編譯與直譯的差異，以及寫出您的第一個 C++ 程式。
-                </p>
-                <div class="pt-8 flex justify-center gap-4">
-                    <button onclick="nextSlide()" class="px-6 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-xl shadow-lg shadow-indigo-500/30 transition flex items-center space-x-2">
-                        <span>開始學習</span>
-                        <i class="fas fa-arrow-right"></i>
-                    </button>
-                </div>
-            </div>
-        </section>
+<!-- 1.4 -->
+<section id="errors">
+  <div class="sec-head"><span class="sec-no">1.4</span><h2>程式設計常見問題</h2></div>
+  <div class="grid-even">
+    <div class="panel stack">
+      <h3>語法錯誤（syntax error）</h3>
+      <p>違反程式語言的語法規則，會產生<b>編譯錯誤</b>或<b>連結錯誤</b>。編譯器會告訴你錯在哪一行。</p>
+      <pre class="snip" data-hl>cout << "Hello" << endl    // 少掉分號 ;</pre>
+      <p class="small"><a href="#sim" data-preset="1">到模擬器試試 →</a></p>
+    </div>
+    <div class="panel stack">
+      <h3>語意錯誤（semantic error）或邏輯錯誤（logic error）</h3>
+      <p>語法完全正確，可以編譯，但<b>執行時</b>產生意外的輸出或與預期不符的結果。編譯器<b>抓不到</b>。</p>
+      <pre class="snip" data-hl>a = b / c;    // 語法正確，但若 c 為 0，執行時會出錯</pre>
+      <p class="small"><a href="#sim" data-preset="5">除以 0 →</a>　<a href="#sim" data-preset="6">算錯平均 →</a></p>
+    </div>
+  </div>
+</section>
 
-        <!-- Slide 2: What is Programming Language & Classification -->
-        <section class="slide" id="slide-2">
-            <h2 class="text-2xl md:text-3xl font-bold text-indigo-400 mb-6 flex items-center gap-3">
-                <i class="fas fa-layer-group"></i> 程式語言的分類
-            </h2>
-            <div class="grid md:grid-cols-2 gap-6">
-                <!-- Low-level -->
-                <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 hover:border-indigo-500/50 transition">
-                    <div class="flex items-center space-x-3 mb-4">
-                        <div class="p-3 bg-red-500/10 text-red-400 rounded-xl">
-                            <i class="fas fa-microchip text-xl"></i>
-                        </div>
-                        <h3 class="text-xl font-bold text-white">低階語言 (Low-Level)</h3>
-                    </div>
-                    <p class="text-slate-300 mb-4 text-sm leading-relaxed">
-                        貼近電腦硬體的語言，執行效率極高，但人類較難直接閱讀與維護。
-                    </p>
-                    <ul class="space-y-2 text-sm text-slate-400">
-                        <li class="flex items-center gap-2"><i class="fas fa-check text-red-400 text-xs"></i> <strong>機器語言：</strong> 由 0 與 1 組成的二進位碼</li>
-                        <li class="flex items-center gap-2"><i class="fas fa-check text-red-400 text-xs"></i> <strong>組合語言：</strong> 使用簡單符號（助記碼）代表指令</li>
-                    </ul>
-                </div>
+<!-- 1.5 -->
+<section id="ide">
+  <div class="sec-head"><span class="sec-no">1.5</span><h2>輸入程式碼</h2></div>
+  <div class="grid2">
+    <div class="stack">
+      <p>在文字編輯器中輸入的程式碼，一般稱為<b>原始程式碼（source code）</b>，或簡稱<b>程式碼</b>。通常會用整合開發環境（IDE）軟體來寫：</p>
+      <ul class="plain">
+        <li><b>Code::Blocks</b>：APCS 檢測可使用的軟體。</li>
+        <li><b>Dev-C++</b>：免費軟體，輕巧好上手。</li>
+      </ul>
+    </div>
+    <div class="panel stack">
+      <h3>在 Code::Blocks 建立新檔案</h3>
+      <ol class="steps-ol">
+        <li>點選功能表中的 <span class="kbd">File</span> → <span class="kbd">New</span> → <span class="kbd">File…</span></li>
+        <li>點選「<b>C/C++ source</b>」，再按 <span class="kbd">Go</span>。</li>
+        <li>點選「<b>C++</b>」後，在「Filename with full path」欄位輸入路徑及檔名（例如 <code>C:\code\hello.cpp</code>）。</li>
+        <li>輸入程式碼，按 <span class="kbd">Build and run</span>（快捷鍵 <span class="kbd">F9</span>）編譯並執行。</li>
+      </ol>
+    </div>
+  </div>
+</section>
 
-                <!-- High-level -->
-                <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 hover:border-indigo-500/50 transition">
-                    <div class="flex items-center space-x-3 mb-4">
-                        <div class="p-3 bg-emerald-500/10 text-emerald-400 rounded-xl">
-                            <i class="fas fa-user-code text-xl"></i>
-                        </div>
-                        <h3 class="text-xl font-bold text-white">高階語言 (High-Level)</h3>
-                    </div>
-                    <p class="text-slate-300 mb-4 text-sm leading-relaxed">
-                        語法接近人類語言（英文）與數學符號，易於學習、撰寫與維護。
-                    </p>
-                    <div class="flex flex-wrap gap-2 pt-2">
-                        <span class="px-3 py-1 bg-slate-700 text-emerald-300 rounded-lg text-xs font-semibold">C / C++</span>
-                        <span class="px-3 py-1 bg-slate-700 text-emerald-300 rounded-lg text-xs font-semibold">Python</span>
-                        <span class="px-3 py-1 bg-slate-700 text-emerald-300 rounded-lg text-xs font-semibold">Java</span>
-                        <span class="px-3 py-1 bg-slate-700 text-emerald-300 rounded-lg text-xs font-semibold">Visual Basic</span>
-                    </div>
-                </div>
-            </div>
-        </section>
+<!-- 1.6 -->
+<section id="first">
+  <div class="sec-head"><span class="sec-no">1.6</span><h2>第一個程式</h2></div>
+  <p class="small muted" style="margin-bottom:12px">點每一行，看它的作用。</p>
+  <div class="anno">
+    <div class="anno-code" id="an-code"></div>
+    <div class="anno-card" id="an-card" aria-live="polite"></div>
+  </div>
+</section>
 
-        <!-- Slide 3: Compiler vs Interpreter -->
-        <section class="slide" id="slide-3">
-            <h2 class="text-2xl md:text-3xl font-bold text-indigo-400 mb-6 flex items-center gap-3">
-                <i class="fas fa-cogs"></i> 直譯式 vs 編譯式語言
-            </h2>
-            <div class="grid md:grid-cols-2 gap-6">
-                <!-- Interpreter -->
-                <div class="bg-slate-800/90 border border-slate-700 rounded-2xl p-6 relative overflow-hidden">
-                    <span class="absolute top-0 right-0 bg-amber-500/20 text-amber-300 text-xs px-3 py-1 rounded-bl-lg font-bold">Python 等</span>
-                    <h3 class="text-lg font-bold text-amber-400 mb-3"><i class="fas fa-play text-sm mr-2"></i>直譯式語言 (Interpreter)</h3>
-                    <p class="text-slate-300 text-sm mb-4">邊翻譯邊執行，不需預先轉換成可執行檔。</p>
-                    <div class="flex items-center justify-between bg-slate-900 p-3 rounded-xl border border-slate-700/50 text-xs text-slate-300 space-x-2">
-                        <span>原始碼 (.py)</span>
-                        <i class="fas fa-arrow-right text-amber-400"></i>
-                        <span>直譯器</span>
-                        <i class="fas fa-arrow-right text-amber-400"></i>
-                        <span>機器指令並執行</span>
-                    </div>
-                </div>
+<!-- 1.7 simulator -->
+<section id="sim">
+  <div class="sec-head"><span class="sec-no">1.7</span><h2>Build and run 模擬器</h2></div>
+  <p style="max-width:72ch" class="small">這是一個簡化的 C++ 模擬器，支援本章會用到的語法：<code>#include</code>、<code>using namespace std;</code>、<code>int main()</code>、<code>cout</code>、整數變數與 + - * / %、<code>return</code>。選一個範例，或自己修改程式碼後按 Build and run。</p>
+  <div class="chiprow" id="sim-pre" style="margin-block:12px"></div>
+  <div class="grid-even">
+    <div class="stack">
+      <textarea class="editor" id="sim-code" spellcheck="false" aria-label="程式碼編輯區"></textarea>
+      <div class="ctl-row"><button class="btn primary" id="sim-run">▶ Build and run（F9）</button><span class="small muted">在編輯區按 F9 也可以</span></div>
+    </div>
+    <div class="stack">
+      <div class="stages" id="sim-stages"></div>
+      <p class="etype" id="sim-type" aria-live="polite"></p>
+      <div><div class="cap">Build messages</div><pre class="screen" id="sim-msg" style="min-height:3.5em"></pre></div>
+      <div><div class="cap">執行視窗</div><pre class="screen" id="sim-out"></pre></div>
+      <p class="small" id="sim-note"></p>
+    </div>
+  </div>
+</section>
 
-                <!-- Compiler -->
-                <div class="bg-slate-800/90 border border-slate-700 rounded-2xl p-6 relative overflow-hidden">
-                    <span class="absolute top-0 right-0 bg-cyan-500/20 text-cyan-300 text-xs px-3 py-1 rounded-bl-lg font-bold">C / C++ 等</span>
-                    <h3 class="text-lg font-bold text-cyan-400 mb-3"><i class="fas fa-box-open text-sm mr-2"></i>編譯式語言 (Compiler)</h3>
-                    <p class="text-slate-300 text-sm mb-4">整份程式碼預先編譯成機器碼檔，再連結函式庫產生獨立執行檔。</p>
-                    <div class="flex items-center justify-between bg-slate-900 p-3 rounded-xl border border-slate-700/50 text-xs text-slate-300 space-x-1">
-                        <span>原始碼 (.cpp)</span>
-                        <i class="fas fa-arrow-right text-cyan-400"></i>
-                        <span>編譯 (.o)</span>
-                        <i class="fas fa-arrow-right text-cyan-400"></i>
-                        <span>連結 (函式庫)</span>
-                        <i class="fas fa-arrow-right text-cyan-400"></i>
-                        <span>執行檔 (.exe)</span>
-                    </div>
-                </div>
-            </div>
+<!-- quiz -->
+<section id="quiz-sec">
+  <div class="sec-head"><span class="sec-no">1.8</span><h2>觀念題與課堂練習</h2></div>
+  <div class="score">
+    <span>已作答 <b id="sc-done">0</b> / <b id="sc-total">5</b></span>
+    <span>一次就答對 <b id="sc-ok">0</b></span>
+    <button class="btn" id="sc-reset">全部重做</button>
+  </div>
+  <div class="quiz" id="quiz"></div>
+</section>
 
-            <!-- Workflow Summary -->
-            <div class="mt-6 bg-slate-800 border border-slate-700 rounded-2xl p-6">
-                <h4 class="text-md font-bold text-white mb-3 flex items-center gap-2">
-                    <i class="fas fa-route text-indigo-400"></i> C++ 程式設計開發流程
-                </h4>
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-center text-xs">
-                    <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-700">
-                        <span class="text-indigo-400 font-bold block mb-1">1. 分析與撰寫</span>
-                        <span class="text-slate-400">繪製流程圖並撰寫 .cpp 原始碼</span>
-                    </div>
-                    <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-700">
-                        <span class="text-indigo-400 font-bold block mb-1">2. 編譯過程</span>
-                        <span class="text-slate-400">檢查語法，生成 .o 目的碼</span>
-                    </div>
-                    <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-700">
-                        <span class="text-indigo-400 font-bold block mb-1">3. 連結程序</span>
-                        <span class="text-slate-400">結合函式庫生成 .exe 執行檔</span>
-                    </div>
-                    <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-700">
-                        <span class="text-indigo-400 font-bold block mb-1">4. 執行與測試</span>
-                        <span class="text-slate-400">執行程式並進行除錯 (Debug)</span>
-                    </div>
-                </div>
-            </div>
-        </section>
+</main>
 
-        <!-- Slide 4: Errors -->
-        <section class="slide" id="slide-4">
-            <h2 class="text-2xl md:text-3xl font-bold text-indigo-400 mb-6 flex items-center gap-3">
-                <i class="fas fa-bug"></i> 程式設計常見錯誤類型
-            </h2>
-            <div class="grid md:grid-cols-3 gap-6">
-                <!-- Syntax Error -->
-                <div class="bg-slate-800 border border-slate-700 rounded-2xl p-5 border-t-4 border-t-rose-500">
-                    <h3 class="text-lg font-bold text-white mb-2">語法錯誤 (Syntax Error)</h3>
-                    <p class="text-slate-400 text-xs mb-3">違反程式語言的文法規定（如漏寫分號、括號不對稱）。</p>
-                    <div class="bg-slate-900 p-2.5 rounded-lg text-xs font-mono text-rose-400">
-                        編譯階段發現 (Compile Error)
-                    </div>
-                </div>
+<footer class="wrap">第一章 程式語言簡介 · 依課堂投影片內容製作。模擬器的錯誤訊息仿照 Code::Blocks（GCC）的格式，只支援本章範圍的語法。</footer>
 
-                <!-- Link Error -->
-                <div class="bg-slate-800 border border-slate-700 rounded-2xl p-5 border-t-4 border-t-amber-500">
-                    <h3 class="text-lg font-bold text-white mb-2">連結錯誤 (Link Error)</h3>
-                    <p class="text-slate-400 text-xs mb-3">找不到函式庫或未定義的主函式 main()。</p>
-                    <div class="bg-slate-900 p-2.5 rounded-lg text-xs font-mono text-amber-400">
-                        連結階段發現 (Link Error)
-                    </div>
-                </div>
+<script>
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const RE=/(\/\/.*$|\/\*.*?\*\/)|("(?:[^"\\]|\\.)*"?|'(?:[^'\\]|\\.)*')|(#\w+\s*<[^>]*>?|#\w+)|\b(int|char|bool|float|double|void|return|using|namespace)\b|\b(cout|cin|endl|std|main)\b|(\b\d+\b)/g;
+function hl(s){let o='',last=0;s.replace(RE,(m,cm,st,pp,kw,io,num,idx)=>{o+=esc(s.slice(last,idx));const c=cm?'c':st?'s':pp||kw?'k':io?'f':'n';o+=`<span class="t-${c}">${esc(m)}</span>`;last=idx+m.length;return m;});return o+esc(s.slice(last));}
+document.querySelectorAll('[data-hl]').forEach(el=>{el.innerHTML=el.textContent.split('\n').map(hl).join('\n');});
+const $=id=>document.getElementById(id);
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+function chips(el,items,onPick){items.forEach((t,i)=>{const b=document.createElement('button');b.className='btn';b.textContent=t;b.onclick=()=>{el.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));onPick(i);};el.appendChild(b);});}
 
-                <!-- Runtime / Logic Error -->
-                <div class="bg-slate-800 border border-slate-700 rounded-2xl p-5 border-t-4 border-t-indigo-500">
-                    <h3 class="text-lg font-bold text-white mb-2">執行/邏輯錯誤 (Runtime Error)</h3>
-                    <p class="text-slate-400 text-xs mb-3">除以零、陣列越界，或是邏輯不符預期。</p>
-                    <div class="bg-slate-900 p-2.5 rounded-lg text-xs font-mono text-indigo-400">
-                        執行階段發生 (Runtime Error)
-                    </div>
-                </div>
-            </div>
-        </section>
+/* ---------- 1.2 compile vs interpret ---------- */
+const PROG=['print("第 1 列")','print("第 2 列")','print("第 3 列")','print("第 4 列")'];
+const PROG_BUG='print("第 3 列"';
+let trRun=0;
+function setSt(pipe,k,cls){$(pipe).querySelectorAll('.st').forEach(s=>{s.classList.remove('on','bad');if(s.dataset.k===k)s.classList.add(cls);});}
+function lines(id,arr,cls){$(id).innerHTML=arr.map((l,i)=>`<div class="${cls[i]||''}">${i+1}　${esc(l)}</div>`).join('');}
+async function trGo(){
+  const run=++trRun,bug=$('tr-bug').checked,src=PROG.map((l,i)=>bug&&i===2?PROG_BUG:l);
+  const ci=[],cc=[];let oi='',oc='';const D=reduce?60:520;
+  const draw=()=>{lines('ln-i',src,ci);lines('ln-c',src,cc);$('out-i').textContent=oi;$('out-c').textContent=oc;};
+  $('tr-note').textContent='';draw();
+  // compiler: whole file first
+  const cP=(async()=>{
+    setSt('pi-c','src','on');await sleep(D);if(run!==trRun)return;
+    setSt('pi-c','cmp','on');for(let i=0;i<src.length;i++){cc[i]='cur';draw();await sleep(D/2);if(run!==trRun)return;cc[i]=bug&&i===2?'bad':'done';}
+    draw();
+    if(bug){setSt('pi-c','cmp','bad');oc='編譯錯誤：第 3 列少了右括號\n（一列都沒有執行）';draw();return;}
+    setSt('pi-c','obj','on');await sleep(D);if(run!==trRun)return;setSt('pi-c','lnk','on');await sleep(D);if(run!==trRun)return;setSt('pi-c','exe','on');await sleep(D);if(run!==trRun)return;
+    for(let i=0;i<src.length;i++){oc+=`第 ${i+1} 列\n`;draw();await sleep(D/3);}
+  })();
+  const iP=(async()=>{
+    for(let i=0;i<src.length;i++){
+      ci[i]='cur';draw();setSt('pi-i','src','on');await sleep(D/2);if(run!==trRun)return;
+      setSt('pi-i','tr','on');await sleep(D/2);if(run!==trRun)return;
+      if(bug&&i===2){ci[i]='bad';setSt('pi-i','tr','bad');oi+='SyntaxError：第 3 列少了右括號\n（停止執行）';draw();return;}
+      setSt('pi-i','mc','on');await sleep(D/2);if(run!==trRun)return;setSt('pi-i','run','on');oi+=`第 ${i+1} 列\n`;ci[i]='done';draw();await sleep(D/2);if(run!==trRun)return;
+    }
+  })();
+  await Promise.all([cP,iP]);if(run!==trRun)return;
+  $('tr-note').innerHTML=bug?'<b>有錯誤時：</b>直譯式已經執行了第 1、2 列才在第 3 列停下；編譯式在編譯階段就發現錯誤，<b>一列都不會執行</b>。':'<b>沒有錯誤時：</b>直譯式每次執行都要邊翻譯邊做；編譯式先花時間翻譯成可執行檔，之後執行 .exe 不必再翻譯，速度較快。';
+}
+$('tr-go').onclick=trGo;$('tr-bug').onchange=trGo;
+lines('ln-i',PROG,[]);lines('ln-c',PROG,[]);
 
-        <!-- Slide 5: First C++ Program -->
-        <section class="slide" id="slide-5">
-            <h2 class="text-2xl md:text-3xl font-bold text-indigo-400 mb-4 flex items-center gap-3">
-                <i class="fas fa-terminal"></i> 第一個 C++ 程式剖析
-            </h2>
-            <p class="text-slate-300 text-sm mb-4">點選下方程式碼行數，查看該行敘述的作用與說明：</p>
+/* ---------- 1.3 flowchart ---------- */
+const FS={
+  ok:['start','e1','an','e2','fc','e3','src','e4','cmp','e5','cok','cy','obj','e6','lnk','e7','lok','ly','exe','e8','rok','ry','end'],
+};
+FS.compile=[...FS.ok.slice(0,FS.ok.indexOf('cok')+1),'cn','src'];
+FS.link=[...FS.ok.slice(0,FS.ok.indexOf('lok')+1),'ln','src'];
+FS.runtime=[...FS.ok.slice(0,FS.ok.indexOf('rok')+1),'rn','src'];
+const FINFO={ok:'每個檢查都通過：產生 .o、連結成 .exe，執行結果正確，結束。',compile:'編譯錯誤（compile error）：例如少了分號、拼錯字。不會產生 .o，回到原始程式修改。',link:'連結錯誤（link error）：編譯成功產生了 .o，但連結時找不到需要的東西，例如 main 打錯字。回到原始程式修改。',runtime:'執行錯誤（run-time error）或邏輯錯誤：.exe 已經產生，但執行時當掉或結果不對。回到原始程式修改。'};
+let flRun=0;
+async function flow(key){
+  const run=++flRun,seq=FS[key],svg=$('fc');
+  svg.querySelectorAll('[data-p]').forEach(el=>{el.classList.remove('on');el.classList.add('dim');});
+  ['t-ce','t-le','t-re'].forEach(id=>$(id).setAttribute('opacity','0'));
+  for(const p of seq){if(run!==flRun)return;svg.querySelectorAll(`[data-p="${p}"]`).forEach(el=>{el.classList.add('on');el.classList.remove('dim');});await sleep(reduce?0:110);}
+  const t={compile:'t-ce',link:'t-le',runtime:'t-re'}[key];if(t)$(t).setAttribute('opacity','1');
+}
+const FK=['ok','compile','link','runtime'];
+chips($('fl-btns'),['一切順利','編譯錯誤','連結錯誤','執行錯誤'],i=>{$('fl-info').textContent=FINFO[FK[i]];flow(FK[i]);});
 
-            <div class="grid md:grid-cols-12 gap-6 items-start">
-                <!-- Code Panel -->
-                <div class="md:col-span-7 bg-slate-950 border border-slate-800 rounded-2xl p-4 font-mono text-sm leading-relaxed shadow-inner">
-                    <div class="flex items-center space-x-2 border-b border-slate-800 pb-3 mb-3">
-                        <div class="w-3 h-3 bg-red-500 rounded-full"></div>
-                        <div class="w-3 h-3 bg-yellow-500 rounded-full"></div>
-                        <div class="w-3 h-3 bg-green-500 rounded-full"></div>
-                        <span class="text-xs text-slate-500 ml-2">main.cpp</span>
-                    </div>
-                    <div class="space-y-1">
-                        <div onclick="explainCode(1)" class="code-line cursor-pointer hover:bg-slate-800/80 p-1.5 rounded transition flex items-center">
-                            <span class="text-slate-600 w-8 select-none">1</span>
-                            <span class="text-slate-500">// 我的第一個C++程式</span>
-                        </div>
-                        <div onclick="explainCode(2)" class="code-line cursor-pointer hover:bg-slate-800/80 p-1.5 rounded transition flex items-center">
-                            <span class="text-slate-600 w-8 select-none">2</span>
-                            <span class="text-pink-400">#include</span>&nbsp;<span class="text-amber-300">&lt;iostream&gt;</span>
-                        </div>
-                        <div onclick="explainCode(3)" class="code-line cursor-pointer hover:bg-slate-800/80 p-1.5 rounded transition flex items-center">
-                            <span class="text-slate-600 w-8 select-none">3</span>
-                            <span class="text-indigo-400">using namespace</span>&nbsp;<span class="text-emerald-400">std</span><span class="text-slate-300">;</span>
-                        </div>
-                        <div onclick="explainCode(4)" class="code-line cursor-pointer hover:bg-slate-800/80 p-1.5 rounded transition flex items-center">
-                            <span class="text-slate-600 w-8 select-none">4</span>
-                            <span class="text-blue-400">int</span>&nbsp;<span class="text-yellow-300">main</span><span class="text-slate-300">()</span>
-                        </div>
-                        <div onclick="explainCode(5)" class="code-line cursor-pointer hover:bg-slate-800/80 p-1.5 rounded transition flex items-center">
-                            <span class="text-slate-600 w-8 select-none">5</span>
-                            <span class="text-slate-300">{</span>
-                        </div>
-                        <div onclick="explainCode(6)" class="code-line cursor-pointer hover:bg-slate-800/80 p-1.5 rounded transition flex items-center pl-4">
-                            <span class="text-slate-600 w-8 select-none">6</span>
-                            <span class="text-indigo-300">cout</span>&nbsp;<span class="text-slate-300">&lt;&lt;</span>&nbsp;<span class="text-emerald-300">"Hello, World"</span>&nbsp;<span class="text-slate-300">&lt;&lt;</span>&nbsp;<span class="text-indigo-300">endl</span><span class="text-slate-300">;</span>
-                        </div>
-                        <div onclick="explainCode(7)" class="code-line cursor-pointer hover:bg-slate-800/80 p-1.5 rounded transition flex items-center pl-4">
-                            <span class="text-slate-600 w-8 select-none">7</span>
-                            <span class="text-pink-400">return</span>&nbsp;<span class="text-amber-300">0</span><span class="text-slate-300">;</span>
-                        </div>
-                        <div onclick="explainCode(8)" class="code-line cursor-pointer hover:bg-slate-800/80 p-1.5 rounded transition flex items-center">
-                            <span class="text-slate-600 w-8 select-none">8</span>
-                            <span class="text-slate-300">}</span>
-                        </div>
-                    </div>
-                </div>
+/* ---------- 1.6 annotated program ---------- */
+const AN=[
+ ['//我的第一個C++程式','註解','以 // 開頭的是<b>單行註解</b>，編譯器會忽略它，不會執行。用來寫給人看的說明。<br>多行註解寫成 <code>/* … */</code>，中間可以換行。'],
+ ['#include <iostream>','前置處理命令','以 <b>#</b> 開頭的敘述是<b>前置處理命令</b>，在編譯之前先處理。<br><code>iostream</code> 是輸入輸出（input / output stream）的<b>標頭檔</b>，要使用 cout、cin 就必須引入它。'],
+ ['using namespace std;','名稱空間','使用名稱空間 <b>std</b>（標準函式庫的函式都定義在這裡）。<br>有了這一行，就可以直接寫 <code>cout</code>、<code>endl</code>，不必寫成 <code>std::cout</code>、<code>std::endl</code>。'],
+ ['','空白行','空白行不影響執行，用來分隔段落，讓程式更好讀。'],
+ ['int main()','主程式','<b>main()</b> 是主程式，程式從這裡開始執行，每個 C++ 程式都必須有一個 main。<br>前面的 <b>int</b> 表示主程式結束時會回傳一個整數給作業系統。'],
+ ['{','區塊開始','大括號 <code>{ }</code> 把 main 要執行的敘述包起來。'],
+ ['    cout << "Hello, World" << endl;','輸出','<b>cout</b> 是輸出，必須引入 iostream。<code>&lt;&lt;</code> 把右邊的資料送到螢幕上。<br>雙引號 <code>"要印的內容"</code> 會原樣輸出；<b>endl</b> 代表換行。<br>每個敘述最後都要加<b>分號 ;</b>。'],
+ ['    return 0;','結束程式','<b>return 0;</b> 結束主程式並回傳 0。因為 main 的型態是 int，所以回傳整數 0，代表「程式正常結束」。執行視窗上的 <code>Process returned 0 (0x0)</code> 就是這個值。'],
+ ['}','區塊結束','main 的程式區塊到這裡結束。']];
+const anCode=$('an-code');
+AN.forEach(([l],i)=>{const b=document.createElement('button');b.innerHTML=`<span class="no">${i+1}</span><span>${hl(l)||' '}</span>`;b.onclick=()=>anShow(i);anCode.appendChild(b);});
+function anShow(i){anCode.querySelectorAll('button').forEach((b,j)=>b.classList.toggle('on',j===i));const[l,t,d]=AN[i];
+  $('an-card').innerHTML=`<span class="tag">第 ${i+1} 行 · ${t}</span><code style="font-size:15px">${esc(l.trim())||'（空白行）'}</code><p>${d}</p>`;}
+anShow(6);
 
-                <!-- Explanation Box -->
-                <div class="md:col-span-5 bg-slate-800 border border-slate-700 rounded-2xl p-5 min-h-[280px] flex flex-col justify-center">
-                    <div id="code-explanation-title" class="text-lg font-bold text-indigo-400 mb-2">
-                        點擊左側程式碼了解詳情
-                    </div>
-                    <div id="code-explanation-body" class="text-sm text-slate-300 leading-relaxed">
-                        點擊程式碼中的任何一行，這裡將提供詳細的結構與語法說明。
-                    </div>
-                </div>
-            </div>
-        </section>
+/* ---------- 1.7 simulator ---------- */
+const HELLO=`//我的第一個C++程式
+#include <iostream>
+using namespace std;
 
-        <!-- Slide 6: Quiz / Summary -->
-        <section class="slide" id="slide-6">
-            <h2 class="text-2xl md:text-3xl font-bold text-indigo-400 mb-6 flex items-center gap-3">
-                <i class="fas fa-graduation-cap"></i> 本章隨堂小測驗
-            </h2>
+int main()
+{
+    cout << "Hello, World" << endl;
+    return 0;
+}`;
+const PRE=[
+ {n:'正確的第一個程式',c:HELLO,note:'編譯、連結、執行都成功。'},
+ {n:'少了分號',c:HELLO.replace('endl;','endl'),note:'語法錯誤 → 編譯錯誤。注意 GCC 回報的行號常常是「下一行」，因為它讀到 return 才發現上一行沒結束。'},
+ {n:'忘記 #include',c:HELLO.replace('#include <iostream>\n',''),note:'沒有引入 iostream，編譯器不認識 cout 和 endl。'},
+ {n:'忘記 using namespace',c:HELLO.replace('using namespace std;\n',''),note:'試著把 cout 改成 std::cout、endl 改成 std::endl，就能編譯成功。'},
+ {n:'main 打錯字',c:HELLO.replace('int main()','int mian()'),note:'語法都正確，所以編譯成功產生 .o；但連結時找不到程式的起點 main，產生連結錯誤。'},
+ {n:'除以 0',c:`#include <iostream>
+using namespace std;
 
-            <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 space-y-6">
-                <div>
-                    <h3 class="text-lg font-semibold text-white mb-3">1. 下列哪一個屬於 C++ 的「輸入輸出標頭檔」？</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3" id="q1-options">
-                        <button onclick="checkAnswer(1, false, this)" class="p-3 bg-slate-700/60 hover:bg-slate-700 rounded-xl text-left text-sm transition">A. stdio.h</button>
-                        <button onclick="checkAnswer(1, true, this)" class="p-3 bg-slate-700/60 hover:bg-slate-700 rounded-xl text-left text-sm transition">B. iostream</button>
-                        <button onclick="checkAnswer(1, false, this)" class="p-3 bg-slate-700/60 hover:bg-slate-700 rounded-xl text-left text-sm transition">C. string</button>
-                        <button onclick="checkAnswer(1, false, this)" class="p-3 bg-slate-700/60 hover:bg-slate-700 rounded-xl text-left text-sm transition">D. algorithm</button>
-                    </div>
-                </div>
+int main()
+{
+    int b = 10, c = 0;
+    int a = b / c;
+    cout << "a = " << a << endl;
+    return 0;
+}`,note:'語法正確、可以編譯和連結，但執行到 b / c 時當掉：執行錯誤。把 c 改成其他數字再試試。'},
+ {n:'算錯平均（邏輯錯誤）',c:`#include <iostream>
+using namespace std;
 
-                <div class="pt-4 border-t border-slate-700">
-                    <h3 class="text-lg font-semibold text-white mb-3">2. 撰寫程式時若漏寫分號「;」，會引發哪種錯誤？</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3" id="q2-options">
-                        <button onclick="checkAnswer(2, true, this)" class="p-3 bg-slate-700/60 hover:bg-slate-700 rounded-xl text-left text-sm transition">A. 語法錯誤 (Syntax Error)</button>
-                        <button onclick="checkAnswer(2, false, this)" class="p-3 bg-slate-700/60 hover:bg-slate-700 rounded-xl text-left text-sm transition">B. 連結錯誤 (Link Error)</button>
-                        <button onclick="checkAnswer(2, false, this)" class="p-3 bg-slate-700/60 hover:bg-slate-700 rounded-xl text-left text-sm transition">C. 執行階段錯誤 (Runtime Error)</button>
-                        <button onclick="checkAnswer(2, false, this)" class="p-3 bg-slate-700/60 hover:bg-slate-700 rounded-xl text-left text-sm transition">D. 邏輯錯誤 (Logic Error)</button>
-                    </div>
-                </div>
-            </div>
-        </section>
+int main()
+{
+    int chinese = 80, math = 90;
+    int avg = chinese + math / 2;
+    cout << "平均 = " << avg << endl;
+    return 0;
+}`,expect:'平均 = 85\n',note:'程式順利執行，但 80 和 90 的平均應該是 85。先乘除後加減，所以算成 80 + 45。請修正程式。'}];
+let curPre=0;
+const code=$('sim-code');
+chips($('sim-pre'),PRE.map(p=>p.n),i=>loadPre(i));
+function loadPre(i){curPre=i;code.value=PRE[i].c;$('sim-pre').querySelectorAll('button').forEach((b,j)=>b.classList.toggle('on',j===i));simReset();}
+function simReset(){$('sim-stages').innerHTML=stageHTML([]);$('sim-type').textContent='';$('sim-type').className='etype';$('sim-msg').textContent='';$('sim-out').innerHTML='<span class="dim">（按 Build and run 開始）</span>';$('sim-note').textContent=PRE[curPre].note;}
+function stageHTML(st){const N=['編譯','連結','執行'];return N.map((n,i)=>`<span class="stage ${st[i]||''}">${n}${st[i]==='ok'?' ✓':st[i]==='bad'?' ✗':''}</span>`).join('<span class="ar muted">→</span>');}
+document.querySelectorAll('[data-preset]').forEach(a=>a.addEventListener('click',()=>loadPre(+a.dataset.preset)));
+code.addEventListener('keydown',e=>{if(e.key==='F9'){e.preventDefault();simRun();}if(e.key==='Tab'){e.preventDefault();const s=code.selectionStart;code.value=code.value.slice(0,s)+'    '+code.value.slice(code.selectionEnd);code.selectionStart=code.selectionEnd=s+4;}});
+document.addEventListener('keydown',e=>{if(e.key==='F9'&&document.activeElement!==code&&$('sim').getBoundingClientRect().top<innerHeight){e.preventDefault();simRun();}});
+$('sim-run').onclick=simRun;
 
-    </main>
+function stripComments(src){let o='',i=0,inS=false,inC=false,inL=false;
+  while(i<src.length){const c=src[i],n=src[i+1];
+    if(inL){if(c==='\n'){inL=false;o+=c;}else o+=' ';i++;continue;}
+    if(inC){if(c==='*'&&n==='/'){inC=false;o+='  ';i+=2;continue;}o+=c==='\n'?'\n':' ';i++;continue;}
+    if(inS){o+=c;if(c==='\\'){o+=n||'';i+=2;continue;}if(c==='"'||c==='\n')inS=false;i++;continue;}
+    if(c==='/'&&n==='/'){inL=true;o+='  ';i+=2;continue;}
+    if(c==='/'&&n==='*'){inC=true;o+='  ';i+=2;continue;}
+    if(c==='"')inS=true;o+=c;i++;}
+  return{text:o,openComment:inC};}
+class CErr{constructor(line,msg,kind='compile'){this.line=line;this.msg=msg;this.kind=kind;}}
+function tokenize(s,line){const t=[];const re=/\s*(std::\w+|"(?:[^"\\]|\\.)*"|\d+|[A-Za-z_]\w*|<<|>>|::|[-+*/%()=,;<>{}])/y;let m;re.lastIndex=0;
+  while(re.lastIndex<s.length){const st=re.lastIndex;m=re.exec(s);if(!m){const rest=s.slice(st).trim();if(!rest)break;throw new CErr(line,`stray '${rest[0]}' in program`);}t.push(m[1]);}
+  return t;}
+function compile(src){
+  const errs=[],warn=[];const{text,openComment}=stripComments(src);const L=text.split('\n');
+  if(openComment)errs.push(new CErr(L.length,'unterminated comment'));
+  const inc=[];let usingStd=false;
+  L.forEach((l,i)=>{const t=l.trim();
+    const q=(t.replace(/\\./g,'').match(/"/g)||[]).length;if(q%2)errs.push(new CErr(i+1,'missing terminating " character'));
+    if(t.startsWith('#')){const m=t.match(/^#\s*include\s*<\s*([\w.]+)\s*>$/);if(!m)errs.push(new CErr(i+1,t.startsWith('#include')?'#include expects "FILENAME" or <FILENAME>':`invalid preprocessing directive ${t.split(/\s/)[0]}`));else if(!['iostream','iomanip','cmath','string','cstdio','cstdlib'].includes(m[1]))errs.push(new CErr(i+1,`fatal error: ${m[1]}: No such file or directory`));else inc.push(m[1]);}
+    if(/^using\s+namespace\s+std\b/.test(t)){if(!/;\s*$/.test(t))errs.push(new CErr(i+2,"expected ';' before 'int'"));usingStd=true;}
+  });
+  if(errs.length)return{errs};
+  // braces
+  let depth=0;L.forEach((l,i)=>{for(const c of l.replace(/"(?:[^"\\]|\\.)*"/g,'')){if(c==='{')depth++;if(c==='}'){depth--;if(depth<0){errs.push(new CErr(i+1,"expected declaration before '}' token"));depth=0;}}}});
+  if(depth>0)errs.push(new CErr(L.length,"expected '}' at end of input"));
+  if(errs.length)return{errs};
+  // find function
+  const body=L.map((l,i)=>({l,i:i+1})).filter(x=>!x.l.trim().startsWith('#')&&!/^\s*using\s+namespace/.test(x.l));
+  const joined=body.map(x=>x.l).join('\n');
+  const fm=joined.match(/\b(int|void)\s+([A-Za-z_]\w*)\s*\(\s*\)\s*\{/);
+  if(!fm){const any=joined.trim();return{errs:[new CErr(1,any?"expected unqualified-id or function definition":'程式是空的')]}}
+  if(fm[1]==='void'&&fm[2]==='main')return{errs:[new CErr(lineOf(L,/void\s+main/),"'::main' must return 'int'")]};
+  const fname=fm[2];
+  // statements in body
+  const fl=lineOf(L,new RegExp('\\b'+fname+'\\s*\\('));
+  let open=-1,close=-1,d=0;for(let i=fl-1;i<L.length;i++){for(const c of L[i].replace(/"(?:[^"\\]|\\.)*"/g,'')){if(c==='{'){if(d===0&&open<0)open=i;d++;}if(c==='}'){d--;if(d===0&&close<0)close=i;}}if(close>=0)break;}
+  const stmts=[];let buf='',bufLine=0;
+  for(let i=open;i<=close;i++){let l=L[i];if(i===open)l=l.slice(l.indexOf('{')+1);if(i===close)l=l.slice(0,l.lastIndexOf('}'));
+    if(buf.trim()&&l.trim()){const nt=(l.trim().match(/^([A-Za-z_]\w*|"[^"]*|\S)/)||['',''])[1];errs.push(new CErr(i+1,`expected ';' before '${nt}'`));buf='';bufLine=0;}
+    // split by ; outside strings
+    let s='';let inS=false;for(let k=0;k<l.length;k++){const c=l[k];if(c==='"'&&l[k-1]!=='\\')inS=!inS;
+      if(c===';'&&!inS){if(!buf.trim()&&!s.trim()){s='';continue;}stmts.push({t:(buf+' '+s).trim(),line:bufLine||i+1});buf='';s='';bufLine=0;continue;}s+=c;}
+    if(s.trim()){buf+=s;bufLine=bufLine||i+1;}
+  }
+  if(buf.trim())errs.push(new CErr(close+1,"expected ';' before '}' token"));
+  // analyse statements
+  const vars=new Set();const prog=[];
+  const ioOK=n=>{if(!inc.includes('iostream'))return `'${n}' was not declared in this scope（需要 #include <iostream>）`;return null;};
+  for(const st of stmts){let t;try{t=tokenize(st.t,st.line);}catch(e){errs.push(e);continue;}
+    if(!t.length)continue;
+    try{
+      if(t[0]==='return'){prog.push({k:'ret',e:t.slice(1),line:st.line});checkExpr(t.slice(1),vars,st.line);continue;}
+      if(t[0]==='int'){let k=1;const decl=[];while(k<t.length){const n=t[k++];if(!/^[A-Za-z_]\w*$/.test(n))throw new CErr(st.line,`expected unqualified-id before '${n}'`);
+          let e=null;if(t[k]==='='){k++;const s=k;let p=0;while(k<t.length&&!(t[k]===','&&p===0)){if(t[k]==='(')p++;if(t[k]===')')p--;k++;}e=t.slice(s,k);checkExpr(e,vars,st.line);}
+          vars.add(n);decl.push([n,e]);if(t[k]===',')k++;else if(k<t.length)throw new CErr(st.line,`expected initializer before '${t[k]}'`);}
+        prog.push({k:'decl',decl,line:st.line});continue;}
+      const outName=t[0];
+      if(outName==='cout'||outName==='std::cout'){
+        if(outName==='cout'){const m=ioOK('cout');if(m)throw new CErr(st.line,m);if(!usingStd)throw new CErr(st.line,"'cout' was not declared in this scope; did you mean 'std::cout'?");}
+        else if(!inc.includes('iostream'))throw new CErr(st.line,"'cout' is not a member of 'std'（需要 #include <iostream>）");
+        const items=[];let k=1;while(k<t.length){if(t[k]!=='<<')throw new CErr(st.line,`expected ';' before '${t[k]}'`);k++;const s=k;let p=0;while(k<t.length&&!(t[k]==='<<'&&p===0)){if(t[k]==='(')p++;if(t[k]===')')p--;k++;}const it=t.slice(s,k);if(!it.length)throw new CErr(st.line,"expected primary-expression before ';' token");
+          if(it.length===1&&(it[0]==='endl'||it[0]==='std::endl')){if(it[0]==='endl'&&!usingStd)throw new CErr(st.line,"'endl' was not declared in this scope; did you mean 'std::endl'?");items.push({endl:true});}
+          else if(it.length===1&&it[0][0]==='"')items.push({s:unescape(it[0])});
+          else{checkExpr(it,vars,st.line);items.push({e:it});}}
+        prog.push({k:'out',items,line:st.line});continue;}
+      if(/^[A-Za-z_]\w*$/.test(t[0])&&t[1]==='='){if(!vars.has(t[0]))throw new CErr(st.line,`'${t[0]}' was not declared in this scope`);checkExpr(t.slice(2),vars,st.line);prog.push({k:'asg',n:t[0],e:t.slice(2),line:st.line});continue;}
+      if(/^[A-Za-z_]/.test(t[0])&&!vars.has(t[0]))throw new CErr(st.line,`'${t[0]}' was not declared in this scope${t[0].toLowerCase()==='cout'||/^c[ou]{2}t$|^cuot$|^cot$/.test(t[0])?"; did you mean 'cout'?":''}`);
+      throw new CErr(st.line,'這個模擬器不支援這種敘述（本章只用到 cout、int 變數、指定和 return）');
+    }catch(e){if(e instanceof CErr)errs.push(e);else throw e;}
+  }
+  if(errs.length)return{errs};
+  if(fname!=='main')return{linkErr:true,fname};
+  return{prog};
+}
+function lineOf(L,re){const i=L.findIndex(l=>re.test(l));return i<0?1:i+1;}
+function unescape(q){return q.slice(1,-1).replace(/\\(.)/g,(m,c)=>({n:'\n',t:'\t','\\':'\\','"':'"',"'":"'"}[c]??c));}
+function checkExpr(t,vars,line){if(!t.length)throw new CErr(line,"expected primary-expression before ';' token");
+  for(const x of t){if(/^[A-Za-z_]/.test(x)&&!vars.has(x))throw new CErr(line,`'${x}' was not declared in this scope`);if(x[0]==='"')throw new CErr(line,'這個模擬器的運算式只支援整數');}
+  parseE(t,null,line);}
+function parseE(t,env,line){let i=0;const pk=()=>t[i],nx=()=>t[i++];
+  function prim(){const x=nx();if(x===undefined)throw new CErr(line,"expected primary-expression");if(x==='('){const v=add();if(nx()!==')')throw new CErr(line,"expected ')'");return v;}
+    if(x==='-')return -prim();if(/^\d+$/.test(x))return +x;if(/^[A-Za-z_]/.test(x))return env?(env[x]??0):0;throw new CErr(line,`expected primary-expression before '${x}' token`);}
+  function mul(){let v=prim();while(['*','/','%'].includes(pk())){const o=nx(),r=prim();if(env&&(o==='/'||o==='%')&&r===0)throw {rt:true,line};v=o==='*'?v*r:o==='/'?Math.trunc(v/r):v%r;v|=0;}return v;}
+  function add(){let v=mul();while(['+','-'].includes(pk())){const o=nx(),r=mul();v=(o==='+'?v+r:v-r)|0;}return v;}
+  const v=add();if(i<t.length)throw new CErr(line,`expected ';' before '${t[i]}'`);return v;}
 
-    <!-- Footer Controls -->
-    <footer class="bg-slate-800/80 backdrop-blur border-t border-slate-700 px-6 py-4 flex justify-between items-center">
-        <button onclick="prevSlide()" id="btn-prev" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 disabled:opacity-40 disabled:cursor-not-allowed rounded-lg text-sm font-medium transition flex items-center space-x-2">
-            <i class="fas fa-chevron-left"></i>
-            <span>上一頁</span>
-        </button>
+let simRunId=0;
+async function simRun(){
+  const id=++simRunId,D=reduce?0:350;
+  const msg=$('sim-msg'),out=$('sim-out'),type=$('sim-type'),stg=$('sim-stages');
+  const setStage=a=>stg.innerHTML=stageHTML(a);
+  type.textContent='';type.className='etype';out.innerHTML='';msg.innerHTML='<span class="dim">-------------- Build: Debug in hello --------------\n編譯中…</span>';setStage([]);
+  await sleep(D);if(id!==simRunId)return;
+  let r;try{r=compile(code.value);}catch(e){r={errs:[new CErr(1,'模擬器無法分析這段程式')]};}
+  if(r.errs){
+    const seen=new Set();const list=r.errs.filter(e=>{const k=e.line+e.msg;if(seen.has(k))return false;seen.add(k);return true;});
+    msg.innerHTML=list.map(e=>`<span class="err">hello.cpp:${e.line}: error: ${esc(e.msg)}</span>`).join('\n')+`\n<span class="dim">=== Build failed: ${list.length} error(s) ===</span>`;
+    setStage(['bad','skip','skip']);type.className='etype bad';type.textContent='編譯錯誤（compile error）・語法錯誤';
+    out.innerHTML='<span class="dim">（沒有產生執行檔，無法執行）</span>';
+    $('sim-note').textContent='依照訊息中的行號回去修改程式，再按一次 Build and run。';flow('compile');markFlowChip(1);return;}
+  setStage(['ok']);msg.innerHTML='<span class="dim">hello.cpp 編譯成功 → hello.o\n連結中…</span>';await sleep(D);if(id!==simRunId)return;
+  if(r.linkErr){msg.innerHTML=`<span class="dim">hello.cpp 編譯成功 → hello.o</span>\n<span class="err">undefined reference to \`WinMain'\nerror: ld returned 1 exit status</span>\n<span class="dim">=== Build failed: 1 error(s) ===</span>`;
+    setStage(['ok','bad','skip']);type.className='etype bad';type.textContent='連結錯誤（link error）';out.innerHTML='<span class="dim">（沒有產生執行檔，無法執行）</span>';
+    $('sim-note').textContent=`語法沒問題，所以編譯成功；但連結時找不到程式的起點 main（你寫的是 ${r.fname}）。`;flow('link');markFlowChip(2);return;}
+  setStage(['ok','ok']);msg.innerHTML='<span class="dim">hello.cpp 編譯成功 → hello.o\n連結成功 → hello.exe\n=== Build finished: 0 error(s), 0 warning(s) ===</span>';await sleep(D);if(id!==simRunId)return;
+  // run
+  const env={};let o='',ret=0,rt=null;const t0=performance.now();
+  try{for(const s of r.prog){
+      if(s.k==='decl')s.decl.forEach(([n,e])=>env[n]=e?parseE(e,env,s.line):0);
+      else if(s.k==='asg')env[s.n]=parseE(s.e,env,s.line);
+      else if(s.k==='out')s.items.forEach(it=>{o+=it.endl?'\n':it.s!==undefined?it.s:String(parseE(it.e,env,s.line));});
+      else if(s.k==='ret'){ret=parseE(s.e,env,s.line);break;}}
+  }catch(e){if(e&&e.rt)rt=e;else throw e;}
+  const secs=(0.01+Math.random()*0.03).toFixed(3);
+  if(rt){out.innerHTML=esc(o)+`\n<span class="err">Process returned -1073741676 (0xC0000094)   execution time : ${secs} s</span>\n<span class="dim">Press any key to continue.</span>`;
+    setStage(['ok','ok','bad']);type.className='etype bad';type.textContent=`執行錯誤（run-time error）・第 ${rt.line} 行除以 0`;
+    $('sim-note').textContent='0xC0000094 是 Windows 的「整數除以零」錯誤碼。編譯器不會發現這種錯誤，要等到執行時才會出事。';flow('runtime');markFlowChip(3);return;}
+  out.innerHTML=esc(o)+`\n<span class="dim">Process returned ${ret} (0x${(ret>>>0).toString(16).toUpperCase()})   execution time : ${secs} s\nPress any key to continue.</span>`;
+  setStage(['ok','ok','ok']);
+  const exp=PRE[curPre].expect;
+  if(exp&&o!==exp){type.className='etype warn';type.textContent='邏輯錯誤（logic error）：可以執行，但結果不對';$('sim-note').textContent=`預期輸出「${exp.trim()}」，實際輸出「${o.trim()}」。編譯器看不出來，要靠人仔細檢查。`;flow('runtime');markFlowChip(3);}
+  else{type.className='etype ok';type.textContent=exp?'執行成功，結果正確！邏輯錯誤修好了':'執行成功';$('sim-note').textContent=PRE[curPre].note&&curPre===0?PRE[0].note:'Process returned 0 表示程式正常結束（就是 return 0 的值）。';flow('ok');markFlowChip(0);}
+}
+function markFlowChip(i){$('fl-btns').querySelectorAll('button').forEach((b,j)=>b.classList.toggle('on',j===i));$('fl-info').textContent=FINFO[FK[i]]+'（由下方模擬器帶動）';}
+loadPre(0);
 
-        <div class="flex space-x-2" id="dots-container"></div>
+/* ---------- quiz ---------- */
+const Q=[
+ {tag:'觀念題試題範例',q:'程式編譯器可以發現下列哪種錯誤？',opts:['語法錯誤','語意錯誤','邏輯錯誤','以上皆是'],ans:0,
+  exp:'編譯器只檢查程式是否符合語法規則，所以能發現<b>語法錯誤</b>（例如少了分號）。語意錯誤和邏輯錯誤的語法都正確，要到執行時才會發現結果不對，編譯器抓不到。'},
+ {tag:'課堂練習',q:'下列哪一種是<b>低階語言</b>？',opts:['C++','Python','組合語言','Java'],ans:2,
+  exp:'低階語言包括機器語言和組合語言，接近電腦的指令。C++、Python、Java 都是高階語言。'},
+ {tag:'課堂練習',q:'C++ 程式在 Code::Blocks 按下 Build and run 後，正確的處理順序是？',opts:['連結 → 編譯 → 執行','編譯 → 連結 → 執行','直譯 → 執行 → 連結','編譯 → 執行 → 連結'],ans:1,
+  exp:'原始程式 (.cpp) 先<b>編譯</b>成目的程式檔 (.o)，再<b>連結</b>函式庫產生執行檔 (.exe)，最後才<b>執行</b>。'},
+ {tag:'課堂練習',q:'把 <code>int main()</code> 打成 <code>int mian()</code>，Build 時會發生哪一種錯誤？',opts:['編譯錯誤','連結錯誤','執行錯誤','不會有錯誤'],ans:1,
+  exp:'mian 是合法的函式名稱，語法正確，所以能編譯成功；但連結時找不到程式的起點 main，產生<b>連結錯誤</b>。可以在模擬器的「main 打錯字」範例試試看。'},
+ {tag:'課堂練習',q:'關於第一個程式，下列敘述何者<b>錯誤</b>？',opts:['// 開頭的內容是註解，不會被執行','要使用 cout 必須 #include <iostream>','endl 的作用是換行','return 0; 表示程式發生錯誤'],ans:3,
+  exp:'<code>return 0;</code> 表示主程式<b>正常結束</b>，回傳 0 給作業系統，所以執行視窗會顯示 Process returned 0。'}
+];
+const quizEl=$('quiz');const answered={};
+function renderQuiz(){
+  quizEl.innerHTML='';
+  Q.forEach((q,qi)=>{
+    const card=document.createElement('article');card.className='q';
+    card.innerHTML=`<div class="stack"><div><div class="q-tag">${esc(q.tag)} ${qi+1}</div><p class="q-text">${q.q}</p></div></div>
+      <div><div class="opts">${q.opts.map((o,i)=>`<button class="opt" data-i="${i}"><span class="L">(${'ABCD'[i]})</span><span>${esc(o)}</span></button>`).join('')}</div><div class="exp" hidden></div></div>`;
+    const exp=card.querySelector('.exp');let tries=0;
+    card.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{
+      const pick=+b.dataset.i;tries++;
+      if(!(qi in answered))answered[qi]=pick===q.ans;
+      if(pick!==q.ans){b.classList.add('wrong');b.disabled=true;exp.hidden=false;
+        exp.innerHTML=`<div class="verdict bad">✗ (${'ABCD'[pick]}) 不對，再選一次看看</div>`;score();return;}
+      card.querySelectorAll('.opt').forEach(x=>{x.disabled=true;});b.classList.add('right');
+      exp.hidden=false;
+      exp.innerHTML=`<div class="verdict ok">✓ 答對了${tries>1?`（第 ${tries} 次作答）`:''}</div><p>${q.exp}</p>`;
+      score();
+    });
+    quizEl.appendChild(card);
+  });
+  score();
+}
+function score(){const v=Object.values(answered);$('sc-done').textContent=v.length;$('sc-ok').textContent=v.filter(Boolean).length;$('sc-total').textContent=Q.length;}
+$('sc-reset').onclick=()=>{for(const k in answered)delete answered[k];renderQuiz();};
+renderQuiz();
+</script>
 
-        <button onclick="nextSlide()" id="btn-next" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 disabled:cursor-not-allowed rounded-lg text-sm font-medium transition flex items-center space-x-2">
-            <span>下一頁</span>
-            <i class="fas fa-chevron-right"></i>
-        </button>
-    </footer>
-
-    <!-- Interactive Script -->
-    <script>
-        let currentSlide = 1;
-        const totalSlides = 6;
-
-        function updateSlide() {
-            document.querySelectorAll('.slide').forEach((el, idx) => {
-                el.classList.toggle('active', idx + 1 === currentSlide);
-            });
-
-            document.getElementById('slide-indicator').textContent = `頁次 ${currentSlide} / ${totalSlides}`;
-            document.getElementById('btn-prev').disabled = currentSlide === 1;
-            document.getElementById('btn-next').disabled = currentSlide === totalSlides;
-
-            updateDots();
-        }
-
-        function nextSlide() {
-            if (currentSlide < totalSlides) {
-                currentSlide++;
-                updateSlide();
-            }
-        }
-
-        function prevSlide() {
-            if (currentSlide > 1) {
-                currentSlide--;
-                updateSlide();
-            }
-        }
-
-        function goToSlide(n) {
-            currentSlide = n;
-            updateSlide();
-        }
-
-        function updateDots() {
-            const container = document.getElementById('dots-container');
-            container.innerHTML = '';
-            for (let i = 1; i <= totalSlides; i++) {
-                const dot = document.createElement('button');
-                dot.className = `w-2.5 h-2.5 rounded-full transition-all ${i === currentSlide ? 'bg-indigo-400 w-6' : 'bg-slate-600 hover:bg-slate-500'}`;
-                dot.onclick = () => goToSlide(i);
-                container.appendChild(dot);
-            }
-        }
-
-        const codeExplanations = {
-            1: { title: "第 1 行：單行註解", body: "以 // 開頭的文字為註解，編譯器會自動忽略，用於對程式碼進行說明與備註。多行註解可用 /* ... */。" },
-            2: { title: "第 2 行：標頭檔引導敘述", body: "以 # 開頭代表預處理命令。#include <iostream> 引進了輸入與輸出的標準函式庫 (Input/Output Stream)。" },
-            3: { title: "第 3 行：使用名稱空間", body: "using namespace std; 代表使用 C++ 標準命名空間，如此一來我們直接寫 cout 與 endl，而不需要每次都寫 std::cout 與 std::endl。" },
-            4: { title: "第 4 行：主函式入口", body: "int main() 是 C++ 程式執行的起始點，所有程式邏輯都從 main 函式開始執行。" },
-            5: { title: "第 5 行：程式區塊開始", body: "左大括號 { 代表主函式 main() 內容區塊的開始。" },
-            6: { title: "第 6 行：主體輸出敘述", body: "cout 用於輸出資料至螢幕；<< 為串流插入運算子；\"Hello, World\" 為要印出的字串；endl 代表換行 (End Line)。" },
-            7: { title: "第 7 行：傳回值與結束", body: "return 0; 表示程式正常執行結束，將整數 0 傳回給作業系統。" },
-            8: { title: "第 8 行：程式區塊結束", body: "右大括號 } 代表主函式區塊的結束。" }
-        };
-
-        function explainCode(line) {
-            const exp = codeExplanations[line];
-            if (exp) {
-                document.getElementById('code-explanation-title').textContent = exp.title;
-                document.getElementById('code-explanation-body').textContent = exp.body;
-            }
-        }
-
-        function checkAnswer(qNum, isCorrect, btn) {
-            const container = document.getElementById(`q${qNum}-options`);
-            const buttons = container.querySelectorAll('button');
-            buttons.forEach(b => {
-                b.disabled = true;
-                b.classList.remove('bg-slate-700/60', 'hover:bg-slate-700');
-            });
-
-            if (isCorrect) {
-                btn.classList.add('bg-emerald-600', 'text-white');
-            } else {
-                btn.classList.add('bg-rose-600', 'text-white');
-            }
-        }
-
-        // Initialize
-        updateSlide();
-    </script>
-</body>
-</html>
+</body></html>

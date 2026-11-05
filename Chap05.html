@@ -1,1035 +1,727 @@
-<!DOCTYPE html>
-<html lang="zh-TW">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>第五章 重複結構</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&family=Fira+Code:wght@400;600&display=swap');
-        body {
-            font-family: 'Noto Sans TC', sans-serif;
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>重複結構互動講義</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=LXGW+WenKai+TC:wght@400;700&family=Noto+Sans+TC:wght@400;500;700&display=swap">
+<style>
+/* Layout: chapter handout — concept text on the left, a live code tracer on the right, quiz at the end */
+:root{
+  --bg:#F2F4F0; --surface:#FFFFFF; --ink:#1C251F; --muted:#5B6860; --line:#D3DBD2;
+  --accent:#2E6A3E; --accent-soft:#E1EDE2; --on-accent:#FFFFFF;
+  --code-bg:#18211B; --code-fg:#DCE6DD; --code-dim:#6E7E72; --cur:#3D4A2A; --cur-bar:#F1C94A;
+  --seg:#F1C94A; --seg-ink:#18211B;
+  --t-k:#8FD3A4; --t-f:#7FC4E8; --t-s:#F0B97A; --t-n:#E8A0C8; --t-c:#7D8E81;
+  --ok:#2C7A4B; --ok-soft:#DDEFE3; --bad:#B23E2C; --bad-soft:#F6E0DB; --warn:#9A6A00;
+  --f-display:"LXGW WenKai TC","Kaiti TC","STKaiti","KaiTi",serif;
+  --f-body:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
+  --f-code:"JetBrains Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#111612; --surface:#19201B; --ink:#E2EAE3; --muted:#97A59B; --line:#2B352E;
+  --accent:#86C796; --accent-soft:#223228; --on-accent:#0F1611;
+  --code-bg:#0C110D; --code-fg:#DCE6DD; --code-dim:#5E6E62; --cur:#36401F; --cur-bar:#F1C94A;
+  --ok:#7FCB98; --ok-soft:#1E3326; --bad:#F0907C; --bad-soft:#3A2420; --warn:#E5B95A;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#111612; --surface:#19201B; --ink:#E2EAE3; --muted:#97A59B; --line:#2B352E;
+  --accent:#86C796; --accent-soft:#223228; --on-accent:#0F1611;
+  --code-bg:#0C110D; --code-fg:#DCE6DD; --code-dim:#5E6E62; --cur:#36401F; --cur-bar:#F1C94A;
+  --ok:#7FCB98; --ok-soft:#1E3326; --bad:#F0907C; --bad-soft:#3A2420; --warn:#E5B95A;
+  color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.75}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.wrap{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;line-height:1.25;margin:0}
+p{margin:0}
+code,.mono{font-family:var(--f-code);font-size:.9em}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* header */
+header{padding-block:40px 20px}
+.kicker{font-size:13px;letter-spacing:.12em;color:var(--muted);text-transform:uppercase}
+h1{font-size:clamp(34px,6vw,54px);font-weight:700;margin-top:6px}
+h1 em{font-style:normal;color:var(--accent)}
+.lede{max-width:62ch;color:var(--muted);margin-top:10px}
+.legend{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:16px;font-size:14px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.sw{width:14px;height:14px;border-radius:3px;display:inline-block}
+
+nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;gap:6px;overflow-x:auto;padding-block:10px;scrollbar-width:none}
+nav a{flex:none;text-decoration:none;color:var(--ink);font-size:14px;padding:5px 12px;border-radius:999px;border:1px solid var(--line);background:var(--surface);white-space:nowrap}
+nav a:hover{border-color:var(--accent);color:var(--accent)}
+
+section{padding-block:44px 8px;scroll-margin-top:64px}
+.sec-head{display:flex;align-items:baseline;gap:12px;margin-bottom:18px;flex-wrap:wrap}
+.sec-no{font-family:var(--f-code);font-size:14px;color:var(--accent);font-weight:600}
+h2{font-size:clamp(26px,4vw,34px)}
+h3{font-size:21px;margin-bottom:6px}
+.grid2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:28px;align-items:start}
+.grid-even{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;align-items:start}
+@media (max-width:880px){.grid2,.grid-even{grid-template-columns:minmax(0,1fr)}}
+.stack{display:flex;flex-direction:column;gap:14px;min-width:0}
+.note{border-left:3px solid var(--warn);padding:6px 12px;background:var(--surface);font-size:15px}
+.muted{color:var(--muted)}
+.small{font-size:14px}
+
+pre.snip{margin:0;background:var(--code-bg);color:var(--code-fg);font-family:var(--f-code);font-size:14px;line-height:1.65;padding:12px 14px;border-radius:8px;overflow-x:auto}
+.badge{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;background:var(--seg);color:var(--seg-ink);font-size:12px;font-weight:700;font-family:var(--f-code);vertical-align:1px}
+ol.flow-steps{margin:0;padding-left:1.3em}
+ol.flow-steps li{margin:2px 0}
+
+/* syntax colors */
+.t-k{color:var(--t-k);font-weight:600}.t-f{color:var(--t-f)}.t-s{color:var(--t-s)}.t-n{color:var(--t-n)}.t-c{color:var(--t-c);font-style:italic}
+
+/* flowchart svg */
+.flows{display:flex;gap:16px;flex-wrap:wrap}
+.flows figure{margin:0;flex:1 1 220px;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:10px}
+.flows figcaption{font-size:14px;color:var(--muted);text-align:center}
+svg.flow{width:100%;height:auto;display:block}
+.f-node,.f-box{fill:var(--surface);stroke:var(--ink);stroke-width:1.4}
+.f-dia{fill:var(--accent-soft);stroke:var(--accent);stroke-width:1.6}
+.f-ln{stroke:var(--muted);stroke-width:1.5;fill:none}
+.f-tx{fill:var(--ink);font-size:13px;text-anchor:middle;font-family:var(--f-body)}
+.f-lb{fill:var(--muted);font-size:12px;font-family:var(--f-code)}
+.f-ah{fill:var(--muted)}
+
+/* tracer */
+.tracer{background:var(--code-bg);color:var(--code-fg);border-radius:10px;overflow:hidden;min-width:0;display:flex;flex-direction:column}
+.tr-head{display:flex;justify-content:space-between;gap:10px;align-items:baseline;padding:10px 14px 4px;font-size:13px;flex-wrap:wrap}
+.tr-title{font-weight:700;color:var(--code-fg)}
+.tr-count{font-family:var(--f-code);color:var(--code-dim);font-variant-numeric:tabular-nums}
+.tr-code{position:relative;font-family:var(--f-code);font-size:14px;line-height:1.7;max-height:300px;overflow:auto;padding:4px 0}
+.ln{display:flex;white-space:pre;border-left:3px solid transparent;padding-right:14px;min-width:max-content}
+.ln .no{width:38px;flex:none;text-align:right;padding-right:12px;color:var(--code-dim);user-select:none}
+.ln.cur{background:var(--cur);border-left-color:var(--cur-bar)}
+.seg{border-radius:3px;transition:background .15s}
+.seg.on{background:var(--seg);color:var(--seg-ink)}
+.seg.on span{color:var(--seg-ink)}
+.tr-note{min-height:2.2em;padding:6px 14px;font-size:14px;color:var(--cur-bar);border-top:1px solid #ffffff14}
+.tr-note.warn{color:#FF9B83}
+.tr-io{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);border-top:1px solid #ffffff14}
+@media (max-width:480px){.tr-io{grid-template-columns:minmax(0,1fr)}}
+.tr-vars,.tr-out{padding:8px 14px 10px;min-width:0}
+.tr-out{border-left:1px solid #ffffff14}
+.cap{font-size:11px;letter-spacing:.14em;color:var(--code-dim);margin-bottom:4px}
+.tr-vars dl{margin:0;display:flex;flex-wrap:wrap;gap:6px}
+.tr-vars dl div{display:flex;gap:6px;font-family:var(--f-code);font-size:14px;background:#ffffff0d;border-radius:5px;padding:2px 8px;font-variant-numeric:tabular-nums;transition:background .2s}
+.tr-vars dl div.chg{background:#F1C94A33;box-shadow:inset 0 0 0 1px #F1C94A88}
+.tr-vars dt{color:var(--t-f)}.tr-vars dd{margin:0}
+.tr-vars dt::after{content:" ="}
+.tr-out pre{margin:0;font-family:var(--f-code);font-size:14px;line-height:1.5;max-height:150px;overflow:auto;white-space:pre-wrap;word-break:break-all;color:#E9F2EA}
+.tr-out pre:empty::before{content:"（尚無輸出）";color:var(--code-dim)}
+.tr-ctrl{display:flex;gap:6px;align-items:center;flex-wrap:wrap;padding:10px 14px;background:#ffffff08;border-top:1px solid #ffffff14}
+.tr-ctrl button{font:inherit;font-size:13px;border:1px solid #ffffff2a;background:transparent;color:var(--code-fg);border-radius:6px;padding:4px 10px;cursor:pointer}
+.tr-ctrl button:hover:not(:disabled){background:#ffffff14}
+.tr-ctrl button:disabled{opacity:.35;cursor:default}
+.tr-ctrl button.primary{background:var(--cur-bar);color:#18211B;border-color:var(--cur-bar);font-weight:700;min-width:76px}
+.tr-ctrl input[type=range]{flex:1 1 120px;accent-color:var(--cur-bar);min-width:100px}
+
+/* controls / panels */
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px;min-width:0}
+.ctl-row{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center}
+label.chk{display:inline-flex;gap:8px;align-items:center;cursor:pointer;font-size:15px}
+input[type=number],select,textarea{font:inherit;font-family:var(--f-code);font-size:15px;background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:6px;padding:4px 8px}
+input[type=number]{width:5.2em}
+.btn{font:inherit;font-size:14px;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:4px 12px;cursor:pointer}
+.btn:hover{border-color:var(--accent);color:var(--accent)}
+.btn.on{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font-family:var(--f-code);font-size:14px;padding:1px 9px;border-radius:5px;background:var(--accent-soft);color:var(--ink);font-variant-numeric:tabular-nums}
+.console{margin:0;background:var(--code-bg);color:#E9F2EA;font-family:var(--f-code);font-size:14px;line-height:1.5;padding:10px 12px;border-radius:8px;overflow-x:auto;white-space:pre}
+.console .in{color:var(--t-f)}
+.status{font-size:15px;font-weight:500}
+.status.ok{color:var(--ok)}.status.bad{color:var(--bad)}.status.warn{color:var(--warn)}
+.gen{font-family:var(--f-code);font-size:14px;background:var(--code-bg);color:var(--code-fg);padding:8px 12px;border-radius:6px;overflow-x:auto;white-space:pre}
+
+/* quiz */
+.score{display:flex;gap:14px;align-items:center;flex-wrap:wrap;font-size:15px}
+.score b{font-family:var(--f-code);font-variant-numeric:tabular-nums}
+.quiz{display:flex;flex-direction:column;gap:22px;margin-top:16px}
+.q{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px}
+@media (max-width:880px){.q{grid-template-columns:minmax(0,1fr)}}
+.q-tag{font-family:var(--f-code);font-size:12px;color:var(--accent);letter-spacing:.06em}
+.q-text{font-size:16px;margin:4px 0 12px}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{display:flex;gap:10px;align-items:flex-start;text-align:left;font:inherit;font-size:15px;background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:8px 12px;cursor:pointer}
+.opt:hover:not(:disabled){border-color:var(--accent)}
+.opt:disabled{cursor:default}
+.opt .L{font-family:var(--f-code);font-weight:600;flex:none}
+.opt .v{font-family:var(--f-code);white-space:pre-wrap;font-size:14px}
+.opt.right{background:var(--ok-soft);border-color:var(--ok)}
+.opt.wrong{background:var(--bad-soft);border-color:var(--bad)}
+.exp{margin-top:12px;font-size:15px;display:flex;flex-direction:column;gap:10px}
+.exp .verdict{font-weight:700}
+.exp .verdict.ok{color:var(--ok)}.exp .verdict.bad{color:var(--bad)}
+table.mini{border-collapse:collapse;font-size:14px;width:100%}
+table.mini th,table.mini td{border-bottom:1px solid var(--line);padding:4px 8px;text-align:left;vertical-align:top}
+table.mini td pre{margin:0;font-family:var(--f-code);font-size:13px;line-height:1.3}
+.tbl{overflow-x:auto}
+details.trace summary{cursor:pointer;color:var(--accent);font-size:14px;font-weight:500;margin-top:10px}
+details.trace[open] summary{margin-bottom:8px}
+footer{padding-block:40px 56px;color:var(--muted);font-size:14px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<header class="wrap">
+  <div class="kicker">C/C++ 程式設計 · 第五章</div>
+  <h1>重複結構 <em>互動講義</em></h1>
+  <p class="lede">每段範例都能逐行執行：按「下一步」或拖曳進度條，看程式跑到哪一行、變數怎麼變、螢幕印出什麼。最後有 9 題 APCS 觀念題可以練習。</p>
+  <div class="legend">
+    <span><i class="sw" style="background:#F1C94A"></i>正在執行的那一行／for 的那一段</span>
+    <span><i class="sw" style="background:#F1C94A55;box-shadow:inset 0 0 0 1px #F1C94A"></i>這一步剛改變的變數</span>
+  </div>
+</header>
+
+<nav aria-label="章節"><div class="wrap">
+  <a href="#while">while</a><a href="#dowhile">do-while</a><a href="#jump">continue／break</a><a href="#for">for</a><a href="#nested">巢狀迴圈</a><a href="#apcs">APCS 觀念題</a>
+</div></nav>
+
+<main class="wrap">
+
+<!-- 5.1 while -->
+<section id="while">
+  <div class="sec-head"><span class="sec-no">5.1</span><h2>while 敘述</h2></div>
+  <div class="grid2">
+    <div class="stack">
+      <p>只要<b>條件式為真</b>，就會重複執行大括號裡的敘述。每一輪開始前都先檢查條件。</p>
+<pre class="snip" data-hl>while (條件式) {
+    程式敘述;
+    …
+}</pre>
+      <div class="note">必須小心設定條件式。若迴圈裡沒有讓條件變成 false 的動作，就會變成<b>無窮迴圈</b>。勾選下面的選項試試看。</div>
+      <label class="chk"><input type="checkbox" id="w-noinc"> 拿掉 <code>i++</code> 會怎樣？</label>
+    </div>
+    <div id="tr-while"></div>
+  </div>
+
+  <div class="panel" style="margin-top:24px">
+    <div class="grid2">
+      <div class="stack">
+        <h3>用 while 不斷讀入測資</h3>
+        <p class="small"><code>cin &gt;&gt; a &gt;&gt; b</code> 讀取成功時視為 true，所以可以一直讀，直到輸入結束（Windows 按 <b>Ctrl + Z</b>）。</p>
+<pre class="snip" data-hl>while (cin >> a >> b) {
+    cout << a + b << endl;
+}</pre>
+        <label for="cin-in" class="small muted">在這裡輸入測資（每行兩個整數）：</label>
+        <textarea id="cin-in" rows="5" spellcheck="false">3 5
+6 9
+1 4
+7 9</textarea>
+      </div>
+      <div class="stack">
+        <div class="cap muted">執行畫面</div>
+        <pre class="console" id="cin-out"></pre>
+        <p class="small muted" id="cin-note"></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 5.2 do-while -->
+<section id="dowhile">
+  <div class="sec-head"><span class="sec-no">5.2</span><h2>do-while 敘述</h2></div>
+  <div class="grid2">
+    <div class="stack">
+<pre class="snip" data-hl>do {
+    程式敘述1;
+    …
+} while (條件式);   // 注意分號</pre>
+      <p>while 在執行程式區塊<b>之前</b>判斷條件；do-while 在執行完程式區塊<b>之後</b>才判斷，所以<b>至少會執行一次</b>。</p>
+      <div class="flows">
+        <figure>
+          <svg class="flow" viewBox="0 0 280 200" role="img" aria-label="while 流程：先判斷條件，true 就執行敘述再回到條件，false 就離開">
+            <defs><marker id="ah1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" class="f-ah"/></marker></defs>
+            <rect x="70" y="6" width="60" height="22" rx="11" class="f-node"/>
+            <line x1="100" y1="28" x2="100" y2="66" class="f-ln" marker-end="url(#ah1)"/>
+            <polygon points="100,68 152,98 100,128 48,98" class="f-dia"/>
+            <text x="100" y="103" class="f-tx">條件式</text>
+            <line x1="152" y1="98" x2="178" y2="98" class="f-ln" marker-end="url(#ah1)"/>
+            <text x="154" y="90" class="f-lb">true</text>
+            <rect x="180" y="82" width="92" height="32" rx="4" class="f-box"/>
+            <text x="226" y="103" class="f-tx">程式敘述</text>
+            <path d="M226 82 V46 H104" class="f-ln" marker-end="url(#ah1)"/>
+            <line x1="100" y1="128" x2="100" y2="166" class="f-ln" marker-end="url(#ah1)"/>
+            <text x="106" y="152" class="f-lb">false</text>
+            <rect x="70" y="168" width="60" height="22" rx="11" class="f-node"/>
+          </svg>
+          <figcaption>while：先判斷再執行</figcaption>
+        </figure>
+        <figure>
+          <svg class="flow" viewBox="0 0 280 220" role="img" aria-label="do-while 流程：先執行敘述，再判斷條件，true 回到敘述，false 離開">
+            <defs><marker id="ah2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" class="f-ah"/></marker></defs>
+            <rect x="70" y="6" width="60" height="22" rx="11" class="f-node"/>
+            <line x1="100" y1="28" x2="100" y2="48" class="f-ln" marker-end="url(#ah2)"/>
+            <rect x="54" y="50" width="92" height="32" rx="4" class="f-box"/>
+            <text x="100" y="71" class="f-tx">程式敘述</text>
+            <line x1="100" y1="82" x2="100" y2="94" class="f-ln" marker-end="url(#ah2)"/>
+            <polygon points="100,96 152,126 100,156 48,126" class="f-dia"/>
+            <text x="100" y="131" class="f-tx">條件式</text>
+            <path d="M152 126 H210 V66 H148" class="f-ln" marker-end="url(#ah2)"/>
+            <text x="158" y="118" class="f-lb">true</text>
+            <line x1="100" y1="156" x2="100" y2="188" class="f-ln" marker-end="url(#ah2)"/>
+            <text x="106" y="176" class="f-lb">false</text>
+            <rect x="70" y="190" width="60" height="22" rx="11" class="f-node"/>
+          </svg>
+          <figcaption>do-while：先執行再判斷</figcaption>
+        </figure>
+      </div>
+    </div>
+    <div class="stack">
+      <div class="panel ctl-row">
+        <label for="dw-start">i 的起始值：</label>
+        <input type="range" id="dw-start" min="1" max="8" value="1" style="flex:1 1 140px;accent-color:var(--accent)">
+        <b class="mono" id="dw-val">1</b>
+        <span class="small muted" style="flex-basis:100%">把起始值拉到 6 以上：while 一次都不執行，do-while 仍會執行一次。</span>
+      </div>
+      <div id="tr-w2"></div>
+      <div id="tr-dw"></div>
+    </div>
+  </div>
+</section>
+
+<!-- 5.3 continue / break -->
+<section id="jump">
+  <div class="sec-head"><span class="sec-no">5.3</span><h2>continue 與 break</h2></div>
+  <div class="grid-even">
+    <div class="stack">
+      <p><b>continue</b>：略過這一輪剩下的程式碼，直接跳到下一輪的起始位置（回到條件判斷）。</p>
+      <div id="tr-cont"></div>
+    </div>
+    <div class="stack">
+      <p><b>break</b>：與 continue 相反，遇到 break 就直接<b>跳出整個迴圈</b>。常搭配 <code>while (1)</code> 使用。</p>
+      <div id="tr-brk"></div>
+    </div>
+  </div>
+</section>
+
+<!-- 5.4 for -->
+<section id="for">
+  <div class="sec-head"><span class="sec-no">5.4</span><h2>for 敘述</h2></div>
+  <div class="grid2">
+    <div class="stack">
+      <p>C/C++ 用來處理重複事件的語法稱為迴圈敘述。for 把迴圈的三個要素寫在同一行：</p>
+<pre class="snip" data-hl>for (①起始值; ②條件式; ③遞增或遞減運算) {
+    程式敘述句1;
+    程式敘述句2;
+}</pre>
+      <p>執行順序：</p>
+      <ol class="flow-steps">
+        <li><span class="badge">1</span> 設定變數的起始值（只做一次）</li>
+        <li><span class="badge">2</span> 判斷條件式，true 就執行下方程式區塊，false 就結束</li>
+        <li>執行完區塊後做 <span class="badge">3</span> 遞增或遞減，再回到 <span class="badge">2</span></li>
+      </ol>
+      <p class="small muted">右邊追蹤時，黃色標示正在執行 for 的哪一段。</p>
+    </div>
+    <div id="tr-for"></div>
+  </div>
+
+  <div class="panel" style="margin-top:24px">
+    <h3>for 迴圈實驗室</h3>
+    <p class="small muted" style="margin-bottom:12px">調整三個式子，看控制變數 x 會印出哪些值。也可以選一題挑戰，寫出能印出指定數列的 for 敘述。</p>
+    <div class="stack">
+      <div class="ctl-row">
+        <span class="small muted">課本範例：</span>
+        <span class="chips" id="pg-presets"></span>
+      </div>
+      <div class="ctl-row">
+        <span class="small muted">挑戰：</span>
+        <span class="chips" id="pg-challenges"></span>
+      </div>
+      <div class="ctl-row mono" style="font-size:15px">
+        <span>for ( x =</span>
+        <input type="number" id="pg-start" value="2" aria-label="起始值">
+        <span>; x</span>
+        <select id="pg-op" aria-label="比較運算子"><option>&lt;=</option><option>&lt;</option><option>&gt;=</option><option>&gt;</option></select>
+        <input type="number" id="pg-bound" value="13" aria-label="條件的界限">
+        <span>; x</span>
+        <select id="pg-upd" aria-label="更新方式"><option>+=</option><option>-=</option></select>
+        <input type="number" id="pg-amt" value="2" aria-label="每次改變多少">
+        <span>)</span>
+      </div>
+      <div class="gen" id="pg-code"></div>
+      <div><div class="cap muted">x 的值依序為</div><div class="chips" id="pg-out"></div></div>
+      <p class="status" id="pg-status" aria-live="polite"></p>
+    </div>
+  </div>
+
+  <div class="panel" style="margin-top:20px">
+    <div class="grid-even">
+      <div class="stack">
+        <h3>依輸入的數字重複運算</h3>
+        <p class="small">範例 2 印出 num 個星號；範例 3 計算 1 加到 num 的和。兩者都用 <code>for (i = 1; i &lt;= num; i++)</code>。</p>
+<pre class="snip" data-hl>cin >> num;
+sum = 0;             // 先把總和歸零
+for (i = 1; i <= num; i++) {
+    cout << "*";     // 範例 2
+    sum += i;        // 範例 3
+}</pre>
+        <div class="ctl-row"><label for="num-in">輸入 num：</label><input type="number" id="num-in" min="0" max="60" value="10"></div>
+      </div>
+      <div class="stack">
+        <div class="cap muted">執行畫面</div>
+        <pre class="console" id="num-out"></pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 5.5 nested -->
+<section id="nested">
+  <div class="sec-head"><span class="sec-no">5.5</span><h2>巢狀迴圈</h2></div>
+  <div class="grid2">
+    <div class="stack">
+      <p>迴圈裡面還有其他迴圈就叫做巢狀迴圈，for 或 while 都可以形成巢狀迴圈。</p>
+      <p><b>外圍的迴圈每執行一次，內側的迴圈就要完整跑完一輪。</b>右邊外圈 3 次 × 內圈 3 次，共印出 9 行。</p>
+<pre class="snip" data-hl>for (式子1-1; 式子2-1; 式子3-1) {
+    …
+    for (式子1-2; 式子2-2; 式子3-2) {
+        …
+    }
+}</pre>
+    </div>
+    <div id="tr-nest"></div>
+  </div>
+
+  <div class="grid2" style="margin-top:28px">
+    <div class="stack">
+      <h3>搭配 if 敘述</h3>
+      <p>巢狀迴圈可以搭配其他敘述使用。這個例子用變數 <code>ch</code> 在 0、1 之間切換，交錯印出 <code>*</code> 與 <code>_</code>。</p>
+      <p class="small muted">注意：ch 在換行時不會重設，所以第 2 列從 <code>_</code> 開始，排出棋盤格。播放時可以拖曳進度條快轉。</p>
+    </div>
+    <div id="tr-check"></div>
+  </div>
+
+  <div class="panel" style="margin-top:28px">
+    <div class="grid-even">
+      <div class="stack">
+        <h3>想一想：下面的程式做的事為何？</h3>
+<pre class="snip" data-hl>for (i = 1; i <= 5; i++) {
+    for (j = 1; j <= 3; j++) {
+        for (k = 1; k <= 10; k++) {
+            cout << "*";
         }
-        code, pre {
-            font-family: 'Fira Code', monospace;
-        }
-        .slide {
-            display: none;
-            opacity: 0;
-            transition: opacity 0.3s ease-in-out;
-        }
-        .slide.active {
-            display: block;
-            opacity: 1;
-        }
-    </style>
-</head>
-<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col justify-between selection:bg-indigo-500 selection:text-white">
-
-    <!-- Header Navigation -->
-    <header class="bg-slate-800/80 backdrop-blur border-b border-slate-700 sticky top-0 z-50 px-6 py-4 flex justify-between items-center">
-        <div class="flex items-center space-x-3">
-            <span class="bg-indigo-600 text-white font-bold px-3 py-1 rounded-lg text-sm">C++ 課程</span>
-            <h1 class="text-xl font-bold tracking-wide text-white">第五章：重複結構 (Loops)</h1>
-        </div>
-        <div class="flex items-center space-x-4">
-            <span id="slide-indicator" class="text-sm font-medium text-slate-400">頁次 1 / 14</span>
-        </div>
-    </header>
-
-    <!-- Main Slide Content Container -->
-    <main class="flex-1 max-w-5xl w-full mx-auto p-6 md:p-10 flex flex-col justify-center">
-
-        <!-- Slide 1: Cover -->
-        <section class="slide active" id="slide-1">
-            <div class="text-center py-10 space-y-6">
-                <div class="inline-block p-4 bg-indigo-500/10 rounded-full border border-indigo-500/20 mb-2">
-                    <i class="fas fa-rotate text-5xl text-indigo-400"></i>
-                </div>
-                <h2 class="text-4xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-cyan-400 to-emerald-400">
-                    第五章 重複結構
-                </h2>
-                <p class="text-lg text-slate-400 max-w-2xl mx-auto leading-relaxed">
-                    在程式設計中，當需要多次執行相同的指令時，會使用迴圈敘述。本章將完整講解 <code>while</code>、<code>do-while</code>、<code>for</code> 迴圈、<code>break/continue</code> 控制與巢狀迴圈。
-                </p>
-
-                <!-- Overview Cards -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-left max-w-3xl mx-auto mt-4">
-                    <div class="bg-slate-800/80 border border-slate-700 p-4 rounded-xl">
-                        <div class="flex items-center gap-2 text-indigo-400 font-bold mb-1">
-                            <i class="fas fa-spinner"></i> while / do-while
-                        </div>
-                        <p class="text-xs text-slate-400">當重複次數不固定，依條件滿足與否決定執行時使用。</p>
-                    </div>
-                    <div class="bg-slate-800/80 border border-slate-700 p-4 rounded-xl">
-                        <div class="flex items-center gap-2 text-cyan-400 font-bold mb-1">
-                            <i class="fas fa-list-ol"></i> for 迴圈
-                        </div>
-                        <p class="text-xs text-slate-400">明確知道重複執行次數時最常使用的迴圈結構。</p>
-                    </div>
-                    <div class="bg-slate-800/80 border border-slate-700 p-4 rounded-xl">
-                        <div class="flex items-center gap-2 text-emerald-400 font-bold mb-1">
-                            <i class="fas fa-layer-group"></i> 巢狀迴圈
-                        </div>
-                        <p class="text-xs text-slate-400">迴圈內再包覆迴圈，常用於處理多維資料與圖案印製。</p>
-                    </div>
-                </div>
-
-                <div class="pt-4 flex justify-center">
-                    <button onclick="nextSlide()" class="px-6 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-xl shadow-lg shadow-indigo-500/30 transition flex items-center space-x-2">
-                        <span>開始學習</span>
-                        <i class="fas fa-arrow-right"></i>
-                    </button>
-                </div>
-            </div>
-        </section>
-
-        <!-- Slide 2: while Statement & Continuous Input -->
-        <section class="slide" id="slide-2">
-            <h2 class="text-2xl md:text-3xl font-bold text-indigo-400 mb-6 flex items-center gap-3">
-                <i class="fas fa-repeat"></i> While 敘述語法與連續輸入
-            </h2>
-
-            <div class="grid md:grid-cols-2 gap-6">
-                <!-- Left: Syntax & Flowchart logic -->
-                <div class="bg-slate-800 border border-slate-700 rounded-2xl p-5 space-y-4">
-                    <h3 class="text-lg font-bold text-white flex items-center gap-2">
-                        <i class="fas fa-code text-indigo-400"></i> while 語法 (前測條件)
-                    </h3>
-                    <p class="text-xs text-slate-300">只要條件式計算為真 (true)，就會重複執行程式區塊。</p>
-                    <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 font-mono text-xs text-slate-300 space-y-1">
-                        <div><span class="text-blue-400">while</span> (條件式) {</div>
-                        <div class="pl-4 text-emerald-300">程式敘述句;</div>
-                        <div>}</div>
-                    </div>
-
-                    <div class="bg-slate-900 p-3 rounded-xl border border-slate-700 font-mono text-xs">
-                        <span class="text-slate-500">// 基礎範例: 執行 5 次</span><br>
-                        <span class="text-blue-400">int</span> i = <span class="text-amber-300">1</span>;<br>
-                        <span class="text-blue-400">while</span> (i &lt;= <span class="text-amber-300">5</span>) {<br>
-                        &nbsp;&nbsp;<span class="text-indigo-300">cout</span> &lt;&lt; <span class="text-emerald-300">"第"</span> &lt;&lt; i &lt;&lt; <span class="text-emerald-300">"次迴圈"</span> &lt;&lt; <span class="text-indigo-300">endl</span>;<br>
-                        &nbsp;&nbsp;<span class="text-amber-400">i++;</span> <span class="text-slate-500">// 必須遞增，否則會變成無窮迴圈！</span><br>
-                        }
-                    </div>
-
-                    <!-- Output Result Box -->
-                    <div class="bg-slate-950 border border-emerald-500/30 p-3 rounded-xl">
-                        <div class="text-[11px] font-bold text-emerald-400 mb-1 flex items-center gap-1.5">
-                            <i class="fas fa-terminal"></i> 執行結果 Output
-                        </div>
-                        <pre class="font-mono text-xs text-emerald-300 leading-tight">第1次迴圈
-第2次迴圈
-第3次迴圈
-第4次迴圈
-第5次迴圈</pre>
-                    </div>
-                </div>
-
-                <!-- Right: Continuous input until EOF -->
-                <div class="bg-slate-800 border border-slate-700 rounded-2xl p-5 space-y-4">
-                    <h3 class="text-lg font-bold text-white flex items-center gap-2">
-                        <i class="fas fa-terminal text-cyan-400"></i> APCS 必學：連續讀取測資 (EOF)
-                    </h3>
-                    <p class="text-xs text-slate-300">利用 <code>while(cin >> a >> b)</code> 可不斷讀取輸入，直到遇到 EOF (Ctrl+Z 或檔案結束)。</p>
-                    <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 font-mono text-xs text-slate-300 space-y-1">
-                        <div><span class="text-blue-400">while</span> (<span class="text-indigo-300">cin</span> &gt;&gt; a &gt;&gt; b) {</div>
-                        <div class="pl-4"><span class="text-indigo-300">cout</span> &lt;&lt; a + b &lt;&lt; <span class="text-indigo-300">endl</span>;</div>
-                        <div>}</div>
-                    </div>
-                    <div class="bg-slate-900 p-3 rounded-xl border border-slate-700 text-xs text-slate-400">
-                        <span class="text-amber-300 font-bold block mb-1">測試範例說明：</span>
-                        輸入: 35 8 &nbsp;&rarr;&nbsp; 輸出: 43<br>
-                        輸入: 69 10 &nbsp;&rarr;&nbsp; 輸出: 79<br>
-                        按下 <code class="bg-slate-800 text-white px-1.5 py-0.5 rounded">Ctrl + Z</code> 後結束程式。
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Slide 3: do-while Statement -->
-        <section class="slide" id="slide-3">
-            <h2 class="text-2xl md:text-3xl font-bold text-indigo-400 mb-6 flex items-center gap-3">
-                <i class="fas fa-arrows-spin"></i> Do-While 敘述 (後測條件)
-            </h2>
-
-            <div class="grid md:grid-cols-2 gap-6">
-                <div class="bg-slate-800 border border-slate-700 rounded-2xl p-5 space-y-3">
-                    <h3 class="text-lg font-bold text-white mb-2">Do-While 語法</h3>
-                    <p class="text-xs text-slate-300">先執行一次程式區塊，然後再檢查條件是否成立。</p>
-                    <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 font-mono text-xs text-slate-300 space-y-1">
-                        <div><span class="text-blue-400">do</span> {</div>
-                        <div class="pl-4 text-emerald-300">程式敘述句;</div>
-                        <div>} <span class="text-blue-400">while</span> (條件式)<span class="text-amber-400 font-bold text-base font-sans">;</span> <span class="text-slate-500">// 注意末尾分號</span></div>
-                    </div>
-                    <div class="bg-slate-900 p-3 rounded-xl border border-slate-700 font-mono text-xs">
-                        <span class="text-blue-400">int</span> i = <span class="text-amber-300">1</span>;<br>
-                        <span class="text-blue-400">do</span> {<br>
-                        &nbsp;&nbsp;<span class="text-indigo-300">cout</span> &lt;&lt; <span class="text-emerald-300">"第"</span> &lt;&lt; i &lt;&lt; <span class="text-emerald-300">"次迴圈"</span> &lt;&lt; <span class="text-indigo-300">endl</span>;<br>
-                        &nbsp;&nbsp;i++;<br>
-                        } <span class="text-blue-400">while</span> (i &lt;= <span class="text-amber-300">5</span>);
-                    </div>
-
-                    <!-- Output Result Box -->
-                    <div class="bg-slate-950 border border-emerald-500/30 p-3 rounded-xl">
-                        <div class="text-[11px] font-bold text-emerald-400 mb-1 flex items-center gap-1.5">
-                            <i class="fas fa-terminal"></i> 執行結果 Output
-                        </div>
-                        <pre class="font-mono text-xs text-emerald-300 leading-tight">第1次迴圈
-第2次迴圈
-第3次迴圈
-第4次迴圈
-第5次迴圈</pre>
-                    </div>
-                </div>
-
-                <!-- Comparison Table -->
-                <div class="bg-slate-800 border border-slate-700 rounded-2xl p-5 flex flex-col justify-between">
-                    <div>
-                        <h3 class="text-lg font-bold text-white mb-3">while vs do-while 比較</h3>
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-xs text-left border-collapse bg-slate-900 rounded-xl overflow-hidden">
-                                <thead class="bg-slate-700 text-indigo-300">
-                                    <tr>
-                                        <th class="p-2.5">比較項目</th>
-                                        <th class="p-2.5">while</th>
-                                        <th class="p-2.5">do-while</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="divide-y divide-slate-800 text-slate-300">
-                                    <tr>
-                                        <td class="p-2.5 font-bold">條件檢查時機</td>
-                                        <td class="p-2.5 text-cyan-300">執行前檢查 (前測)</td>
-                                        <td class="p-2.5 text-pink-300">執行後檢查 (後測)</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="p-2.5 font-bold">最少執行次數</td>
-                                        <td class="p-2.5 text-emerald-400">0 次</td>
-                                        <td class="p-2.5 text-amber-400 font-bold">1 次 (保證至少執行一次)</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="p-2.5 font-bold">語法結尾</td>
-                                        <td class="p-2.5">無分號</td>
-                                        <td class="p-2.5 text-amber-300">while(條件); 須加分號</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    <div class="mt-4 bg-amber-950/40 border border-amber-800/50 p-3 rounded-xl text-xs text-amber-200">
-                        <i class="fas fa-lightbulb mr-1"></i> 常見應用：選單選取（例如：「請輸入選項 (1-4)，輸入錯誤則重新輸入」）。
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Slide 4: Loop Controls: continue & break -->
-        <section class="slide" id="slide-4">
-            <h2 class="text-2xl md:text-3xl font-bold text-indigo-400 mb-6 flex items-center gap-3">
-                <i class="fas fa-hashtag"></i> 迴圈流程控制：continue 與 break
-            </h2>
-
-            <div class="grid md:grid-cols-2 gap-6">
-                <!-- continue -->
-                <div class="bg-slate-800 border border-slate-700 rounded-2xl p-5 flex flex-col justify-between">
-                    <div>
-                        <span class="text-xs font-bold bg-cyan-500/20 text-cyan-300 px-2.5 py-1 rounded-full mb-3 inline-block">continue 敘述</span>
-                        <h3 class="text-lg font-bold text-white mb-2">略過本輪，跳至下一輪</h3>
-                        <p class="text-slate-300 text-xs mb-3">當執行到 continue 時，會忽略該次迴圈接下來的程式碼，直接進入下一輪迭代。</p>
-                        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 font-mono text-xs text-slate-300 space-y-1 mb-3">
-                            <div><span class="text-blue-400">int</span> i = <span class="text-amber-300">0</span>;</div>
-                            <div><span class="text-blue-400">while</span> (i &lt;= <span class="text-amber-300">10</span>) {</div>
-                            <div class="pl-4">i++;</div>
-                            <div class="pl-4"><span class="text-blue-400">if</span> (i % <span class="text-amber-300">2</span> != <span class="text-amber-300">0</span>) <span class="text-cyan-400 font-bold">continue;</span> <span class="text-slate-500">// 奇數則跳過</span></div>
-                            <div class="pl-4"><span class="text-indigo-300">cout</span> &lt;&lt; i &lt;&lt; <span class="text-indigo-300">" "</span>; <span class="text-slate-500">// 只印出偶數</span></div>
-                            <div>}</div>
-                        </div>
-                    </div>
-                    <!-- continue Output Box -->
-                    <div class="bg-slate-950 border border-cyan-500/30 p-3 rounded-xl">
-                        <div class="text-[11px] font-bold text-cyan-400 mb-1 flex items-center gap-1.5">
-                            <i class="fas fa-terminal"></i> 執行結果 Output
-                        </div>
-                        <pre class="font-mono text-xs text-cyan-300 leading-tight">2 4 6 8 10 </pre>
-                    </div>
-                </div>
-
-                <!-- break -->
-                <div class="bg-slate-800 border border-slate-700 rounded-2xl p-5 flex flex-col justify-between">
-                    <div>
-                        <span class="text-xs font-bold bg-pink-500/20 text-pink-300 px-2.5 py-1 rounded-full mb-3 inline-block">break 敘述</span>
-                        <h3 class="text-lg font-bold text-white mb-2">立即跳出並結束迴圈</h3>
-                        <p class="text-slate-300 text-xs mb-3">當執行到 break 時，會強制跳出整個迴圈，直接執行迴圈下方的後續程式。</p>
-                        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 font-mono text-xs text-slate-300 space-y-1 mb-3">
-                            <div><span class="text-blue-400">int</span> i = <span class="text-amber-300">0</span>;</div>
-                            <div><span class="text-blue-400">while</span> (<span class="text-amber-300">1</span>) { <span class="text-slate-500">// 無窮迴圈</span></div>
-                            <div class="pl-4"><span class="text-indigo-300">cout</span> &lt;&lt; i &lt;&lt; <span class="text-indigo-300">" "</span>;</div>
-                            <div class="pl-4">i++;</div>
-                            <div class="pl-4"><span class="text-blue-400">if</span> (i == <span class="text-amber-300">10</span>) <span class="text-pink-400 font-bold">break;</span> <span class="text-slate-500">// 達到 10 強制結束</span></div>
-                            <div>}</div>
-                        </div>
-                    </div>
-                    <!-- break Output Box -->
-                    <div class="bg-slate-950 border border-pink-500/30 p-3 rounded-xl">
-                        <div class="text-[11px] font-bold text-pink-400 mb-1 flex items-center gap-1.5">
-                            <i class="fas fa-terminal"></i> 執行結果 Output
-                        </div>
-                        <pre class="font-mono text-xs text-pink-300 leading-tight">0 1 2 3 4 5 6 7 8 9 </pre>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Slide 5: APCS Practice (while) -->
-        <section class="slide" id="slide-5">
-            <h2 class="text-2xl md:text-3xl font-bold text-indigo-400 mb-4 flex items-center gap-3">
-                <i class="fas fa-graduation-cap"></i> APCS 觀念題互動練習 (While 迴圈專題)
-            </h2>
-
-            <div class="grid md:grid-cols-2 gap-6">
-                <!-- APCS P.7 (GCD) -->
-                <div class="bg-slate-800 border border-slate-700 rounded-2xl p-5">
-                    <span class="text-xs font-bold bg-indigo-500/20 text-indigo-300 px-2 py-0.5 rounded mb-2 inline-block">APCS 觀念題 13</span>
-                    <h3 class="text-sm font-bold text-white mb-2">求最大公因數 (輾轉相除法)</h3>
-                    <div class="bg-slate-950 p-2.5 rounded-lg font-mono text-xs text-slate-300 mb-3">
-                        i = 76; j = 48;<br>
-                        while ((i % j) != 0) {<br>
-                        &nbsp;&nbsp;<span class="text-emerald-400">/* 填入正確程式碼 */</span><br>
-                        }<br>
-                        printf("%d\n", j);
-                    </div>
-                    <div class="space-y-2 text-xs" id="s5-q1-options">
-                        <button onclick="checkQuizOption('s5-q1', 'A', '正確！每次求餘數 k，隨後將除數 j 轉為被除數 i，餘數 k 轉為除數 j。', this)" class="w-full text-left p-2.5 rounded-lg bg-slate-900 hover:bg-slate-700 text-slate-200 transition">(A) k = i % j; i = j; j = k;</button>
-                        <button onclick="checkQuizOption('s5-q1', 'A', '', this)" class="w-full text-left p-2.5 rounded-lg bg-slate-900 hover:bg-slate-700 text-slate-200 transition">(B) i = j; j = i % j;</button>
-                        <button onclick="checkQuizOption('s5-q1', 'A', '', this)" class="w-full text-left p-2.5 rounded-lg bg-slate-900 hover:bg-slate-700 text-slate-200 transition">(C) k = j % i; j = i; i = k;</button>
-                        <button onclick="checkQuizOption('s5-q1', 'A', '', this)" class="w-full text-left p-2.5 rounded-lg bg-slate-900 hover:bg-slate-700 text-slate-200 transition">(D) j = i % j; i = j;</button>
-                    </div>
-                    <div id="s5-q1-feedback" class="hidden mt-3 p-2.5 bg-slate-900 border rounded-lg text-xs"></div>
-                </div>
-
-                <!-- APCS P.8 (Tracing) -->
-                <div class="bg-slate-800 border border-slate-700 rounded-2xl p-5">
-                    <span class="text-xs font-bold bg-indigo-500/20 text-indigo-300 px-2 py-0.5 rounded mb-2 inline-block">APCS 觀念題 23</span>
-                    <h3 class="text-sm font-bold text-white mb-2">迴圈追蹤與數值變更</h3>
-                    <div class="bg-slate-950 p-2.5 rounded-lg font-mono text-xs text-slate-300 mb-3">
-                        int i = 2, x = 3, N = 65536;<br>
-                        while (i &lt;= N) {<br>
-                        &nbsp;&nbsp;i = i * i * i;<br>
-                        &nbsp;&nbsp;x = x + 1;<br>
-                        }<br>
-                        printf("%d %d\n", i, x);
-                    </div>
-                    <div class="space-y-2 text-xs" id="s5-q2-options">
-                        <button onclick="checkQuizOption('s5-q2', 'D', '', this)" class="w-full text-left p-2.5 rounded-lg bg-slate-900 hover:bg-slate-700 text-slate-200 transition">(A) 512 5</button>
-                        <button onclick="checkQuizOption('s5-q2', 'D', '', this)" class="w-full text-left p-2.5 rounded-lg bg-slate-900 hover:bg-slate-700 text-slate-200 transition">(B) 65536 5</button>
-                        <button onclick="checkQuizOption('s5-q2', 'D', '', this)" class="w-full text-left p-2.5 rounded-lg bg-slate-900 hover:bg-slate-700 text-slate-200 transition">(C) 134217728 5</button>
-                        <button onclick="checkQuizOption('s5-q2', 'D', '正確！第1次: i=8, x=4；第2次: i=512, x=5；第3次: i=134217728 (>65536), x=6 迴圈結束。', this)" class="w-full text-left p-2.5 rounded-lg bg-slate-900 hover:bg-slate-700 text-slate-200 transition">(D) 134217728 6</button>
-                    </div>
-                    <div id="s5-q2-feedback" class="hidden mt-3 p-2.5 bg-slate-900 border rounded-lg text-xs"></div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Slide 6: for Loop Syntax -->
-        <section class="slide" id="slide-6">
-            <h2 class="text-2xl md:text-3xl font-bold text-indigo-400 mb-6 flex items-center gap-3">
-                <i class="fas fa-list-check"></i> For 迴圈語法與執行流程
-            </h2>
-
-            <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 mb-6">
-                <div class="text-xs font-bold text-indigo-400 uppercase tracking-wider mb-2">For 迴圈標準三段式結構</div>
-                <div class="bg-slate-950 p-4 rounded-xl font-mono text-sm md:text-base text-slate-200 border border-slate-800">
-                    <span class="text-blue-400">for</span> (<span class="text-emerald-400">1. 起始值</span>; <span class="text-pink-400">2. 重複判斷條件</span>; <span class="text-amber-400">3. 遞增/遞減</span>) {<br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="text-indigo-300">程式敘述句;</span><br>
-                    }
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
-                <div class="bg-slate-800 border border-slate-700 p-4 rounded-xl">
-                    <span class="text-emerald-400 font-bold block mb-1">步驟 1：設定起始值</span>
-                    <p class="text-slate-400">在迴圈開始時執行一次，宣告或設定控制變數（如 <code>int i = 1</code>）。</p>
-                </div>
-                <div class="bg-slate-800 border border-slate-700 p-4 rounded-xl">
-                    <span class="text-pink-400 font-bold block mb-1">步驟 2：條件判斷</span>
-                    <p class="text-slate-400">每次迭代前計算條件，若為 true 則執行區塊內敘述；若為 false 則跳出。</p>
-                </div>
-                <div class="bg-slate-800 border border-slate-700 p-4 rounded-xl">
-                    <span class="text-amber-400 font-bold block mb-1">步驟 3：遞增/遞減</span>
-                    <p class="text-slate-400">當區塊敘述執行完畢後，執行此處的運算式（如 <code>i++</code>），並再次回到步驟 2。</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- Slide 7: for Loop Applications -->
-        <section class="slide" id="slide-7">
-            <h2 class="text-2xl md:text-3xl font-bold text-indigo-400 mb-6 flex items-center gap-3">
-                <i class="fas fa-cubes-stacked"></i> For 迴圈常見實務應用 (程式碼與互動體驗)
-            </h2>
-
-            <div class="grid md:grid-cols-2 gap-6">
-                <!-- Application 1: Print N Stars -->
-                <div class="bg-slate-800 border border-slate-700 rounded-2xl p-5 flex flex-col justify-between space-y-3">
-                    <div>
-                        <h3 class="text-lg font-bold text-white mb-2 flex items-center gap-2">
-                            <i class="fas fa-star text-amber-400"></i> 1. 印出指定數量的星號
-                        </h3>
-                        <!-- Code Snippet -->
-                        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 font-mono text-xs text-slate-300 mb-3">
-                            <span class="text-blue-400">int</span> num;<br>
-                            <span class="text-indigo-300">cin</span> &gt;&gt; num;<br>
-                            <span class="text-blue-400">for</span> (<span class="text-blue-400">int</span> i = <span class="text-amber-300">1</span>; i &lt;= num; i++) {<br>
-                            &nbsp;&nbsp;<span class="text-indigo-300">cout</span> &lt;&lt; <span class="text-emerald-300">"*"</span>;<br>
-                            }
-                        </div>
-                        <p class="text-xs text-slate-300 mb-2">輸入星號數量 num 進行測試：</p>
-                        <div class="flex items-center gap-2 mb-3">
-                            <label class="text-xs text-slate-400">num =</label>
-                            <input type="number" id="s7-star-num" value="8" min="1" max="50" oninput="runS7StarApp()" class="w-24 bg-slate-950 border border-slate-700 text-amber-300 px-3 py-1.5 rounded-lg text-xs font-mono focus:outline-none focus:border-indigo-500">
-                        </div>
-                    </div>
-                    <div class="bg-slate-950 border border-slate-800 p-3 rounded-xl">
-                        <div class="text-[11px] font-bold text-amber-400 mb-1 flex items-center gap-1.5">
-                            <i class="fas fa-terminal"></i> 執行結果 Output
-                        </div>
-                        <div id="s7-star-output" class="font-mono text-xs text-amber-300 break-all leading-relaxed"></div>
-                    </div>
-                </div>
-
-                <!-- Application 2: Sum from 1 to N -->
-                <div class="bg-slate-800 border border-slate-700 rounded-2xl p-5 flex flex-col justify-between space-y-3">
-                    <div>
-                        <h3 class="text-lg font-bold text-white mb-2 flex items-center gap-2">
-                            <i class="fas fa-calculator text-cyan-400"></i> 2. 算 1 加到 N 的總和
-                        </h3>
-                        <!-- Code Snippet -->
-                        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 font-mono text-xs text-slate-300 mb-3">
-                            <span class="text-blue-400">int</span> N, sum = <span class="text-amber-300">0</span>;<br>
-                            <span class="text-indigo-300">cin</span> &gt;&gt; N;<br>
-                            <span class="text-blue-400">for</span> (<span class="text-blue-400">int</span> i = <span class="text-amber-300">1</span>; i &lt;= N; i++) {<br>
-                            &nbsp;&nbsp;sum += i;<br>
-                            }
-                        </div>
-                        <p class="text-xs text-slate-300 mb-2">輸入數值 N 進行測試：</p>
-                        <div class="flex items-center gap-2 mb-3">
-                            <label class="text-xs text-slate-400">N =</label>
-                            <input type="number" id="s7-sum-num" value="10" min="1" max="1000" oninput="runS7SumApp()" class="w-24 bg-slate-950 border border-slate-700 text-cyan-300 px-3 py-1.5 rounded-lg text-xs font-mono focus:outline-none focus:border-indigo-500">
-                        </div>
-                    </div>
-                    <div class="bg-slate-950 border border-slate-800 p-3 rounded-xl">
-                        <div class="text-[11px] font-bold text-cyan-400 mb-1 flex items-center gap-1.5">
-                            <i class="fas fa-terminal"></i> 執行結果 Output
-                        </div>
-                        <div id="s7-sum-output" class="font-mono text-xs text-cyan-300 leading-relaxed"></div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Slide 8: for Loop Trace & Sequences -->
-        <section class="slide" id="slide-8">
-            <h2 class="text-2xl md:text-3xl font-bold text-indigo-400 mb-4 flex items-center gap-3">
-                <i class="fas fa-pen-ruler"></i> For 迴圈控制變數追蹤與寫法 (互動測試)
-            </h2>
-
-            <div class="grid md:grid-cols-2 gap-6 text-xs">
-                <!-- Trace Output Practice -->
-                <div class="bg-slate-800 border border-slate-700 rounded-2xl p-5 space-y-3">
-                    <h3 class="text-sm font-bold text-indigo-300 border-b border-slate-700 pb-2">【觀念練習 A】點擊揭曉控制變數結果</h3>
-                    
-                    <div class="bg-slate-900 p-2.5 rounded-xl border border-slate-700 space-y-1">
-                        <code class="text-amber-300">1. for(x=2; x&lt;=13; x+=2)</code>
-                        <div class="flex justify-between items-center mt-1">
-                            <span id="s8-ans-1" class="text-slate-500 font-mono">???</span>
-                            <button onclick="toggleS8Ans('s8-ans-1', '2, 4, 6, 8, 10, 12')" class="px-2.5 py-1 bg-indigo-600 hover:bg-indigo-500 text-white rounded text-[11px]">查看結果</button>
-                        </div>
-                    </div>
-
-                    <div class="bg-slate-900 p-2.5 rounded-xl border border-slate-700 space-y-1">
-                        <code class="text-amber-300">2. for(x=5; x&lt;=22; x+=7)</code>
-                        <div class="flex justify-between items-center mt-1">
-                            <span id="s8-ans-2" class="text-slate-500 font-mono">???</span>
-                            <button onclick="toggleS8Ans('s8-ans-2', '5, 12, 19')" class="px-2.5 py-1 bg-indigo-600 hover:bg-indigo-500 text-white rounded text-[11px]">查看結果</button>
-                        </div>
-                    </div>
-
-                    <div class="bg-slate-900 p-2.5 rounded-xl border border-slate-700 space-y-1">
-                        <code class="text-amber-300">3. for(x=1; x&lt;=5; x+=7)</code>
-                        <div class="flex justify-between items-center mt-1">
-                            <span id="s8-ans-3" class="text-slate-500 font-mono">???</span>
-                            <button onclick="toggleS8Ans('s8-ans-3', '1')" class="px-2.5 py-1 bg-indigo-600 hover:bg-indigo-500 text-white rounded text-[11px]">查看結果</button>
-                        </div>
-                    </div>
-
-                    <div class="bg-slate-900 p-2.5 rounded-xl border border-slate-700 space-y-1">
-                        <code class="text-amber-300">4. for(x=12; x&gt;=2; x-=3)</code>
-                        <div class="flex justify-between items-center mt-1">
-                            <span id="s8-ans-4" class="text-slate-500 font-mono">???</span>
-                            <button onclick="toggleS8Ans('s8-ans-4', '12, 9, 6, 3')" class="px-2.5 py-1 bg-indigo-600 hover:bg-indigo-500 text-white rounded text-[11px]">查看結果</button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Write for loop headers practice -->
-                <div class="bg-slate-800 border border-slate-700 rounded-2xl p-5 space-y-3">
-                    <h3 class="text-sm font-bold text-indigo-300 border-b border-slate-700 pb-2">【觀念練習 B】點擊核對 for 標頭撰寫</h3>
-                    
-                    <div class="bg-slate-900 p-2.5 rounded-xl border border-slate-700 space-y-1">
-                        <span class="text-slate-300 block">a) 數列: 1, 2, 3, 4, 5, 6, 7</span>
-                        <div class="flex justify-between items-center mt-1">
-                            <span id="s8-ans-b1" class="text-slate-500 font-mono">???</span>
-                            <button onclick="toggleS8Ans('s8-ans-b1', 'for (x=1; x<=7; x++)')" class="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded text-[11px]">核對答案</button>
-                        </div>
-                    </div>
-
-                    <div class="bg-slate-900 p-2.5 rounded-xl border border-slate-700 space-y-1">
-                        <span class="text-slate-300 block">b) 數列: 3, 8, 13, 18, 23</span>
-                        <div class="flex justify-between items-center mt-1">
-                            <span id="s8-ans-b2" class="text-slate-500 font-mono">???</span>
-                            <button onclick="toggleS8Ans('s8-ans-b2', 'for (x=3; x<=23; x+=5)')" class="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded text-[11px]">核對答案</button>
-                        </div>
-                    </div>
-
-                    <div class="bg-slate-900 p-2.5 rounded-xl border border-slate-700 space-y-1">
-                        <span class="text-slate-300 block">c) 數列: 20, 14, 8, 2, -4, -10</span>
-                        <div class="flex justify-between items-center mt-1">
-                            <span id="s8-ans-b3" class="text-slate-500 font-mono">???</span>
-                            <button onclick="toggleS8Ans('s8-ans-b3', 'for (x=20; x>=-10; x-=6)')" class="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded text-[11px]">核對答案</button>
-                        </div>
-                    </div>
-
-                    <div class="bg-slate-900 p-2.5 rounded-xl border border-slate-700 space-y-1">
-                        <span class="text-slate-300 block">d) 數列: 19, 27, 35, 43, 51</span>
-                        <div class="flex justify-between items-center mt-1">
-                            <span id="s8-ans-b4" class="text-slate-500 font-mono">???</span>
-                            <button onclick="toggleS8Ans('s8-ans-b4', 'for (x=19; x<=51; x+=8)')" class="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded text-[11px]">核對答案</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Slide 9: APCS Practice (for Loop) -->
-        <section class="slide" id="slide-9">
-            <h2 class="text-2xl md:text-3xl font-bold text-indigo-400 mb-4 flex items-center gap-3">
-                <i class="fas fa-graduation-cap"></i> APCS 觀念題互動練習 (for 迴圈單層篇)
-            </h2>
-
-            <div class="grid md:grid-cols-2 gap-4 text-xs">
-                <!-- APCS P.15 -->
-                <div class="bg-slate-800 border border-slate-700 rounded-xl p-4 flex flex-col justify-between">
-                    <div>
-                        <span class="font-bold text-indigo-300 block mb-1">APCS 觀念題 13 (修正項分析)</span>
-                        <p class="text-slate-300 mb-2">印出 20 次 "Hi!" 修正案，何者<strong class="text-rose-400">無法</strong>正確印出？</p>
-                        <div class="space-y-1.5" id="s9-q1-options">
-                            <button onclick="checkQuizOption('s9-q1', 'D', '', this)" class="w-full text-left p-2 rounded bg-slate-900 hover:bg-slate-700 text-slate-200">(A) i=0 與 i&lt;20 (20次)</button>
-                            <button onclick="checkQuizOption('s9-q1', 'D', '', this)" class="w-full text-left p-2 rounded bg-slate-900 hover:bg-slate-700 text-slate-200">(B) i=1 與 i&lt;=20 (20次)</button>
-                            <button onclick="checkQuizOption('s9-q1', 'D', '', this)" class="w-full text-left p-2 rounded bg-slate-900 hover:bg-slate-700 text-slate-200">(C) i=20 與 i&gt;0 (20次)</button>
-                            <button onclick="checkQuizOption('s9-q1', 'D', '正確！(D) 步階為 5，只有 5, 10, ... 95 共 19 次，無法達到 20 次。', this)" class="w-full text-left p-2 rounded bg-slate-900 hover:bg-slate-700 text-slate-200">(D) i=5 與 i&lt;100，步階+=5 (19次)</button>
-                        </div>
-                    </div>
-                    <div id="s9-q1-feedback" class="hidden mt-2 p-2 bg-slate-900 border rounded text-[11px]"></div>
-                </div>
-
-                <!-- APCS P.16 -->
-                <div class="bg-slate-800 border border-slate-700 rounded-xl p-4 flex flex-col justify-between">
-                    <div>
-                        <span class="font-bold text-indigo-300 block mb-1">APCS 觀念題 8 (費式數列計算)</span>
-                        <p class="text-slate-300 mb-2">計算第 N 個費式數列，空格 (a) 與 (b) 填空？</p>
-                        <div class="space-y-1.5" id="s9-q2-options">
-                            <button onclick="checkQuizOption('s9-q2', 'C', '', this)" class="w-full text-left p-2 rounded bg-slate-900 hover:bg-slate-700 text-slate-200">(A) (a) a=a+b; (b) a</button>
-                            <button onclick="checkQuizOption('s9-q2', 'C', '', this)" class="w-full text-left p-2 rounded bg-slate-900 hover:bg-slate-700 text-slate-200">(B) (a) b=a+b; (b) a</button>
-                            <button onclick="checkQuizOption('s9-q2', 'C', '正確！利用 temp=b; b=a+b; a=temp; 保持 b 為最新一項並回傳 b。', this)" class="w-full text-left p-2 rounded bg-slate-900 hover:bg-slate-700 text-slate-200">(C) (a) b=a+b; (b) b</button>
-                            <button onclick="checkQuizOption('s9-q2', 'C', '', this)" class="w-full text-left p-2 rounded bg-slate-900 hover:bg-slate-700 text-slate-200">(D) (a) a=b; (b) b</button>
-                        </div>
-                    </div>
-                    <div id="s9-q2-feedback" class="hidden mt-2 p-2 bg-slate-900 border rounded text-[11px]"></div>
-                </div>
-
-                <!-- APCS P.17 -->
-                <div class="bg-slate-800 border border-slate-700 rounded-xl p-4 flex flex-col justify-between">
-                    <div>
-                        <span class="font-bold text-indigo-300 block mb-1">APCS 觀念題 21 (語法與執行)</span>
-                        <p class="text-slate-300 mb-2"><code>for(i=0; i&lt;=10; i++) printf("%d ", i);</code> 輸出？</p>
-                        <div class="space-y-1.5" id="s9-q3-options">
-                            <button onclick="checkQuizOption('s9-q3', 'B', '', this)" class="w-full text-left p-2 rounded bg-slate-900 hover:bg-slate-700 text-slate-200">(A) 0 1 2 3 4 5 6 7 8 9</button>
-                            <button onclick="checkQuizOption('s9-q3', 'B', '正確！包含 i=10 條件成立，故印出 0 到 10 共 11 個數字。', this)" class="w-full text-left p-2 rounded bg-slate-900 hover:bg-slate-700 text-slate-200">(B) 0 1 2 3 4 5 6 7 8 9 10</button>
-                            <button onclick="checkQuizOption('s9-q3', 'B', '', this)" class="w-full text-left p-2 rounded bg-slate-900 hover:bg-slate-700 text-slate-200">(C) 1 2 3 4 5 6 7 8 9 10</button>
-                            <button onclick="checkQuizOption('s9-q3', 'B', '', this)" class="w-full text-left p-2 rounded bg-slate-900 hover:bg-slate-700 text-slate-200">(D) 無窮迴圈</button>
-                        </div>
-                    </div>
-                    <div id="s9-q3-feedback" class="hidden mt-2 p-2 bg-slate-900 border rounded text-[11px]"></div>
-                </div>
-
-                <!-- APCS P.18 -->
-                <div class="bg-slate-800 border border-slate-700 rounded-xl p-4 flex flex-col justify-between">
-                    <div>
-                        <span class="font-bold text-indigo-300 block mb-1">APCS 觀念題 12 (迴圈內修改 i)</span>
-                        <p class="text-slate-300 mb-2"><code>a=5; for(i=0; i&lt;20; i++) { i=i+a; printf("%d ", i); }</code></p>
-                        <div class="space-y-1.5" id="s9-q4-options">
-                            <button onclick="checkQuizOption('s9-q4', 'B', '', this)" class="w-full text-left p-2 rounded bg-slate-900 hover:bg-slate-700 text-slate-200">(A) 0 5 10 15</button>
-                            <button onclick="checkQuizOption('s9-q4', 'B', '正確！內部 i+5=5 印出；迴圈結束 i++(變成6)；再進入內部 i+5=11...依此類推印出 5 11 17 23。', this)" class="w-full text-left p-2 rounded bg-slate-900 hover:bg-slate-700 text-slate-200">(B) 5 11 17 23</button>
-                            <button onclick="checkQuizOption('s9-q4', 'B', '', this)" class="w-full text-left p-2 rounded bg-slate-900 hover:bg-slate-700 text-slate-200">(C) 0 6 12 18</button>
-                            <button onclick="checkQuizOption('s9-q4', 'B', '', this)" class="w-full text-left p-2 rounded bg-slate-900 hover:bg-slate-700 text-slate-200">(D) 5 10 15 20</button>
-                        </div>
-                    </div>
-                    <div id="s9-q4-feedback" class="hidden mt-2 p-2 bg-slate-900 border rounded text-[11px]"></div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Slide 10: Nested Loops Concept -->
-        <section class="slide" id="slide-10">
-            <h2 class="text-2xl md:text-3xl font-bold text-indigo-400 mb-6 flex items-center gap-3">
-                <i class="fas fa-layer-group"></i> 巢狀迴圈 (Nested Loops) 概念與追蹤
-            </h2>
-
-            <div class="grid md:grid-cols-2 gap-6 items-start">
-                <div class="bg-slate-800 border border-slate-700 rounded-2xl p-5 space-y-3">
-                    <h3 class="text-lg font-bold text-white mb-2">語法與運作原則</h3>
-                    <p class="text-xs text-slate-300 leading-relaxed">迴圈中包覆另一個迴圈即為巢狀迴圈。<br><strong class="text-amber-300">外圍迴圈每執行 1 次，內側迴圈必須完全執行完畢所有次數！</strong></p>
-                    <div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800 font-mono text-xs text-slate-300 space-y-1">
-                        <div><span class="text-blue-400">for</span> (<span class="text-blue-400">int</span> i = <span class="text-amber-300">0</span>; i &lt; <span class="text-amber-300">3</span>; i++) {</div>
-                        <div class="pl-4"><span class="text-blue-400">for</span> (<span class="text-blue-400">int</span> j = <span class="text-amber-300">0</span>; j &lt; <span class="text-amber-300">3</span>; j++) {</div>
-                        <div class="pl-8"><span class="text-indigo-300">cout</span> &lt;&lt; <span class="text-emerald-300">"i="</span> &lt;&lt; i &lt;&lt; <span class="text-emerald-300 font-bold">", j="</span> &lt;&lt; j &lt;&lt; <span class="text-indigo-300">endl</span>;</div>
-                        <div class="pl-4">}</div>
-                        <div>}</div>
-                    </div>
-                </div>
-
-                <!-- Trace Table -->
-                <div class="bg-slate-800 border border-slate-700 rounded-2xl p-5">
-                    <h3 class="text-sm font-bold text-indigo-300 mb-3">3x3 雙重迴圈執行軌跡 (總共執行 9 次)</h3>
-                    <div class="grid grid-cols-3 gap-2 font-mono text-xs text-center">
-                        <div class="bg-slate-900 border border-slate-700 p-2.5 rounded text-slate-300">i=0, j=0</div>
-                        <div class="bg-slate-900 border border-slate-700 p-2.5 rounded text-slate-300">i=0, j=1</div>
-                        <div class="bg-slate-900 border border-slate-700 p-2.5 rounded text-slate-300">i=0, j=2</div>
-                        <div class="bg-slate-900 border border-slate-700 p-2.5 rounded text-slate-300">i=1, j=0</div>
-                        <div class="bg-slate-900 border border-slate-700 p-2.5 rounded text-slate-300">i=1, j=1</div>
-                        <div class="bg-slate-900 border border-slate-700 p-2.5 rounded text-slate-300">i=1, j=2</div>
-                        <div class="bg-slate-900 border border-slate-700 p-2.5 rounded text-slate-300">i=2, j=0</div>
-                        <div class="bg-slate-900 border border-slate-700 p-2.5 rounded text-slate-300">i=2, j=1</div>
-                        <div class="bg-slate-900 border border-slate-700 p-2.5 rounded text-slate-300">i=2, j=2</div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Slide 11: Advanced Nested Loop Patterns -->
-        <section class="slide" id="slide-11">
-            <h2 class="text-2xl md:text-3xl font-bold text-indigo-400 mb-6 flex items-center gap-3">
-                <i class="fas fa-shapes"></i> 巢狀迴圈圖案與三層迴圈 (程式碼與互動體驗)
-            </h2>
-
-            <div class="grid md:grid-cols-2 gap-6">
-                <!-- Alternating Pattern -->
-                <div class="bg-slate-800 border border-slate-700 rounded-2xl p-5 flex flex-col justify-between space-y-3">
-                    <div>
-                        <h3 class="text-sm font-bold text-white mb-2">1. 交錯圖案印刷 (* - * - *)</h3>
-                        <div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800 font-mono text-[11px] text-slate-300 mb-2">
-                            for (int i=0; i&lt;r; i++) {<br>
-                            &nbsp;&nbsp;for (int j=0; j&lt;c; j++) cout &lt;&lt; ((i+j)%2==0 ? '*' : '-');<br>
-                            &nbsp;&nbsp;cout &lt;&lt; endl;<br>
-                            }
-                        </div>
-                        <p class="text-xs text-slate-300 mb-2">動態設定高(rows)與寬(cols)印製交錯矩陣：</p>
-                        <div class="flex gap-4 mb-2">
-                            <label class="text-xs text-slate-400">列 row: <input type="number" id="s11-p1-r" value="4" min="1" max="8" oninput="runS11Pattern1()" class="w-14 bg-slate-950 border border-slate-700 text-amber-300 px-2 py-1 rounded text-xs"></label>
-                            <label class="text-xs text-slate-400">行 col: <input type="number" id="s11-p1-c" value="5" min="1" max="10" oninput="runS11Pattern1()" class="w-14 bg-slate-950 border border-slate-700 text-amber-300 px-2 py-1 rounded text-xs"></label>
-                        </div>
-                    </div>
-                    <div class="bg-slate-950 border border-slate-800 p-3 rounded-xl">
-                        <div class="text-[11px] font-bold text-amber-400 mb-1 flex items-center gap-1.5">
-                            <i class="fas fa-terminal"></i> 執行結果 Output
-                        </div>
-                        <pre id="s11-p1-out" class="font-mono text-xs text-amber-300 leading-tight"></pre>
-                    </div>
-                </div>
-
-                <!-- 3 Level Loop Practice -->
-                <div class="bg-slate-800 border border-slate-700 rounded-2xl p-5 flex flex-col justify-between space-y-3">
-                    <div>
-                        <h3 class="text-sm font-bold text-white mb-2">2. 三層迴圈星號模擬 (PDF 第22頁)</h3>
-                        <div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800 font-mono text-[11px] text-slate-300 mb-2 leading-relaxed">
-                            <span class="text-blue-400">for</span> (i = <span class="text-amber-300">1</span>; i &lt;= <span class="text-cyan-300">5</span>; i++) {<br>
-                            &nbsp;&nbsp;<span class="text-blue-400">for</span> (j = <span class="text-amber-300">1</span>; j &lt;= <span class="text-cyan-300">3</span>; j++) {<br>
-                            &nbsp;&nbsp;&nbsp;&nbsp;<span class="text-blue-400">for</span> (k = <span class="text-amber-300">1</span>; k &lt;= <span class="text-cyan-300">10</span>; k++) {<br>
-                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="text-indigo-300">cout</span> &lt;&lt; <span class="text-emerald-300">"*"</span>;<br>
-                            &nbsp;&nbsp;&nbsp;&nbsp;}<br>
-                            &nbsp;&nbsp;&nbsp;&nbsp;<span class="text-indigo-300">cout</span> &lt;&lt; <span class="text-indigo-300">endl</span>;<br>
-                            &nbsp;&nbsp;}<br>
-                            &nbsp;&nbsp;<span class="text-indigo-300">cout</span> &lt;&lt; <span class="text-indigo-300">endl</span>;<br>
-                            }
-                        </div>
-                        <p class="text-xs text-slate-300 mb-2">調整三層迴圈次數 (外層 i &times; 中層 j &times; 內層 k)：</p>
-                        <div class="grid grid-cols-3 gap-2 mb-2">
-                            <label class="text-[11px] text-slate-400">外層 I (1..N): <input type="number" id="s11-p2-i" value="5" min="1" max="10" oninput="runS11Pattern2()" class="w-full bg-slate-950 border border-slate-700 text-cyan-300 px-2 py-1 rounded text-xs"></label>
-                            <label class="text-[11px] text-slate-400">中層 J (1..M): <input type="number" id="s11-p2-j" value="3" min="1" max="10" oninput="runS11Pattern2()" class="w-full bg-slate-950 border border-slate-700 text-cyan-300 px-2 py-1 rounded text-xs"></label>
-                            <label class="text-[11px] text-slate-400">內層 K (1..L): <input type="number" id="s11-p2-k" value="10" min="1" max="20" oninput="runS11Pattern2()" class="w-full bg-slate-950 border border-slate-700 text-cyan-300 px-2 py-1 rounded text-xs"></label>
-                        </div>
-                    </div>
-                    <div class="bg-slate-950 border border-slate-800 p-3 rounded-xl">
-                        <div class="text-[11px] font-bold text-cyan-400 mb-1 flex items-center gap-1.5">
-                            <i class="fas fa-terminal"></i> 模擬統計結果 Output
-                        </div>
-                        <div id="s11-p2-out" class="font-mono text-xs text-cyan-300 leading-relaxed"></div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Slide 12: APCS Practice (Nested Loops) -->
-        <section class="slide" id="slide-12">
-            <h2 class="text-2xl md:text-3xl font-bold text-indigo-400 mb-4 flex items-center gap-3">
-                <i class="fas fa-graduation-cap"></i> APCS 觀念題互動練習 (巢狀迴圈篇)
-            </h2>
-
-            <div class="grid md:grid-cols-3 gap-4 text-xs">
-                <!-- APCS P.23 (Pyramid) -->
-                <div class="bg-slate-800 border border-slate-700 rounded-xl p-4 flex flex-col justify-between">
-                    <div>
-                        <span class="font-bold text-indigo-300 block mb-1">APCS 觀念題 1 (金字塔修正)</span>
-                        <div class="bg-slate-950 p-2 rounded border border-slate-800 font-mono text-[10px] text-slate-300 mb-2">
-                            m = 1;<br>
-                            for (i = 1; i &lt;= 5; i++) {<br>
-                            &nbsp;&nbsp;for (j = 1; j &lt;= m; j++) cout &lt;&lt; "*";<br>
-                            &nbsp;&nbsp;cout &lt;&lt; endl;<br>
-                            &nbsp;&nbsp;m = m + 1; <span class="text-slate-500">// 欲印出 1,3,5,7,9 顆星</span><br>
-                            }
-                        </div>
-                        <p class="text-slate-300 mb-2 font-medium">欲印出 1, 3, 5, 7, 9 星號，最少需修改幾行程式碼？</p>
-                        <div class="space-y-1.5" id="s12-q1-options">
-                            <button onclick="checkQuizOption('s12-q1', 'A', '正確！僅需將第 5 行的 `m = m + 1;` 修改為 `m = m + 2;` (共 1 行即可)。', this)" class="w-full text-left p-2 rounded bg-slate-900 hover:bg-slate-700 text-slate-200 transition">(A) 1 行</button>
-                            <button onclick="checkQuizOption('s12-q1', 'A', '錯誤。僅需修改 m 的遞增值 (m = m + 2) 一行即可完成。', this)" class="w-full text-left p-2 rounded bg-slate-900 hover:bg-slate-700 text-slate-200 transition">(B) 2 行</button>
-                            <button onclick="checkQuizOption('s12-q1', 'A', '錯誤。僅需修改 m 的遞增值 (m = m + 2) 一行即可完成。', this)" class="w-full text-left p-2 rounded bg-slate-900 hover:bg-slate-700 text-slate-200 transition">(C) 3 行</button>
-                            <button onclick="checkQuizOption('s12-q1', 'A', '錯誤。僅需修改 m 的遞增值 (m = m + 2) 一行即可完成。', this)" class="w-full text-left p-2 rounded bg-slate-900 hover:bg-slate-700 text-slate-200 transition">(D) 4 行</button>
-                        </div>
-                    </div>
-                    <div id="s12-q1-feedback" class="hidden mt-2 p-2 bg-slate-900 border rounded text-[11px]"></div>
-                </div>
-
-                <!-- APCS P.24 (Inverted Triangle) -->
-                <div class="bg-slate-800 border border-slate-700 rounded-xl p-4 flex flex-col justify-between">
-                    <div>
-                        <span class="font-bold text-indigo-300 block mb-1">APCS 觀念題 17 (倒三角形)</span>
-                        <div class="bg-slate-950 p-2 rounded border border-slate-800 font-mono text-[10px] text-slate-300 mb-2">
-                            for (i = 0; i &lt; 3; i++) {<br>
-                            &nbsp;&nbsp;k = 6 - 2 * i;<br>
-                            &nbsp;&nbsp;while (<span class="text-amber-300 font-bold">(a)</span>) {<br>
-                            &nbsp;&nbsp;&nbsp;&nbsp;cout &lt;&lt; "*"; k--;<br>
-                            &nbsp;&nbsp;}<br>
-                            &nbsp;&nbsp;cout &lt;&lt; endl;<br>
-                            }
-                        </div>
-                        <p class="text-slate-300 mb-2 font-medium">欲印出 6, 4, 2 顆星倒三角形，條件 (a) 應填入？</p>
-                        <div class="space-y-1.5" id="s12-q2-options">
-                            <button onclick="checkQuizOption('s12-q2', 'C', '錯誤。若設 k>=0，當 k=0 時還會多印一顆星 (變成 7, 5, 3 顆)。', this)" class="w-full text-left p-2 rounded bg-slate-900 hover:bg-slate-700 text-slate-200 transition">(A) k &gt;= 0</button>
-                            <button onclick="checkQuizOption('s12-q2', 'C', '錯誤。k<6 初始條件成立後遞減，會變成無窮迴圈。', this)" class="w-full text-left p-2 rounded bg-slate-900 hover:bg-slate-700 text-slate-200 transition">(B) k &lt; 6</button>
-                            <button onclick="checkQuizOption('s12-q2', 'C', '正確！當 i=0 時 k=6(印6次)；i=1 時 k=4(印4次)；i=2 時 k=2(印2次)，條件設定 k > 0 完全正確！', this)" class="w-full text-left p-2 rounded bg-slate-900 hover:bg-slate-700 text-slate-200 transition">(C) k &gt; 0</button>
-                            <button onclick="checkQuizOption('s12-q2', 'C', '錯誤。k==0 會導致迴圈跳過或執行次數不對。', this)" class="w-full text-left p-2 rounded bg-slate-900 hover:bg-slate-700 text-slate-200 transition">(D) k == 0</button>
-                        </div>
-                    </div>
-                    <div id="s12-q2-feedback" class="hidden mt-2 p-2 bg-slate-900 border rounded text-[11px]"></div>
-                </div>
-
-                <!-- APCS P.25 (Matrix Indexing) -->
-                <div class="bg-slate-800 border border-slate-700 rounded-xl p-4 flex flex-col justify-between">
-                    <div>
-                        <span class="font-bold text-indigo-300 block mb-1">APCS 觀念題 18 (矩陣座標)</span>
-                        <div class="bg-slate-950 p-2 rounded border border-slate-800 font-mono text-[10px] text-slate-300 mb-2">
-                            int x = 0;<br>
-                            for (i = 1; i &lt;= 3; i++)<br>
-                            &nbsp;&nbsp;for (j = 1; j &lt;= 3; j++) {<br>
-                            &nbsp;&nbsp;&nbsp;&nbsp;if (i+j == 2) x += 2;<br>
-                            &nbsp;&nbsp;&nbsp;&nbsp;else if (i+j == 3) x += 3;<br>
-                            &nbsp;&nbsp;&nbsp;&nbsp;else if (i+j == 4) x += 4;<br>
-                            &nbsp;&nbsp;}
-                        </div>
-                        <p class="text-slate-300 mb-2 font-medium">計算程式執行完畢後 x 之最終輸出值？</p>
-                        <div class="space-y-1.5" id="s12-q3-options">
-                            <button onclick="checkQuizOption('s12-q3', 'D', '錯誤。未算入 i+j==3 (出現2次) 與 i+j==4 (出現3次) 的總和。', this)" class="w-full text-left p-2 rounded bg-slate-900 hover:bg-slate-700 text-slate-200 transition">(A) 12</button>
-                            <button onclick="checkQuizOption('s12-q3', 'D', '錯誤。請仔細計算 i+j 相加等於 2, 3, 4 的次數。', this)" class="w-full text-left p-2 rounded bg-slate-900 hover:bg-slate-700 text-slate-200 transition">(B) 16</button>
-                            <button onclick="checkQuizOption('s12-q3', 'D', '錯誤。計算公式為：2*(1次) + 3*(2次) + 4*(3次) = 2 + 6 + 12 = 20。', this)" class="w-full text-left p-2 rounded bg-slate-900 hover:bg-slate-700 text-slate-200 transition">(C) 18</button>
-                            <button onclick="checkQuizOption('s12-q3', 'D', '正確！(i+j)==2 出現1次(+2)；==3 出現2次(+6)；==4 出現3次(+12)。總和 2 + 6 + 12 = 20。', this)" class="w-full text-left p-2 rounded bg-slate-900 hover:bg-slate-700 text-slate-200 transition">(D) 20</button>
-                        </div>
-                    </div>
-                    <div id="s12-q3-feedback" class="hidden mt-2 p-2 bg-slate-900 border rounded text-[11px]"></div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Slide 13: Interactive Code Walkthrough -->
-        <section class="slide" id="slide-13">
-            <h2 class="text-2xl md:text-3xl font-bold text-indigo-400 mb-4 flex items-center gap-3">
-                <i class="fas fa-terminal"></i> 迴圈結構綜合實戰剖析
-            </h2>
-            <p class="text-slate-300 text-sm mb-4">點擊程式碼各行敘述，觀察變數與迴圈執行狀態：</p>
-
-            <div class="grid md:grid-cols-12 gap-6 items-start">
-                <div class="md:col-span-7 bg-slate-950 border border-slate-800 rounded-2xl p-4 font-mono text-xs md:text-sm leading-relaxed shadow-inner">
-                    <div class="flex items-center space-x-2 border-b border-slate-800 pb-3 mb-3">
-                        <div class="w-3 h-3 bg-red-500 rounded-full"></div>
-                        <div class="w-3 h-3 bg-yellow-500 rounded-full"></div>
-                        <div class="w-3 h-3 bg-green-500 rounded-full"></div>
-                        <span class="text-xs text-slate-500 ml-2">loops_demo.cpp</span>
-                    </div>
-                    <div class="space-y-1">
-                        <div onclick="explainCode(1)" class="cursor-pointer hover:bg-slate-800/80 p-1.5 rounded transition">
-                            <span class="text-blue-400">int</span> sum = <span class="text-amber-300">0</span>;
-                        </div>
-                        <div onclick="explainCode(2)" class="cursor-pointer hover:bg-slate-800/80 p-1.5 rounded transition">
-                            <span class="text-blue-400">for</span> (<span class="text-blue-400">int</span> i = <span class="text-amber-300">1</span>; i &lt;= <span class="text-amber-300">5</span>; i++) {
-                        </div>
-                        <div onclick="explainCode(3)" class="cursor-pointer hover:bg-slate-800/80 p-1.5 rounded transition pl-4">
-                            <span class="text-blue-400">if</span> (i == <span class="text-amber-300">3</span>) <span class="text-cyan-400">continue;</span> <span class="text-slate-500">// 跳過 i=3</span>
-                        </div>
-                        <div onclick="explainCode(4)" class="cursor-pointer hover:bg-slate-800/80 p-1.5 rounded transition pl-4">
-                            sum += i;
-                        </div>
-                        <div onclick="explainCode(5)" class="cursor-pointer hover:bg-slate-800/80 p-1.5 rounded transition">
-                            }
-                        </div>
-                        <div onclick="explainCode(6)" class="cursor-pointer hover:bg-slate-800/80 p-1.5 rounded transition">
-                            <span class="text-indigo-300">cout</span> &lt;&lt; <span class="text-emerald-300">"sum = "</span> &lt;&lt; sum;
-                        </div>
-                    </div>
-                </div>
-
-                <div class="md:col-span-5 bg-slate-800 border border-slate-700 rounded-2xl p-5 min-h-[260px] flex flex-col justify-center">
-                    <div id="code-explanation-title" class="text-lg font-bold text-indigo-400 mb-2">
-                        點擊左側程式碼敘述
-                    </div>
-                    <div id="code-explanation-body" class="text-sm text-slate-300 leading-relaxed">
-                        點擊左側任何一行程式碼，查看 continue 控制變數與 sum 累加值變化。
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Slide 14: Quiz -->
-        <section class="slide" id="slide-14">
-            <h2 class="text-2xl md:text-3xl font-bold text-indigo-400 mb-6 flex items-center gap-3">
-                <i class="fas fa-graduation-cap"></i> 本章隨堂測驗
-            </h2>
-
-            <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 space-y-6">
-                <!-- Question 1 -->
-                <div>
-                    <h3 class="text-sm md:text-base font-semibold text-white mb-3">
-                        1. 關於 while 迴圈與 do-while 迴圈的比較，下列敘述何者正確？
-                    </h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3" id="q1-options">
-                        <button onclick="checkAnswer(1, false, this)" class="p-3 bg-slate-700/60 hover:bg-slate-700 rounded-xl text-left text-xs md:text-sm transition">(A) while 迴圈最少一定會執行 1 次</button>
-                        <button onclick="checkAnswer(1, true, this)" class="p-3 bg-slate-700/60 hover:bg-slate-700 rounded-xl text-left text-xs md:text-sm transition">(B) do-while 迴圈保證至少會執行 1 次</button>
-                        <button onclick="checkAnswer(1, false, this)" class="p-3 bg-slate-700/60 hover:bg-slate-700 rounded-xl text-left text-xs md:text-sm transition">(C) do-while 語法末尾不需要加分號</button>
-                        <button onclick="checkAnswer(1, false, this)" class="p-3 bg-slate-700/60 hover:bg-slate-700 rounded-xl text-left text-xs md:text-sm transition">(D) 兩者皆為前測條件迴圈</button>
-                    </div>
-                </div>
-
-                <!-- Question 2 -->
-                <div class="pt-4 border-t border-slate-700">
-                    <h3 class="text-sm md:text-base font-semibold text-white mb-3">
-                        2. 執行 <code>for(int i=0; i&lt;5; i++) { if(i==2) break; cout &lt;&lt; i; }</code> 輸出為何？
-                    </h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3" id="q2-options">
-                        <button onclick="checkAnswer(2, true, this)" class="p-3 bg-slate-700/60 hover:bg-slate-700 rounded-xl text-left text-xs md:text-sm transition">(A) 01 (遇 i==2 立即跳出迴圈)</button>
-                        <button onclick="checkAnswer(2, false, this)" class="p-3 bg-slate-700/60 hover:bg-slate-700 rounded-xl text-left text-xs md:text-sm transition">(B) 0134</button>
-                        <button onclick="checkAnswer(2, false, this)" class="p-3 bg-slate-700/60 hover:bg-slate-700 rounded-xl text-left text-xs md:text-sm transition">(C) 01234</button>
-                        <button onclick="checkAnswer(2, false, this)" class="p-3 bg-slate-700/60 hover:bg-slate-700 rounded-xl text-left text-xs md:text-sm transition">(D) 2</button>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-    </main>
-
-    <!-- Footer Controls -->
-    <footer class="bg-slate-800/80 backdrop-blur border-t border-slate-700 px-6 py-4 flex justify-between items-center">
-        <button onclick="prevSlide()" id="btn-prev" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 disabled:opacity-40 disabled:cursor-not-allowed rounded-lg text-sm font-medium transition flex items-center space-x-2">
-            <i class="fas fa-chevron-left"></i>
-            <span>上一頁</span>
-        </button>
-
-        <div class="flex space-x-1.5 overflow-x-auto px-2" id="dots-container"></div>
-
-        <button onclick="nextSlide()" id="btn-next" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 disabled:cursor-not-allowed rounded-lg text-sm font-medium transition flex items-center space-x-2">
-            <span>下一頁</span>
-            <i class="fas fa-chevron-right"></i>
-        </button>
-    </footer>
-
-    <!-- Interactive Script -->
-    <script>
-        let currentSlide = 1;
-        const totalSlides = 14;
-
-        function updateSlide() {
-            document.querySelectorAll('.slide').forEach((el, idx) => {
-                el.classList.toggle('active', idx + 1 === currentSlide);
-            });
-
-            document.getElementById('slide-indicator').textContent = `頁次 ${currentSlide} / ${totalSlides}`;
-            document.getElementById('btn-prev').disabled = currentSlide === 1;
-            document.getElementById('btn-next').disabled = currentSlide === totalSlides;
-
-            updateDots();
-        }
-
-        function nextSlide() {
-            if (currentSlide < totalSlides) {
-                currentSlide++;
-                updateSlide();
-            }
-        }
-
-        function prevSlide() {
-            if (currentSlide > 1) {
-                currentSlide--;
-                updateSlide();
-            }
-        }
-
-        function goToSlide(n) {
-            currentSlide = n;
-            updateSlide();
-        }
-
-        function updateDots() {
-            const container = document.getElementById('dots-container');
-            container.innerHTML = '';
-            for (let i = 1; i <= totalSlides; i++) {
-                const dot = document.createElement('button');
-                dot.className = `w-2 h-2 rounded-full transition-all ${i === currentSlide ? 'bg-indigo-400 w-5' : 'bg-slate-600 hover:bg-slate-500'}`;
-                dot.onclick = () => goToSlide(i);
-                container.appendChild(dot);
-            }
-        }
-
-        const codeExplanations = {
-            1: { title: "初始化累積變數", body: "宣告整數變數 sum 並設初始值為 0。" },
-            2: { title: "For 迴圈控制條件", body: "設定控制變數 i 從 1 遞增到 5。" },
-            3: { title: "continue 條件判斷", body: "當 i 等於 3 時觸發 continue，直接跳過後續累加敘述進入下一輪 (i=4)。" },
-            4: { title: "數值累加運算", body: "將 i 累加至 sum。發生的累加數值為 i=1, 2, 4, 5（3 被跳過）。" },
-            5: { title: "迴圈結束", body: "當 i 遞增至 6 時不符合 i <= 5，跳出迴圈。" },
-            6: { title: "輸出計算結果", body: "最終 sum 的數值為 1 + 2 + 4 + 5 = 12。" }
-        };
-
-        function explainCode(line) {
-            const exp = codeExplanations[line];
-            if (exp) {
-                document.getElementById('code-explanation-title').textContent = exp.title;
-                document.getElementById('code-explanation-body').textContent = exp.body;
-            }
-        }
-
-        function checkAnswer(qNum, isCorrect, btn) {
-            const container = document.getElementById(`q${qNum}-options`);
-            const buttons = container.querySelectorAll('button');
-            buttons.forEach(b => {
-                b.disabled = true;
-                b.classList.remove('bg-slate-700/60', 'hover:bg-slate-700');
-            });
-
-            if (isCorrect) {
-                btn.classList.add('bg-emerald-600', 'text-white');
-            } else {
-                btn.classList.add('bg-rose-600', 'text-white');
-            }
-        }
-
-        // Quiz checking helper for APCS question slides (Slides 5, 9, 12)
-        function checkQuizOption(qId, correctChoice, explanation, btn) {
-            const container = document.getElementById(`${qId}-options`);
-            const feedbackEl = document.getElementById(`${qId}-feedback`);
-            if (!container || !feedbackEl) return;
-
-            const buttons = container.querySelectorAll('button');
-            buttons.forEach(b => {
-                b.disabled = true;
-                b.classList.remove('hover:bg-slate-700');
-            });
-
-            const isCorrect = btn.textContent.startsWith(`(${correctChoice})`);
-            if (isCorrect) {
-                btn.classList.add('bg-emerald-600', 'text-white', 'font-bold');
-                feedbackEl.className = "mt-2 p-2 bg-emerald-950/60 border border-emerald-700 text-emerald-300 rounded text-[11px]";
-                feedbackEl.innerHTML = `<i class="fas fa-check-circle mr-1"></i> ${explanation || '回答正確！'}`;
-            } else {
-                btn.classList.add('bg-rose-600', 'text-white', 'font-bold');
-                feedbackEl.className = "mt-2 p-2 bg-rose-950/60 border border-rose-700 text-rose-300 rounded text-[11px]";
-                feedbackEl.innerHTML = `<i class="fas fa-times-circle mr-1"></i> 答案不正確。正確答案為 (${correctChoice})。`;
-            }
-        }
-
-        // Slide 7 Interactive Functions
-        function runS7StarApp() {
-            const num = parseInt(document.getElementById('s7-star-num')?.value) || 0;
-            const outputEl = document.getElementById('s7-star-output');
-            if (outputEl) {
-                outputEl.textContent = '*'.repeat(Math.max(0, Math.min(num, 100)));
-            }
-        }
-
-        function runS7SumApp() {
-            const num = parseInt(document.getElementById('s7-sum-num')?.value) || 0;
-            const outputEl = document.getElementById('s7-sum-output');
-            if (outputEl) {
-                let sum = 0;
-                for (let i = 1; i <= num; i++) sum += i;
-                outputEl.innerHTML = `計算過程: 1 + 2 + ... + ${num}<br><strong class="text-emerald-400 font-bold">總和 sum = ${sum}</strong>`;
-            }
-        }
-
-        // Slide 8 Answer Toggle
-        function toggleS8Ans(elementId, text) {
-            const el = document.getElementById(elementId);
-            if (el) {
-                el.textContent = text;
-                el.className = "text-emerald-400 font-bold font-mono";
-            }
-        }
-
-        // Slide 11 Interactive Functions
-        function runS11Pattern1() {
-            const r = parseInt(document.getElementById('s11-p1-r')?.value) || 0;
-            const c = parseInt(document.getElementById('s11-p1-c')?.value) || 0;
-            const outEl = document.getElementById('s11-p1-out');
-            if (!outEl) return;
-            let res = '';
-            for (let i = 0; i < r; i++) {
-                for (let j = 0; j < c; j++) {
-                    res += ((i + j) % 2 === 0) ? '*' : '-';
-                }
-                res += '\n';
-            }
-            outEl.textContent = res;
-        }
-
-        function runS11Pattern2() {
-            const I = parseInt(document.getElementById('s11-p2-i')?.value) || 0;
-            const J = parseInt(document.getElementById('s11-p2-j')?.value) || 0;
-            const K = parseInt(document.getElementById('s11-p2-k')?.value) || 0;
-            const outEl = document.getElementById('s11-p2-out');
-            if (!outEl) return;
-            const totalStars = I * J * K;
-            const totalLines = I * J;
-            outEl.innerHTML = `• 總印出星號數 (I &times; J &times; K)：<strong class="text-emerald-400 font-bold">${totalStars}</strong> 個 *<br>` +
-                              `• 總印出換行數 (I &times; J + 外層換行)：<strong class="text-amber-400 font-bold">${totalLines} (+${I})</strong> 行<br>` +
-                              `<span class="text-slate-400">單一內層 (k=1..${K}) 輸出：${'*'.repeat(K)}</span>`;
-        }
-
-        // Keyboard Shortcuts
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowRight' || e.key === 'Space') nextSlide();
-            if (e.key === 'ArrowLeft') prevSlide();
-        });
-
-        // Initialize Interactive Apps
-        updateSlide();
-        runS7StarApp();
-        runS7SumApp();
-        runS11Pattern1();
-        runS11Pattern2();
-    </script>
-</body>
-</html>
+        cout << endl;
+    }
+    cout << endl;
+}</pre>
+        <button class="btn" id="p22-btn" aria-expanded="false" style="align-self:flex-start">顯示答案</button>
+      </div>
+      <div class="stack" id="p22-ans" hidden>
+        <p>三層迴圈：最內層 k 印 <b>10</b> 個 *，中層 j 印 <b>3</b> 行後空一行，外層 i 重複 <b>5</b> 組。共 5 × 3 × 10 = <b>150</b> 個星號。</p>
+        <pre class="console" id="p22-out" style="max-height:260px;overflow:auto"></pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 5.6 APCS -->
+<section id="apcs">
+  <div class="sec-head"><span class="sec-no">5.6</span><h2>APCS 觀念題</h2></div>
+  <div class="score">
+    <span>已作答 <b id="sc-done">0</b> / <b id="sc-total">9</b></span>
+    <span>一次就答對 <b id="sc-ok">0</b></span>
+    <button class="btn" id="sc-reset">全部重做</button>
+  </div>
+  <div class="quiz" id="quiz"></div>
+</section>
+</main>
+
+<footer class="wrap">第五章 重複結構 · 依課堂投影片內容製作。追蹤器是依每段程式逐行模擬的結果。</footer>
+
+<script>
+/* ---------- highlighting ---------- */
+const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const RE=/(\/\/.*$)|("(?:[^"\\]|\\.)*")|\b(int|while|do|for|if|else|continue|break|return|void)\b|\b(cout|cin|endl|printf)\b|(\b\d+\b)/g;
+function hl(s){let o='',last=0;s.replace(RE,(m,cm,st,kw,io,num,idx)=>{o+=esc(s.slice(last,idx));const c=cm?'c':st?'s':kw?'k':io?'f':'n';o+=`<span class="t-${c}">${esc(m)}</span>`;last=idx+m.length;return m;});return o+esc(s.slice(last));}
+function renderLine(s){let o='',last=0;s.replace(/⟦(\d+):(.*?)⟧/g,(m,n,inner,idx)=>{o+=hl(s.slice(last,idx));o+=`<span class="seg" data-seg="${n}">${hl(inner)}</span>`;last=idx+m.length;return m;});return o+hl(s.slice(last));}
+document.querySelectorAll('[data-hl]').forEach(el=>{el.innerHTML=el.textContent.split('\n').map(hl).join('\n');});
+
+/* ---------- tracer ---------- */
+function record(run,p,limit){const steps=[];let out='';const STOP={};
+  const T={at(line,vars,note='',seg=0){steps.push({line,vars:{...vars},out,note,seg});if(steps.length>=limit)throw STOP;},print(s){out+=s;}};
+  let cut=false;try{run(T,p)}catch(e){if(e===STOP)cut=true;else throw e;}return{steps,cut};}
+
+function mountTracer(root,cfg){
+  root.className='tracer';
+  root.innerHTML=`<div class="tr-head"><span class="tr-title"></span><span class="tr-count"></span></div>
+  <div class="tr-code"></div><p class="tr-note" aria-live="polite"></p>
+  <div class="tr-io"><div class="tr-vars"><div class="cap">變數</div><dl></dl></div><div class="tr-out"><div class="cap">輸出</div><pre></pre></div></div>
+  <div class="tr-ctrl"><button data-a="reset" aria-label="回到開頭">⏮</button><button data-a="prev">上一步</button><button data-a="play" class="primary">▶ 播放</button><button data-a="next">下一步</button><input type="range" min="0" value="0" aria-label="拖曳到任一步"></div>`;
+  const $=s=>root.querySelector(s);
+  const codeEl=$('.tr-code'),note=$('.tr-note'),dl=$('.tr-vars dl'),outEl=$('.tr-out pre'),count=$('.tr-count'),range=$('input[type=range]');
+  const bPrev=$('[data-a=prev]'),bNext=$('[data-a=next]'),bPlay=$('[data-a=play]'),bReset=$('[data-a=reset]');
+  $('.tr-title').textContent=cfg.title||'';
+  let st,idx=0,timer=null;
+  function stop(){clearInterval(timer);timer=null;bPlay.textContent='▶ 播放';}
+  function show(){
+    const s=st.steps[idx],pv=st.steps[idx-1];
+    codeEl.querySelectorAll('.ln').forEach(el=>el.classList.toggle('cur',+el.dataset.l===s.line));
+    codeEl.querySelectorAll('.seg').forEach(el=>el.classList.toggle('on',+el.dataset.seg===s.seg&&s.seg>0));
+    note.textContent=s.note||'\u00a0';note.classList.toggle('warn',!!s.warn);
+    dl.innerHTML=Object.entries(s.vars).map(([k,v])=>`<div class="${pv&&pv.vars[k]!==v?'chg':''}"><dt>${esc(k)}</dt><dd>${v===undefined?'?':esc(String(v))}</dd></div>`).join('');
+    outEl.textContent=s.out;outEl.scrollTop=outEl.scrollHeight;
+    count.textContent=`第 ${idx+1} / ${st.steps.length} 步`;range.value=idx;
+    bPrev.disabled=bReset.disabled=idx===0;bNext.disabled=idx===st.steps.length-1;
+    const cur=codeEl.querySelector('.ln.cur');
+    if(cur){const t=cur.offsetTop,h=codeEl.clientHeight;if(t<codeEl.scrollTop+4||t>codeEl.scrollTop+h-30)codeEl.scrollTop=t-h/2;}
+  }
+  function build(){
+    stop();const p=cfg.params?cfg.params():{};
+    const lines=typeof cfg.lines==='function'?cfg.lines(p):cfg.lines;
+    codeEl.innerHTML=lines.map((l,i)=>`<div class="ln" data-l="${i}"><span class="no">${i+1}</span><span class="tx">${renderLine(l)||' '}</span></div>`).join('');
+    st=record(cfg.run,p,cfg.limit||500);
+    if(st.cut){const l=st.steps[st.steps.length-1];l.note=`⚠ 已執行 ${st.steps.length} 步，條件始終為 true，迴圈停不下來：這就是無窮迴圈（已強制停止）。`;l.warn=true;}
+    range.max=st.steps.length-1;idx=0;show();
+  }
+  bNext.onclick=()=>{stop();if(idx<st.steps.length-1){idx++;show();}};
+  bPrev.onclick=()=>{stop();if(idx>0){idx--;show();}};
+  bReset.onclick=()=>{stop();idx=0;show();};
+  range.oninput=()=>{stop();idx=+range.value;show();};
+  bPlay.onclick=()=>{
+    if(timer){stop();return;}
+    if(idx>=st.steps.length-1)idx=0;
+    bPlay.textContent='❚❚ 暫停';
+    timer=setInterval(()=>{if(idx>=st.steps.length-1){stop();return;}idx++;show();},cfg.speed||600);
+  };
+  build();return{build};
+}
+
+/* ---------- 5.1 while ---------- */
+const wNo=document.getElementById('w-noinc');
+const trWhile=mountTracer(document.getElementById('tr-while'),{
+  title:'範例：印出第 1～5 次的迴圈',limit:40,
+  params:()=>({noInc:wNo.checked}),
+  lines:p=>['int i = 1;','while (i <= 5) {','    cout << "第" << i << "次的迴圈。" << endl;',p.noInc?'    // i++;   ← 被拿掉了':'    i++;','}','// 迴圈結束'],
+  run(T,p){let i=1;T.at(0,{i},'設定 i = 1');
+    while(true){const c=i<=5;T.at(1,{i},`檢查條件 i <= 5 → ${i} <= 5 → ${c}`);if(!c)break;
+      T.print(`第${i}次的迴圈。\n`);T.at(2,{i},'印出一行');
+      if(!p.noInc){i++;T.at(3,{i},`i++，i 變成 ${i}`);}}
+    T.at(5,{i},'條件為 false，離開迴圈');}
+});
+wNo.onchange=()=>trWhile.build();
+
+const cinIn=document.getElementById('cin-in');
+function cinRun(){const nums=(cinIn.value.match(/-?\d+/g)||[]).map(Number);let o='';const lines=cinIn.value.split('\n');
+  let html='';let buf=[];let pending=[];
+  for(const n of nums){buf.push(n);}
+  // echo by line, print sum whenever two numbers have been read
+  const all=[];for(const line of lines){const t=(line.match(/-?\d+/g)||[]).map(Number);if(!t.length)continue;html+=`<span class="in">${esc(line.trim())}</span>\n`;for(const n of t){pending.push(n);if(pending.length===2){html+=`${pending[0]+pending[1]}\n`;pending=[];}}}
+  html+='<span class="in">^Z</span>';
+  document.getElementById('cin-out').innerHTML=html;
+  document.getElementById('cin-note').textContent=pending.length?'最後多了一個數字，等不到 b，所以按 Ctrl+Z 後 cin 讀取失敗，迴圈結束。':'按下 Ctrl+Z 後 cin 讀取失敗，條件變成 false，迴圈結束。';}
+cinIn.oninput=cinRun;cinRun();
+
+/* ---------- 5.2 do-while compare ---------- */
+const dwS=document.getElementById('dw-start'),dwV=document.getElementById('dw-val');
+const trW2=mountTracer(document.getElementById('tr-w2'),{
+  title:'while 版本',params:()=>({s:+dwS.value}),
+  lines:p=>[`int i = ${p.s};`,'while (i <= 5) {','    cout << "第" << i << "次的迴圈。" << endl;','    i++;','}','// 迴圈結束'],
+  run(T,p){let i=p.s;T.at(0,{i},`設定 i = ${i}`);
+    while(true){const c=i<=5;T.at(1,{i},`先判斷：i <= 5 → ${c}`);if(!c)break;T.print(`第${i}次的迴圈。\n`);T.at(2,{i});i++;T.at(3,{i},`i++，i 變成 ${i}`);}
+    T.at(5,{i},'離開迴圈');}
+});
+const trDw=mountTracer(document.getElementById('tr-dw'),{
+  title:'do-while 版本',params:()=>({s:+dwS.value}),
+  lines:p=>[`int i = ${p.s};`,'do {','    cout << "第" << i << "次的迴圈。" << endl;','    i++;','} while (i <= 5);','// 迴圈結束'],
+  run(T,p){let i=p.s;T.at(0,{i},`設定 i = ${i}`);T.at(1,{i},'直接進入迴圈，不先判斷');
+    while(true){T.print(`第${i}次的迴圈。\n`);T.at(2,{i});i++;T.at(3,{i},`i++，i 變成 ${i}`);const c=i<=5;T.at(4,{i},`執行完才判斷：i <= 5 → ${c}`);if(!c)break;}
+    T.at(5,{i},'離開迴圈');}
+});
+dwS.oninput=()=>{dwV.textContent=dwS.value;trW2.build();trDw.build();};
+
+/* ---------- 5.3 continue / break ---------- */
+mountTracer(document.getElementById('tr-cont'),{
+  title:'continue：只印出偶數',speed:450,
+  lines:['int i = 0;','while (i <= 10) {','    i++;','    if (i % 2)   // 是奇數','        continue;','    cout << i << endl;','}'],
+  run(T){let i=0;T.at(0,{i});
+    while(true){const c=i<=10;T.at(1,{i},`i <= 10 → ${c}`);if(!c)break;i++;T.at(2,{i},`i++，i 變成 ${i}`);
+      const odd=i%2;T.at(3,{i},`i % 2 = ${odd} → ${odd?'true，奇數':'false，偶數'}`);
+      if(odd){T.at(4,{i},'continue：略過下面的 cout，跳回條件判斷');continue;}
+      T.print(i+'\n');T.at(5,{i},'印出偶數');}
+    T.at(6,{i},'條件為 false，迴圈結束');}
+});
+mountTracer(document.getElementById('tr-brk'),{
+  title:'break：印到 9 就跳出',speed:450,
+  lines:['int i = 0;','while (1) {','    cout << i << endl;','    i++;','    if (i == 10)','        break;','}'],
+  run(T){let i=0;T.at(0,{i});
+    while(true){T.at(1,{i},'條件是 1，永遠為 true');T.print(i+'\n');T.at(2,{i});i++;T.at(3,{i},`i++，i 變成 ${i}`);
+      const c=i===10;T.at(4,{i},`i == 10 → ${c}`);if(c){T.at(5,{i},'break：直接跳出迴圈');break;}}
+    T.at(6,{i},'已離開迴圈');}
+});
+
+/* ---------- 5.4 for ---------- */
+mountTracer(document.getElementById('tr-for'),{
+  title:'for 範例 1',
+  lines:['for (⟦1:i = 1⟧; ⟦2:i <= 5⟧; ⟦3:i++⟧) {','    cout << "第" << i << "次的迴圈。" << endl;','}','// 迴圈結束'],
+  run(T){let i=1;T.at(0,{i},'① 設定起始值 i = 1（只做一次）',1);
+    while(true){const c=i<=5;T.at(0,{i},`② 判斷 i <= 5 → ${c}`,2);if(!c)break;T.print(`第${i}次的迴圈。\n`);T.at(1,{i},'執行程式區塊');i++;T.at(0,{i},`③ i++，i 變成 ${i}`,3);}
+    T.at(3,{i},'條件為 false，迴圈結束');}
+});
+
+const pg={start:document.getElementById('pg-start'),op:document.getElementById('pg-op'),bound:document.getElementById('pg-bound'),upd:document.getElementById('pg-upd'),amt:document.getElementById('pg-amt')};
+const presets=[[2,'<=',13,'+=',2],[5,'<=',22,'+=',7],[1,'<=',5,'+=',7],[12,'>=',2,'-=',3]];
+const challenges=[['a','1, 2, 3, 4, 5, 6, 7'],['b','3, 8, 13, 18, 23'],['c','20, 14, 8, 2, -4, -10'],['d','19, 27, 35, 43, 51']];
+let target=null;
+const presetEl=document.getElementById('pg-presets'),chEl=document.getElementById('pg-challenges');
+presets.forEach(p=>{const b=document.createElement('button');b.className='btn mono';b.textContent=`x=${p[0]}; x${p[1]}${p[2]}; x${p[3]}${p[4]}`;
+  b.onclick=()=>{[pg.start.value,pg.op.value,pg.bound.value,pg.upd.value,pg.amt.value]=p;target=null;mark();pgRun();};presetEl.appendChild(b);});
+challenges.forEach(([k,t])=>{const b=document.createElement('button');b.className='btn';b.textContent=`${k}) ${t}`;b.dataset.k=k;
+  b.onclick=()=>{target=target===t?null:t;mark();pgRun();};chEl.appendChild(b);});
+function mark(){chEl.querySelectorAll('button').forEach(b=>b.classList.toggle('on',target&&b.textContent.endsWith(target)));}
+function pgRun(){
+  const s=+pg.start.value,op=pg.op.value,bd=+pg.bound.value,up=pg.upd.value,a=+pg.amt.value;
+  const cond=x=>op==='<='?x<=bd:op==='<'?x<bd:op==='>='?x>=bd:x>bd;
+  const vals=[];let x=s;while(cond(x)&&vals.length<60){vals.push(x);x=up==='+='?x+a:x-a;}
+  const inf=cond(x)&&vals.length>=60;
+  document.getElementById('pg-code').innerHTML=hl(`for (x = ${s}; x ${op} ${bd}; x ${up} ${a})`)+'\n'+hl('    cout << x << endl;');
+  document.getElementById('pg-out').innerHTML=vals.length?vals.map(v=>`<span class="chip">${v}</span>`).join('')+(inf?'<span class="chip">…</span>':''):'<span class="muted small">一次都沒有執行（第一次判斷條件就是 false）</span>';
+  const st=document.getElementById('pg-status');
+  if(inf){st.className='status warn';st.textContent='⚠ x 永遠不會讓條件變成 false，這是無窮迴圈（只顯示前 60 個）。';return;}
+  if(target){const ok=vals.join(', ')===target;st.className='status '+(ok?'ok':'bad');st.textContent=ok?`✓ 正確！這個 for 敘述會印出 ${target}`:`目標：${target}　目前印出 ${vals.length} 個值，再調整看看。`;}
+  else{st.className='status';st.textContent=`共執行 ${vals.length} 次，結束時 x = ${x}。`;}
+}
+Object.values(pg).forEach(el=>el.addEventListener('input',pgRun));pgRun();
+
+const numIn=document.getElementById('num-in');
+function numRun(){let n=Math.max(0,Math.min(60,Math.floor(+numIn.value||0)));let sum=0;for(let i=1;i<=n;i++)sum+=i;
+  document.getElementById('num-out').innerHTML=`請輸入要印出幾個*？\n<span class="in">${n}</span>\n${'*'.repeat(n)}\n\n請問要求從1加到那個數字為止的和呢？\n<span class="in">${n}</span>\n從1加到${n}為止的和為${sum}。`;}
+numIn.oninput=numRun;numRun();
+
+/* ---------- 5.5 nested ---------- */
+mountTracer(document.getElementById('tr-nest'),{
+  title:'外圈 i × 內圈 j',speed:450,
+  lines:['for (⟦1:i = 0⟧; ⟦2:i < 3⟧; ⟦3:i++⟧) {','    for (⟦4:j = 0⟧; ⟦5:j < 3⟧; ⟦6:j++⟧) {','        cout << "i = " << i << " ; j = " << j << endl;','    }','}'],
+  run(T){let i=0,j;T.at(0,{i,j},'外圈 ① i = 0',1);
+    while(true){let c=i<3;T.at(0,{i,j},`外圈 ② i < 3 → ${c}`,2);if(!c)break;
+      j=0;T.at(1,{i,j},'內圈 ① j = 0（每次進入內圈都重設）',4);
+      while(true){const d=j<3;T.at(1,{i,j},`內圈 ② j < 3 → ${d}`,5);if(!d)break;T.print(`i = ${i} ; j = ${j}\n`);T.at(2,{i,j});j++;T.at(1,{i,j},`內圈 ③ j++，j 變成 ${j}`,6);}
+      i++;T.at(0,{i,j},`內圈結束；外圈 ③ i++，i 變成 ${i}`,3);}
+    T.at(4,{i,j},'外圈結束，共印出 3 × 3 = 9 行');}
+});
+mountTracer(document.getElementById('tr-check'),{
+  title:'交錯印出 * 與 _',speed:220,
+  lines:['ch = 0;','for (⟦1:i = 0⟧; ⟦2:i < 5⟧; ⟦3:i++⟧) {','    for (⟦4:j = 0⟧; ⟦5:j < 5⟧; ⟦6:j++⟧) {','        if (ch == 0) {','            cout << "*";','            ch = 1;','        } else {','            cout << "_";','            ch = 0;','        }','    }','    cout << endl;','}'],
+  run(T){let ch=0,i=0,j;T.at(0,{ch,i,j});T.at(1,{ch,i,j},'① i = 0',1);
+    while(true){let c=i<5;T.at(1,{ch,i,j},`② i < 5 → ${c}`,2);if(!c)break;j=0;T.at(2,{ch,i,j},'① j = 0',4);
+      while(true){const d=j<5;T.at(2,{ch,i,j},`② j < 5 → ${d}`,5);if(!d)break;
+        const e=ch===0;T.at(3,{ch,i,j},`ch == 0 → ${e}`);
+        if(e){T.print('*');T.at(4,{ch,i,j});ch=1;T.at(5,{ch,i,j},'ch 切換成 1');}
+        else{T.print('_');T.at(7,{ch,i,j},'進入 else');ch=0;T.at(8,{ch,i,j},'ch 切換成 0');}
+        j++;T.at(2,{ch,i,j},`③ j++，j 變成 ${j}`,6);}
+      T.print('\n');T.at(11,{ch,i,j},'內圈結束，換行');i++;T.at(1,{ch,i,j},`③ i++，i 變成 ${i}`,3);}
+    T.at(12,{ch,i,j},'完成 5 × 5 的圖案');}
+});
+const p22b=document.getElementById('p22-btn'),p22a=document.getElementById('p22-ans');
+document.getElementById('p22-out').textContent=Array.from({length:5},()=>('*'.repeat(10)+'\n').repeat(3)).join('\n');
+p22b.onclick=()=>{const o=p22a.hidden;p22a.hidden=!o;p22b.textContent=o?'隱藏答案':'顯示答案';p22b.setAttribute('aria-expanded',o);};
+
+/* ---------- 5.6 APCS quiz ---------- */
+function pyramid(d){let k=4,m=1,o='';for(let i=1;i<=5;i++){o+=' '.repeat(k)+'*'.repeat(m)+'\n';k--;m+=d;}return o;}
+function q17(t){let o='';for(let i=0;i<=3;i++)o+=' '.repeat(i)+'*'.repeat(Math.max(0,6-2*i-t))+'\n';return o;}
+const Q=[
+ {tag:'while · 13',q:'下列程式片段擬以輾轉相除法求 i 與 j 的最大公因數。請問 while 迴圈內容何者正確？',
+  code:'i = 76;\nj = 48;\nwhile ((i % j) != 0) {\n    ________\n    ________\n    ________\n}\nprintf("%d\\n", j);',code_opts:true,
+  opts:['k = i % j;\ni = j;\nj = k;','i = j;\nj = k;\nk = i % j;','i = j;\nj = i % k;\nk = i;','k = i;\ni = j;\nj = i % k;'],ans:0,
+  exp:'輾轉相除法每一輪要把 (i, j) 換成 (j, i % j)。先用 k 暫存餘數，再 i = j、j = k。順序不能對調，否則 i 的舊值會先被覆蓋。(B) 在 k 還沒算出來前就使用 k。追蹤結果輸出 <b>4</b>。',
+  trace:{title:'選項 (A) 代入追蹤',lines:['i = 76;','j = 48;','while ((i % j) != 0) {','    k = i % j;','    i = j;','    j = k;','}','printf("%d\\n", j);'],
+   run(T){let i=76,j,k;T.at(0,{i,j,k});j=48;T.at(1,{i,j,k});
+     while(true){const r=i%j;T.at(2,{i,j,k},`i % j = ${i} % ${j} = ${r} → ${r!==0?'≠ 0，繼續':'= 0，結束'}`);if(r===0)break;k=r;T.at(3,{i,j,k});i=j;T.at(4,{i,j,k});j=k;T.at(5,{i,j,k});}
+     T.print(j+'\n');T.at(7,{i,j,k},`最大公因數為 ${j}`);}}},
+ {tag:'while · 23',q:'請問下列程式，執行完後輸出為何？',
+  code:'int i = 2, x = 3;\nint N = 65536;\n\nwhile (i <= N) {\n    i = i * i * i;\n    x = x + 1;\n}\nprintf("%d %d \\n", i, x);',
+  opts:['2417851639229258349412352  7','68921  43','65537  65539','134217728  6'],ans:3,
+  exp:'i 依序為 2 → 8 → 512 → 134217728，每次 x 加 1：3 → 4 → 5 → 6。i = 512 時仍 ≤ 65536，所以會再立方一次才停。',
+  trace:{title:'逐步追蹤',lines:['int i = 2, x = 3;','int N = 65536;','while (i <= N) {','    i = i * i * i;','    x = x + 1;','}','printf("%d %d \\n", i, x);'],
+   run(T){let i=2,x=3,N;T.at(0,{i,x,N});N=65536;T.at(1,{i,x,N});
+     while(true){const c=i<=N;T.at(2,{i,x,N},`${i} <= 65536 → ${c}`);if(!c)break;i=i*i*i;T.at(3,{i,x,N});x++;T.at(4,{i,x,N});}
+     T.print(`${i} ${x} \n`);T.at(6,{i,x,N});}}},
+ {tag:'for · 13',q:'下列程式片段無法正確列印 20 次的 "Hi!"，請問下列哪一個修正方式<b>仍無法</b>正確列印 20 次的 "Hi!"？',
+  code:'for (int i=0; i<=100; i=i+5) {\n    printf("%s\\n", "Hi!");\n}',
+  opts:['將 i<=100 和 i=i+5 分別修正為 i<20 和 i=i+1','將 i=0 修正為 i=5','將 i<=100 修正為 i<100','將 i=0 和 i<=100 分別修正為 i=5 和 i<100'],ans:3,
+  exp:'原程式 i = 0, 5, …, 100 共 21 次，多了一次。各選項的次數：',
+  extra:()=>`<div class="tbl"><table class="mini"><tr><th>寫法</th><th>i 的值</th><th>次數</th></tr>
+   <tr><td>原程式</td><td class="mono">0, 5, …, 100</td><td>21</td></tr><tr><td>(A)</td><td class="mono">0, 1, …, 19</td><td>20</td></tr>
+   <tr><td>(B)</td><td class="mono">5, 10, …, 100</td><td>20</td></tr><tr><td>(C)</td><td class="mono">0, 5, …, 95</td><td>20</td></tr>
+   <tr><td>(D)</td><td class="mono">5, 10, …, 95</td><td><b>19</b></td></tr></table></div>`},
+ {tag:'for · 8',q:'費式數列第一個數為 0、第二個數為 1，之後每個數都等於前兩個數相加：0、1、1、2、3、5、8、13…。下列程式用以計算第 N 個 (N ≥ 2) 費式數列的數值，(a) 與 (b) 應為何？',
+  code:'int a=0;\nint b=1;\nint i, temp, N;\n…\nfor (i=2; i<=N; i=i+1) {\n    temp = b;\n    ___(a)___ ;\n    a = temp;\n    printf("%d\\n", ___(b)___);\n}',code_opts:true,
+  opts:['(a) f[i]=f[i-1]+f[i-2]　(b) f[N]','(a) a = a + b　(b) a','(a) b = a + b　(b) b','(a) f[i]=f[i-1]+f[i-2]　(b) f[i]'],ans:2,
+  exp:'temp 先記住舊的 b，b = a + b 算出下一項，再把舊的 b（temp）交給 a，輸出 b。(A)(D) 用到沒有宣告的陣列 f；(B) 會把下一項存進 a，但 a 隨即被 temp 蓋掉。',
+  trace:{title:'N = 8 時的追蹤',lines:['int a = 0;','int b = 1;','for (⟦1:i = 2⟧; ⟦2:i <= N⟧; ⟦3:i = i + 1⟧) {','    temp = b;','    b = a + b;','    a = temp;','    printf("%d\\n", b);','}'],
+   run(T){let a=0,b,i,temp,N=8;T.at(0,{N,a,b,temp,i});b=1;T.at(1,{N,a,b,temp,i});i=2;T.at(2,{N,a,b,temp,i},'① i = 2',1);
+     while(true){const c=i<=N;T.at(2,{N,a,b,temp,i},`② i <= 8 → ${c}`,2);if(!c)break;temp=b;T.at(3,{N,a,b,temp,i});b=a+b;T.at(4,{N,a,b,temp,i});a=temp;T.at(5,{N,a,b,temp,i});T.print(b+'\n');T.at(6,{N,a,b,temp,i},`第 ${i} 個費式數為 ${b}`);i++;T.at(2,{N,a,b,temp,i},'③ i = i + 1',3);}
+     T.at(7,{N,a,b,temp,i});}}},
+ {tag:'for · 21',q:'下列程式碼，執行時的輸出為何？',
+  code:'void main() {\n    for (int i=0; i<=10; i=i+1) {\n        printf("%d ", i);\n        i = i + 1;\n    }\n    printf("\\n");\n}',
+  opts:['0 2 4 6 8 10','0 1 2 3 4 5 6 7 8 9 10','0 1 3 5 7 9','0 1 3 5 7 9 11'],ans:0,
+  exp:'迴圈主體內又做了 i = i + 1，再加上 for 第三段的 i = i + 1，每輪 i 共增加 2。印出 0 2 4 6 8 10，之後 i = 12 不符合條件。',
+  trace:{title:'逐步追蹤',lines:['for (⟦1:int i = 0⟧; ⟦2:i <= 10⟧; ⟦3:i = i + 1⟧) {','    printf("%d ", i);','    i = i + 1;','}'],
+   run(T){let i=0;T.at(0,{i},'①',1);while(true){const c=i<=10;T.at(0,{i},`② i <= 10 → ${c}`,2);if(!c)break;T.print(i+' ');T.at(1,{i});i++;T.at(2,{i},'主體裡加 1');i++;T.at(0,{i},'③ 再加 1',3);}T.at(3,{i},'結束');}}},
+ {tag:'for · 12',q:'下列程式片段執行過程中的輸出為何？',
+  code:'int a = 5;\n…\nfor (int i=0; i<20; i=i+1) {\n    i = i + a;\n    printf("%d ", i);\n}',
+  opts:['5 10 15 20','5 11 17 23','6 12 18 24','6 11 17 22'],ans:1,
+  exp:'每輪先 i = i + 5 再印出，接著 for 再加 1，所以每輪共加 6：印出 5、11、17、23。印完 23 後 i = 24，不符合 i < 20。注意 i = 18 時條件仍成立，所以 23 會印出來。',
+  trace:{title:'逐步追蹤',lines:['int a = 5;','for (⟦1:int i = 0⟧; ⟦2:i < 20⟧; ⟦3:i = i + 1⟧) {','    i = i + a;','    printf("%d ", i);','}'],
+   run(T){const a=5;let i;T.at(0,{a,i});i=0;T.at(1,{a,i},'①',1);while(true){const c=i<20;T.at(1,{a,i},`② i < 20 → ${c}`,2);if(!c)break;i+=a;T.at(2,{a,i});T.print(i+' ');T.at(3,{a,i});i++;T.at(1,{a,i},'③',3);}T.at(4,{a,i},'結束');}}},
+ {tag:'巢狀 · 1',q:'下列程式正確的輸出應為 1、3、5、7、9 顆星的金字塔。在不修改第 4 行及第 7 行程式碼的前提下，最少需修改幾行程式碼以得到正確輸出？',
+  code:'int k = 4;\nint m = 1;\nfor (int i=1; i<=5; i=i+1) {\n    for (int j=1; j<=k; j=j+1) {   // 第 4 行\n        printf (" ");\n    }\n    for (int j=1; j<=m; j=j+1) {   // 第 7 行\n        printf ("*");\n    }\n    printf ("\\n");\n    k = k - 1;\n    m = m + 1;                     // 第 12 行\n}',
+  opts:['1','2','3','4'],ans:0,
+  exp:'每列空白數 4, 3, 2, 1, 0 已由 k = k - 1 處理正確；星號數要 1, 3, 5, 7, 9，每列多 2 顆。只要把第 12 行改成 <code>m = m + 2;</code>。拉動下方滑桿比較：',
+  extra:()=>`<div class="ctl-row small"><label for="pyr">第 12 行：m = m +</label><input type="range" id="pyr" min="1" max="3" value="1" style="accent-color:var(--accent)"><b class="mono" id="pyr-v">1</b></div><pre class="console" id="pyr-out">${esc(pyramid(1))}</pre>`,
+  after:()=>{const r=document.getElementById('pyr');r.oninput=()=>{document.getElementById('pyr-v').textContent=r.value;document.getElementById('pyr-out').textContent=pyramid(+r.value);};}},
+ {tag:'巢狀 · 17',q:'下列程式片段執行後若要印出 6、4、2 顆星的倒三角形，(a) 的條件判斷式該如何設定？',
+  code:'for (int i=0; i<=3; i=i+1) {\n    for (int j=0; j<i; j=j+1)\n        printf(" ");\n    for (int k=6-2*i; ___(a)___ ; k=k-1)\n        printf("*");\n    printf("\\n");\n}',
+  opts:['k > 2','k > 1','k > 0','k > -1'],ans:2,
+  exp:'第 i 列的 k 從 6 − 2i 往下數，要印 6 − 2i 顆就是印 k = 6−2i, …, 1，條件為 k &gt; 0。i = 3 時 k 從 0 開始，一顆都不印。各選項的輸出：',
+  extra:()=>`<div class="tbl"><table class="mini"><tr>${['k > 2','k > 1','k > 0','k > -1'].map((h,n)=>`<th>(${'ABCD'[n]}) ${esc(h)}</th>`).join('')}</tr><tr>${[2,1,0,-1].map(t=>`<td><pre>${esc(q17(t))}</pre></td>`).join('')}</tr></table></div>`},
+ {tag:'巢狀 · 18',q:'下列程式執行完畢後所輸出值為何？',
+  code:'int main() {\n    int x = 0, n = 5;\n    for (int i=1; i<=n; i=i+1)\n        for (int j=1; j<=n; j=j+1) {\n            if ((i+j)==2) x = x + 2;\n            if ((i+j)==3) x = x + 3;\n            if ((i+j)==4) x = x + 4;\n        }\n    printf ("%d\\n", x);\n    return 0;\n}',
+  opts:['12','24','16','20'],ans:3,
+  exp:'只要數每種和出現幾次：i+j = 2 只有 (1,1)，加 2；i+j = 3 有 (1,2)(2,1)，加 3×2 = 6；i+j = 4 有 (1,3)(2,2)(3,1)，加 4×3 = 12。合計 2 + 6 + 12 = <b>20</b>。',
+  trace:{title:'逐步追蹤（可拖曳快轉）',speed:200,lines:['int x = 0, n = 5;','for (⟦1:int i = 1⟧; ⟦2:i <= n⟧; ⟦3:i = i + 1⟧)','    for (⟦4:int j = 1⟧; ⟦5:j <= n⟧; ⟦6:j = j + 1⟧) {','        if ((i+j)==2) x = x + 2;','        if ((i+j)==3) x = x + 3;','        if ((i+j)==4) x = x + 4;','    }','printf("%d\\n", x);'],
+   run(T){let x=0,n=5,i=1,j;T.at(0,{x,n,i,j});T.at(1,{x,n,i,j},'①',1);
+     while(true){if(!(i<=n)){T.at(1,{x,n,i,j},'② i <= 5 → false',2);break;}T.at(1,{x,n,i,j},'② true',2);j=1;T.at(2,{x,n,i,j},'①',4);
+       while(true){if(!(j<=n)){T.at(2,{x,n,i,j},'② j <= 5 → false',5);break;}
+         const s=i+j;[2,3,4].forEach((t,q)=>{if(s===t){x+=t;T.at(3+q,{x,n,i,j},`i + j = ${s}，x 加 ${t}`);}});
+         if(s>4)T.at(5,{x,n,i,j},`i + j = ${s}，三個 if 都不成立`);
+         j++;T.at(2,{x,n,i,j},'③',6);}
+       i++;T.at(1,{x,n,i,j},'③',3);}
+     T.print(x+'\n');T.at(7,{x,n,i,j},`輸出 ${x}`);}}}
+];
+const quizEl=document.getElementById('quiz');const answered={};
+function renderQuiz(){
+  quizEl.innerHTML='';
+  Q.forEach((q,qi)=>{
+    const card=document.createElement('article');card.className='q';
+    card.innerHTML=`<div class="stack"><div><div class="q-tag">APCS 觀念題 · ${esc(q.tag)}</div><p class="q-text">${q.q}</p></div><pre class="snip">${q.code.split('\n').map(hl).join('\n')}</pre></div>
+      <div><div class="opts">${q.opts.map((o,i)=>`<button class="opt" data-i="${i}"><span class="L">(${'ABCD'[i]})</span><span class="${q.code_opts||/[;=0-9]/.test(o)&&o.length<40?'v':''}">${esc(o)}</span></button>`).join('')}</div><div class="exp" hidden></div></div>`;
+    const exp=card.querySelector('.exp');
+    let tries=0;
+    card.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{
+      const pick=+b.dataset.i;tries++;
+      if(!(qi in answered))answered[qi]=pick===q.ans;
+      if(pick!==q.ans){
+        b.classList.add('wrong');b.disabled=true;exp.hidden=false;
+        exp.innerHTML=`<div class="verdict bad">✗ (${'ABCD'[pick]}) 不對，再選一次看看</div>`;
+        score();return;
+      }
+      card.querySelectorAll('.opt').forEach(x=>{x.disabled=true;});b.classList.add('right');
+      exp.hidden=false;
+      exp.innerHTML=`<div class="verdict ok">✓ 答對了${tries>1?`（第 ${tries} 次作答）`:''}</div><p>${q.exp}</p>${q.extra?q.extra():''}${q.trace?'<details class="trace"><summary>逐行追蹤這段程式</summary><div class="trh"></div></details>':''}`;
+      if(q.after)q.after();
+      if(q.trace){const d=exp.querySelector('details');d.addEventListener('toggle',()=>{const h=d.querySelector('.trh');if(d.open&&!h.dataset.m){h.dataset.m=1;mountTracer(h,q.trace);}});}
+      score();
+    });
+    quizEl.appendChild(card);
+  });
+  score();
+}
+function score(){const v=Object.values(answered);document.getElementById('sc-done').textContent=v.length;document.getElementById('sc-ok').textContent=v.filter(Boolean).length;document.getElementById('sc-total').textContent=Q.length;}
+document.getElementById('sc-reset').onclick=()=>{for(const k in answered)delete answered[k];renderQuiz();};
+renderQuiz();
+</script>
+
+</body></html>
